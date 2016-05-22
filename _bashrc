@@ -22,9 +22,25 @@ if [ "$PS1" ]; then
 	# spectators, since I use this key often and they'd think I pressed enter
 	trap 'echo -n \(Ctrl+C\)' SIGINT
 
+	os_platform="unknown"
+	unamestr="`uname`"
+	if [[ "$unamestr" = 'Linux' ]]; then
+	    os_platform='linux'
+	elif [[ "$unamestr" = 'FreeBSD' ]]; then
+	    os_platform='freebsd'
+	elif [[ "$unamestr" = 'Darwin' ]]; then
+	    os_platform='darwin'
+	fi
+
+	if [[ $os_platform == 'linux' ]]; then
+	   alias ls='ls --color=auto'
+	elif [[ $os_platform == 'freebsd' ]]; then
+	   alias ls='ls -G'
+	elif [[ $os_platform == 'darwin' ]]; then
+	   alias ls='ls -G'
+	fi
+
     # enable color support of ls and also add handy aliases
-	alias ls='ls -G'
-	alias ll='ls -l -G'
     alias rm='rm -i'
     alias mv='mv -i'
     alias cp='cp -i'
