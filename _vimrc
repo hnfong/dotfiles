@@ -22,6 +22,9 @@ set splitright
 set nostartofline " don't jump to line start when pgup/down etc.
 set whichwrap=<,>
 set t_mr=[0;1;37;41m " custom "reverse" terminal escape code
+set hls
+set ignorecase
+set smartcase
 syntax on
 
 " workaround TERM=screen problem where some keys are not recognized (eg F[1-12] keys)
@@ -47,7 +50,7 @@ nmap <F2> <ESC>:w<CR>:make
 nmap <F3> <ESC>:!time make run
 nmap <F4> :w<CR>
 nmap <F7> :set invnu<CR>
-nmap <F10> :set invhls<CR>:let @/="<C-r><C-w>"<CR>/<BS>
+nmap <RETURN> :noh<CR>
 
 " pressing once in normal mode changes to paste and enters insert mode
 " pressing the second time disables paste

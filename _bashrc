@@ -44,7 +44,7 @@ if [ "$PS1" ]; then
     alias rm='rm -i'
     alias mv='mv -i'
     alias cp='cp -i'
-	alias vi='vim'
+	alias vi='vim -O'
 
 	# default compilation flags
     export CFLAGS="-O2 -Wall"
