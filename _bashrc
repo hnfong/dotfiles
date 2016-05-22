@@ -84,7 +84,7 @@ if [ "$PS1" ]; then
 		TMOUT=3600					# 1 hour!!
 	fi
 
-	EDITOR=vim
+	export EDITOR=vim
 
 	if [[ -d ~/bin ]]; then
 		PATH=~/bin:"$PATH"
