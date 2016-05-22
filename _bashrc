@@ -84,6 +84,8 @@ if [ "$PS1" ]; then
 		TMOUT=3600					# 1 hour!!
 	fi
 
+	EDITOR=vim
+
 	############# --- Machine Specific Scripts --- #############
 	if [ -f ~/.bashrc."$HOSTNAME" ]; then
 		source ~/.bashrc."$HOSTNAME"
