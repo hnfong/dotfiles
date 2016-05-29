@@ -1,0 +1,75 @@
+##  General ~/.bashrc of hnfong, version 1.0 ##
+
+if [ "$PS1" ]; then
+
+	# config
+	. ~/.hnfong.conf
+
+	# constants
+	TERME='\[\e[0m\]'
+	TERME30='\[\e[01;30m\]' # black
+	TERME31='\[\e[01;31m\]' # red
+	TERME32='\[\e[01;32m\]' # green
+	TERME33='\[\e[01;33m\]' # yellow
+	TERME34='\[\e[01;34m\]' # blue
+	TERME35='\[\e[01;35m\]' # magenta
+	TERME36='\[\e[01;36m\]' # cyan
+	TERME37='\[\e[01;37m\]' # white
+
+	############### --- General Options --- ###############
+
+	# show something when Ctrl+C is pressed (mainly to avoid confusion by
+	# spectators, since I use this key often and they'd think I pressed enter
+	trap 'echo -n \(Ctrl+C\)' SIGINT
+
+    # enable color support of ls and also add handy aliases
+	alias ls='ls -G'
+	alias ll='ls -l -G'
+    alias rm='rm -i'
+    alias mv='mv -i'
+    alias cp='cp -i'
+	alias vi='vim'
+
+	# default compilation flags
+    export CFLAGS="-O2 -Wall"
+    export CXXFLAGS="$CFLAGS"
+
+	if [ "$TERM" = "screen" ]; then
+		TITLEPS1='\[\ek\w\e\\\]\[\033]0;\h:(screen)\007\]'
+		echo -ne '\ek~\e\\'
+	else
+		TITLEPS1='\[\033]0;\h:\w\007\]'
+	fi
+
+	# set prompt
+	if [ "$SI_CONFIG_FANCY_PROMPT" = "1" ]; then
+		PS1="$TITLEPS1$TERME34$SHLVL$TERME33.$TERME31\h:$TERME32\w$TERME34>$TERME "
+	else
+		PS1='\u@\h:\w\$ '
+	fi
+
+    umask 022
+
+	# workaround for screen (companion settings in .vimrc)
+	if [ "$SI_CONFIG_VIM_SCREEN_WORKAROUND" = "1" ]  && [ "$TERM" = "screen" ]; then
+		export REALTERM='xterm'
+	else
+		export REALTERM="$TERM"
+	fi
+
+	if [ "$SI_CONFIG_BASH_COMPLETION" = "1" ]; then
+		if [ "$SI_CONFIG_WARN_BASH_COMPLETION" = "1" ]; then
+			echo 'Note: enabling bash completion'
+		fi
+		source /etc/bash_completion
+	fi
+
+	if [ "$SI_CONFIG_TIMEOUT" = "1" ]; then
+		TMOUT=3600					# 1 hour!!
+	fi
+
+	############# --- Machine Specific Scripts --- #############
+	if [ -f ~/.bashrc."$HOSTNAME" ]; then
+		source ~/.bashrc."$HOSTNAME"
+	fi
+fi

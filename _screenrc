@@ -1,0 +1,26 @@
+# screenrc, see screen(1) for details
+vbell off
+bind K kill
+bind k kill
+startup_message off
+defscrollback 10000
+
+caption always
+caption string "%-w%{=u bw}%n*%t%{-}%+w %=%{= kw}(%{=u kY}%H%{-})%{-}%{= kg} %d %M %Y (%D) %c:%s%a%{-}"
+#               [A][  B  ][  C  ][D][E][F][  G  ][      H       ][I ][  J  ][        H           ][I ]
+#
+# A : all windows up till current
+# B : change color to blue background, bright white foreground
+# C : window number + title
+# D : revert to original colors
+# E : all windows after current
+# F : pad with spaces (so the text after will get aligned to right), leading
+#     space is required otherwise the "current window" colors will overflow
+# G : white on black, for host parentheses
+# H : hostname in parenthesis, hostname in bright yellow
+# I : pop color changes (of G)
+# J : green fg, black bg
+# K : host @ date time.
+# L : pop changes
+
+sorendition "= kB"
