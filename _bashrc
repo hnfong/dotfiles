@@ -86,6 +86,10 @@ if [ "$PS1" ]; then
 
 	EDITOR=vim
 
+	if [[ -d ~/bin ]]; then
+		PATH=~/bin:"$PATH"
+	fi
+
 	############# --- Machine Specific Scripts --- #############
 	if [ -f ~/.bashrc."$HOSTNAME" ]; then
 		source ~/.bashrc."$HOSTNAME"
