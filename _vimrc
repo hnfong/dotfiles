@@ -16,6 +16,7 @@ set tabstop=4
 set wildmenu
 set wildmode=full
 set winminheight=0
+set winminwidth=20
 set sidescroll=1
 set splitbelow
 set splitright
@@ -23,8 +24,8 @@ set nostartofline " don't jump to line start when pgup/down etc.
 set whichwrap=<,>
 set t_mr=[0;1;37;41m " custom "reverse" terminal escape code
 set hls
-set ignorecase
-set smartcase
+" set smartcase
+set expandtab
 syntax on
 
 " workaround TERM=screen problem where some keys are not recognized (eg F[1-12] keys)
@@ -51,6 +52,11 @@ nmap <F3> <ESC>:!time make run
 nmap <F4> :w<CR>
 nmap <F7> :set invnu<CR>
 nmap <RETURN> :noh<CR>
+nmap <LEFT> <C-W>h500<C-W>>
+nmap <RIGHT> <C-W>l500<C-W>>
+nmap <UP> 500<C-W>>
+nmap <DOWN> 500<C-W><
+nnoremap <C-c> <silent> <C-c>
 
 " pressing once in normal mode changes to paste and enters insert mode
 " pressing the second time disables paste
@@ -106,7 +112,7 @@ au BufRead,BufNewFile *.pl	set smartindent
 func! SiliconPythonInit()
 	" Indentation
 	set softtabstop=4 tabstop=4 shiftwidth=4 smarttab expandtab autoindent
-	set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
+	set cinwords=if,elif,else,for,while,try,except,finally,def,class
 	" Compile/Run
 	map <F3> :w<CR>:!time python %
 
@@ -179,6 +185,9 @@ au BufRead,BufNewFile *.prolog map <F3> :w<CR>:!time prolog %
 
 "****************************** Tex ******************************"
 au BufRead,BufNewFile *.tex	setlocal spell spelllang=en_us
+
+"*************************** Makefile ****************************"
+au FileType make setlocal noexpandtab
 
 "********************** Host Dependent Stuff *********************"
 if (hostname() == "serv")

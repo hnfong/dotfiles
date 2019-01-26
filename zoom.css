@@ -1,0 +1,8 @@
+/* http://www.macworld.com/article/1166811/web-apps/automatically-zoom-safari-pages-on-launch.html */
+body.fbx {
+ zoom: 130%;
+}
+
+body {
+ zoom: 125%;
+}

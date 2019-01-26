@@ -52,7 +52,7 @@ if [ "$PS1" ]; then
 
 	if [ "$TERM" = "screen" ]; then
 		TITLEPS1='\[\ek\w\e\\\]\[\033]0;\h:(screen)\007\]'
-		echo -ne '\ek~\e\\'
+		echo -ne '\033k~\033\\'
 	else
 		TITLEPS1='\[\033]0;\h:\w\007\]'
 	fi
@@ -86,7 +86,11 @@ if [ "$PS1" ]; then
 
 	export EDITOR=vim
 
-	if [[ -d ~/bin ]]; then
+	if [[ -d ~/.homebrew/bin ]] && [[ ! "$PATH" =~ "$HOME/.homebrew/bin" ]]; then
+		PATH=~/.homebrew/bin:"$PATH"
+	fi
+
+	if [[ -d ~/bin ]] && [[ ! "$PATH" =~ "$HOME/bin" ]] ; then
 		PATH=~/bin:"$PATH"
 	fi
 
