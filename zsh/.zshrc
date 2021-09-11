@@ -37,7 +37,7 @@ fi
 alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
-alias vi='vim -O'
+alias vi='nvim -O'
 alias ff='find . -name'
 alias vigl='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git log -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
 alias vigll='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git lll -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
@@ -122,6 +122,74 @@ function mk {
     done
     cd "$PWDBEFOREMK"
     [ "$MK__RET"  = "0" ];
+}
+
+# Tries to find a path
+function fd {
+    # -d to find the directory of the target and cd to it
+    if [[ $1 == '-d' ]]; then
+        local FOUND=`fd "$2"`
+        if [[ -e "$FOUND" ]]; then
+            cd "${FOUND:h}"
+        fi
+        return
+    fi
+
+    # Get the target, either from command line or from pasteboard
+    local TARGET=$1
+    if [[ -z "$TARGET" ]]; then
+        TARGET=`pbpaste | head -n 1 | grep -o '[^ ]/[^ ]/[^ ]*' | head -n 1`
+    fi
+
+    # If it just exists then use it
+    if [[ -e "$TARGET" ]]; then
+        echo $TARGET
+        return
+    fi
+
+    # Otherwise try to strip away parent dirs
+    while [[ "$TARGET" != "" && ! -e "$TARGET" ]]; do
+        local attempt=${TARGET#*/}
+        if [[ "$attempt" = "$TARGET" ]]; then
+            break
+        else
+            TARGET="$attempt"
+        fi
+    done
+    if [[ -e "$TARGET" ]]; then
+        echo "$TARGET"
+        return
+    fi
+
+    # Using the last component, try to find a match with parent dirs
+    if [[ $TARGET != "/"  && -n "$TARGET" ]]; then
+        local cnt=4
+        while [[ ! -e "$TARGET" && cnt -gt 0 ]]; do
+            TARGET="../$TARGET"
+            cnt=$((cnt - 1))
+        done
+        if [[ -e "$TARGET" ]]; then
+            echo "$TARGET"
+            return
+        fi
+    fi
+
+    # Using the original target, try to find a match with parent dirs
+    TARGET="$1"
+    local cnt=4
+    while [[ ! -e "$TARGET" && cnt -gt 0 ]]; do
+        TARGET="../$TARGET"
+        cnt=$((cnt - 1))
+    done
+    if [[ -e "$TARGET" ]]; then
+        echo "$TARGET"
+        return
+    fi
+
+    # Reset the target since we wittled it down above
+    TARGET=$1
+
+    find . -maxdepth 3 -path "*$TARGET"
 }
 
 

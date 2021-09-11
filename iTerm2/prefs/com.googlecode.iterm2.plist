@@ -541,7 +541,7 @@
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>Monaco 12</string>
+			<string>Monaco 20</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prompt Before Closing 2</key>
@@ -875,7 +875,7 @@
 			<key>Has Hotkey</key>
 			<false/>
 			<key>Horizontal Spacing</key>
-			<real>0.89000000000000001</real>
+			<real>0.92000000000000004</real>
 			<key>Idle Code</key>
 			<integer>0</integer>
 			<key>Jobs to Ignore</key>
@@ -1177,7 +1177,7 @@
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>Menlo-Regular 13</string>
+			<string>Menlo-Regular 24</string>
 			<key>Only The Default BG Color Uses Transparency</key>
 			<false/>
 			<key>Open Toolbelt</key>
@@ -1360,7 +1360,7 @@
 			<key>Use Non-ASCII Font</key>
 			<false/>
 			<key>Vertical Spacing</key>
-			<real>0.84999999999999998</real>
+			<real>0.83999999999999997</real>
 			<key>Visual Bell</key>
 			<true/>
 			<key>Window Type</key>
@@ -1380,6 +1380,13 @@
 		<dict>
 			<key>Action</key>
 			<string>kPasteFromClipboardPointerAction</string>
+		</dict>
+		<key>Button,4,1,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kSendEscapeSequencePointerAction</string>
+			<key>Argument</key>
+			<string>[25~</string>
 		</dict>
 		<key>Gesture,ThreeFingerSwipeDown,,</key>
 		<dict>
