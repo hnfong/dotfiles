@@ -2,4 +2,4 @@ DESTINATION_SUFFIX=/apps/zstd
 
 DOWNLOAD_COMMAND='git clone https://github.com/facebook/zstd.git && cd zstd && git checkout v1.4.8'
 COMPILE_COMMAND='echo OK'
-INSTALL_COMMAND='cd zstd && make -j 4 install PREFIX="$qdinstall_destination" && ln -s "$qdinstall_destination"/bin/* ~/bin/'
+INSTALL_COMMAND='cd zstd && make -j 4 install PREFIX="$qdinstall_destination" && ln -fs "$qdinstall_destination"/bin/* ~/bin/'

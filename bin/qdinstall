@@ -32,11 +32,10 @@ bash -c "$DOWNLOAD_COMMAND"
 
 # TODO: add optional md5 checksum check
 
-bash -c "$COMPILE_COMMAND"
-
 qdinstall_destination="$INSTALL_DESTINATION"
 export qdinstall_destination
 
+bash -c "$COMPILE_COMMAND"
 bash -c "$INSTALL_COMMAND"
 
 rm -rf "$WORKING_DIR"

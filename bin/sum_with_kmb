@@ -1,0 +1,49 @@
+#!/usr/bin/python
+
+import re
+import sys
+
+
+def kmb_cmp(a, b):
+    if a == "" and b == "": return 0
+    if a == "": return -1
+    if b == "": return 1
+
+    x = {"b":0, "B":0, "k":1, "K":1, "m":2, "M":2, "g": 3, "G": 3}
+    suf_a = x.get(a[-1], 0)
+    suf_b = x.get(b[-1], 0)
+
+    if suf_a == suf_b:
+        x = float(a[:-1]) - float(b[:-1])
+        if x == 0:
+            return 0
+        if x < 0:
+            return -1
+        if x > 0:
+            return 1
+
+    return suf_a - suf_b
+
+NUM_WITH_SUFFIX = re.compile(r'([0-9\.]+[kKmMbBgG])')
+
+input_string = sys.stdin.read()
+print(repr(input_string))
+extracted = NUM_WITH_SUFFIX.findall(input_string)
+print(sorted(extracted, cmp=kmb_cmp))
+
+BASE = 1024
+
+def kmb_to_value(kmb):
+    if kmb in "kK": return BASE
+    if kmb in "mM": return BASE * BASE
+    if kmb in "gG": return BASE * BASE * BASE
+    return 1
+
+z = 0
+for item in extracted:
+    z += float(item[:-1]) * kmb_to_value(item[-1])
+
+print(z)
+print(z // BASE, "K")
+print(z // BASE // BASE, "M")
+print(z // BASE // BASE // BASE, "G")
