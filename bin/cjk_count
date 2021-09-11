@@ -1,0 +1,17 @@
+#!/usr/bin/python
+
+import sys
+
+def is_cjk(s):
+    import unicodedata
+    try:
+        return sum([not unicodedata.name(c).startswith("CJK UNIFIED IDEOGRAPH-") for c in s]) == 0
+    except ValueError:
+        return False
+
+if len(sys.argv) > 1:
+    f = open(sys.argv[1])
+else:
+    f = sys.stdin
+
+print(len(filter(is_cjk, f.read().decode('utf-8'))))

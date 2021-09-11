@@ -202,21 +202,21 @@ highlight TrailingSpace ctermbg=red guibg=red
 highlight OverLength ctermfg=white guifg=white ctermbg=red guibg=red
 highlight TabIndents ctermbg=darkmagenta guibg=darkmagenta
 
-func UnmatchTabIndents()
-    " For some reason, sometimes this is called more than once per loading...
-    if w:mtabindents > 0
-        call matchdelete(w:mtabindents)
-    endif
-    let w:mtabindents = -1
-endfunction
+" func UnmatchTabIndents()
+    " " For some reason, sometimes this is called more than once per loading...
+    " if w:mtabindents > 0
+        " call matchdelete(w:mtabindents)
+    " endif
+    " let w:mtabindents = -1
+" endfunction
 
 augroup highlights
     autocmd!
     au BufRead,BufNewFile * call matchadd('TrailingSpace', '\s\s*$', -1)
     au BufRead,BufNewFile * call matchadd('OverLength', '\%160v.', -1)
     au BufRead,BufNewFile * let w:mtabindents = matchadd('TabIndents', '^\s*	', -1)
-    au FileType make call UnmatchTabIndents()
-    au FileType help call UnmatchTabIndents()
+    " au FileType make call UnmatchTabIndents()
+    " au FileType help call UnmatchTabIndents()
 augroup END
 
 "**************************** Python ****************************"
