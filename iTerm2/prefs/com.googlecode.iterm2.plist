@@ -1401,7 +1401,7 @@
 		</dict>
 	</dict>
 	<key>ShowMetalFPSmeter</key>
-	<true/>
+	<false/>
 	<key>SoundForEsc</key>
 	<false/>
 	<key>UseLionStyleFullscreen</key>

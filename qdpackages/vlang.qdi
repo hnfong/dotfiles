@@ -1,0 +1,5 @@
+DESTINATION_SUFFIX=/apps
+
+DOWNLOAD_COMMAND='git clone https://github.com/vlang/v && cd v && git checkout 0.2.2'
+COMPILE_COMMAND='cd v && make'
+INSTALL_COMMAND='mv v "$qdinstall_destination" && ln -fs "$qdinstall_destination"/v/v ~/bin/'
