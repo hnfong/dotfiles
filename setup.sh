@@ -12,6 +12,7 @@ ln -s skel/_bash_profile .bash_profile
 ln -s skel/_vimrc .vimrc
 ln -s skel/_vim .vim
 ln -s skel/_screenrc .screenrc
+ln -s skel/_zshenv .zshenv
 touch ~/.hnfong.conf
 
 mkdir -p ~/bin/
