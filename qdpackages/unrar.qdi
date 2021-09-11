@@ -1,0 +1,4 @@
+DESTINATION_SUFFIX=/apps/rar
+DOWNLOAD_COMMAND='curl -O https://www.rarlab.com/rar/rarosx-6.0.0.tar.gz'
+COMPILE_COMMAND='tar jxvf rarosx-6.0.0.tar.gz'
+INSTALL_COMMAND='rsync -avH rar/ $qdinstall_destination/ && ln -fs $qdinstall_destination/rar $qdinstall_destination/unrar ~/bin/'

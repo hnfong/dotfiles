@@ -1,0 +1,3 @@
+DOWNLOAD_COMMAND='curl -O https://nchc.dl.sourceforge.net/project/p7zip/p7zip/16.02/p7zip_16.02_src_all.tar.bz2'
+COMPILE_COMMAND='tar jxvf p7zip*bz2 && cd p7* && make -j 4'
+INSTALL_COMMAND='cd p7* && cp -v bin/7za ~/bin/'

@@ -49,7 +49,7 @@ HISTSIZE=999999
 HISTORY_IGNORE='(ls|exit|ps auxf)'
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
-export PATH="$HOME/bin:$HOME/Library/Python/3.8/bin:$PATH"
+export PATH="$HOME/bin:$HOME/Library/Python/3.8/bin:$PATH:/opt/homebrew/bin"
 
 if [[ "$TERM" = "screen" ]]; then
     export TERM=xterm-256color
@@ -208,3 +208,19 @@ function _hnfong_set_ps1() {
 
 SI_CONFIG_FANCY_PROMPT=1
 _hnfong_set_ps1
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/sidney_fong/apps/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/sidney_fong/apps/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/Users/sidney_fong/apps/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/sidney_fong/apps/miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+

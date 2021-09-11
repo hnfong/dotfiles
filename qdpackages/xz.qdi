@@ -1,0 +1,5 @@
+DESTINATION_SUFFIX=/apps/xz
+
+DOWNLOAD_COMMAND='curl -O https://udomain.dl.sourceforge.net/project/lzmautils/xz-5.2.5.tar.bz2'
+COMPILE_COMMAND='tar jxvf xz*bz2 && cd xz* && ./configure --prefix="$qdinstall_destination" && make -j 4'
+INSTALL_COMMAND='cd xz* && make install && ln -sf "$qdinstall_destination"/bin/* ~/bin/'
