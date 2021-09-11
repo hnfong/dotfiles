@@ -31,7 +31,7 @@ if [[ "$OSTYPE" =~ "linux" ]]; then
     alias ls='ls --color=auto'
     alias ll='ls -l --color=auto'
 else
-    alias ls='ls -G -A'
+    alias ls='ls -GAF'
 fi
 
 alias rm='rm -i'
@@ -49,7 +49,7 @@ HISTSIZE=999999
 HISTORY_IGNORE='(ls|exit|ps auxf)'
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin:$HOME/Library/Python/3.8/bin:$PATH"
 
 if [[ "$TERM" = "screen" ]]; then
     export TERM=xterm-256color
