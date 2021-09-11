@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Quick and Dirty install.
+
+if [ -z "$*" ]; then
+    echo 'Usage: $0 description_file [destination]' >&2
+    exit 1
+fi
+
+set -ex
+source "$1"
+shift
+
+INSTALL_DESTINATION="$HOME"/"$DESTINATION_SUFFIX"
+if [ -n "$1" ]; then
+    INSTALL_DESTINATION="$1"
+    shift
+fi
+
+mkdir -p "$INSTALL_DESTINATION"
+
+if [ ! -d "$INSTALL_DESTINATION" ]; then
+    echo "Invalid directory: $INSTALL_DESTINATION" >&2
+    exit 1
+fi
+
+WORKING_DIR=`mktemp -d`
+
+cd "$WORKING_DIR"
+
+bash -c "$DOWNLOAD_COMMAND"
+
+# TODO: add optional md5 checksum check
+
+bash -c "$COMPILE_COMMAND"
+
+qdinstall_destination="$INSTALL_DESTINATION"
+export qdinstall_destination
+
+bash -c "$INSTALL_COMMAND"
+
+rm -rf "$WORKING_DIR"
