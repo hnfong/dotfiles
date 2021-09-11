@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Hopefully portable and reasonably safe symmetric password file encryption.
+# May not work so well for huge files.
+
+# FIXME: we can't use `-pbkdf2 -iter` in openssl unless we are using
+# sufficiently new openssl, which we aren't yet because I don't want to use
+# homebrew.
+
+INFILE="$1"
+shift
+OUTFILE="$INFILE.encrypted"
+
+if [ ! -f "$INFILE" ]; then
+  echo "Usage: $0 file" >&2
+  exit 1
+fi
+
+
+echo '#!/bin/sh' > "$OUTFILE"
+printf "# Creation version and command: %s" `openssl version` >> "$OUTFILE"
+echo '# openssl enc -aes-256-cbc -e -salt -in "$INFILE" -out "$OUTFILE"' >> "$OUTFILE"
+echo 'set -e' >> "$OUTFILE"
+echo 'set -o pipefail' >> "$OUTFILE"
+echo 'loc=`grep -an "____START""_HERE____" "$0" | cut -d: -f1 | head -n 1`' >> "$OUTFILE"
+echo 'loc=`expr $loc + 1`' >> "$OUTFILE"
+echo 'tail -n +$loc "$0" | openssl enc -d -aes-256-cbc -d -salt -out "$0.decrypted"' >> "$OUTFILE"
+echo 'exit 0' >> "$OUTFILE"
+echo '____START_HERE____' >> "$OUTFILE"
+openssl enc -aes-256-cbc -e -salt -in "$INFILE" >> "$OUTFILE"
