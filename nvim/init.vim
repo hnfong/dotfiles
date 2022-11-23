@@ -1,4 +1,7 @@
 "**************************** Basic Global Settings ****************************"
+"
+"TEMPORARY
+nmap [ :q!<CR>
 " nocp must be first
 set nocompatible
 
@@ -40,6 +43,9 @@ set wildmode=full
 set winminheight=0
 set winminwidth=20
 set winminwidth=20
+set indentkeys=
+set mouse= " Disable 'helpful' mouse modes
+filetype indent off
 syntax on
 
 let foldtoggledefault=0
@@ -383,3 +389,29 @@ map <leader>gf :e <cfile><cr>
 "********************** Host Dependent Stuff *********************"
 source ~/.vim/plugin/fugitive.vim
 set statusline=%f\ %h%m%r\ %<%y\ [%{&ff}]\ %{fugitive#statusline()}\ [%b,0x%B]%=Pos\ %c%V,\ Line\ %l\ of\ %L\ (%p%%)
+
+
+
+" NeoVIM specific stuff
+"
+:tnoremap <Esc> <C-\><C-n>
+
+" https://github.com/neovim/neovim/issues/8816
+autocmd TermOpen term://* startinsert
+
+nmap <F12> :vnew<CR>:terminal<CR>
+set belloff=
+
+
+" https://news.ycombinator.com/item?id=33040534
+" Neovim's default terminal mode bindings aren't great.
+" This makes them behave like vim's.
+tnoremap <Esc> <C-\><C-n><C-w>
+tnoremap <C-w> <C-\><C-n><C-w>
+
+"Always enter the terminal in insert mode
+autocmd BufWinEnter,WinEnter,BufEnter term://* startinsert
+autocmd TermOpen,TermEnter * startinsert
+command! -nargs=0 T :vsplit | term
+
+

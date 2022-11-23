@@ -44,6 +44,7 @@ alias vigll='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git lll -n 100 > "$VIGLT
 alias h='helper'
 alias gpr='git pull --rebase'
 alias sw='swift'
+alias brew='HOMEBREW_NO_AUTO_UPDATE=1 brew'
 
 HISTSIZE=999999
 HISTORY_IGNORE='(ls|exit|ps auxf)'
@@ -244,7 +245,7 @@ function preexec() {
     _TIME_BEFORE_COMMAND="`date +%s`"
 
     if [ "$IS_RUNNING_SCREEN" ]; then
-        printf "\ek$1 $(print -rD $PWD)$_git_branch_guess\e\\"
+        printf "\ek%s $(print -rD $PWD)$_git_branch_guess\e\\" "$1"
     fi
 }
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # XXX: Python compiled with UCS-2 support instead of UTF-32 will return wrong
 # lengths for the cases you'd expect them to be wrong.
@@ -9,4 +9,4 @@ if len(sys.argv) < 2:
 else:
     ff = sys.argv[1]
 
-print len(open(ff).read().decode("utf-8"))
+print(len(open(ff, "rb").read().decode("utf-8")))

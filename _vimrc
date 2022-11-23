@@ -40,6 +40,7 @@ set wildmode=full
 set winminheight=0
 set winminwidth=20
 set winminwidth=20
+filetype indent off
 syntax on
 
 let foldtoggledefault=0

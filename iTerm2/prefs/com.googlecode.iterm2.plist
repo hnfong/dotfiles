@@ -2,12 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AboutToPasteTabsWithCancel</key>
+	<true/>
+	<key>AboutToPasteTabsWithCancel_selection</key>
+	<integer>0</integer>
 	<key>AlternateMouseScroll</key>
 	<true/>
 	<key>CopySelection</key>
 	<false/>
 	<key>Default Bookmark Guid</key>
 	<string>845F80E3-D2DD-44EA-9828-541EEF4CC069</string>
+	<key>EscapeShellCharsWithBackslash</key>
+	<false/>
 	<key>HapticFeedbackForEsc</key>
 	<false/>
 	<key>HotkeyMigratedFromSingleToMulti</key>
@@ -176,6 +182,8 @@
 			</dict>
 			<key>Background Image Location</key>
 			<string></string>
+			<key>Blend</key>
+			<real>0.32068983147905755</real>
 			<key>Blinking Cursor</key>
 			<false/>
 			<key>Blur</key>
@@ -1346,7 +1354,7 @@
 			<key>Thin Strokes</key>
 			<integer>4</integer>
 			<key>Transparency</key>
-			<real>0.053376824238578688</real>
+			<real>0.14199232037259932</real>
 			<key>Unlimited Scrollback</key>
 			<false/>
 			<key>Use Bold Font</key>
@@ -1369,6 +1377,12 @@
 			<string>/Users/sidney_fong</string>
 		</dict>
 	</array>
+	<key>PasteSpecialRegex</key>
+	<string></string>
+	<key>PasteSpecialSubstitution</key>
+	<string></string>
+	<key>PasteSpecialUseRegexSubstitution</key>
+	<false/>
 	<key>PointerActions</key>
 	<dict>
 		<key>Button,1,1,,</key>
@@ -1413,6 +1427,8 @@
 	<false/>
 	<key>SoundForEsc</key>
 	<false/>
+	<key>TabTransform</key>
+	<integer>0</integer>
 	<key>UseLionStyleFullscreen</key>
 	<false/>
 	<key>UseMetal</key>
