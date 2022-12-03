@@ -45,6 +45,7 @@ alias h='helper'
 alias gpr='git pull --rebase'
 alias sw='swift'
 alias brew='HOMEBREW_NO_AUTO_UPDATE=1 brew'
+alias g='rg -N -z'
 
 HISTSIZE=999999
 HISTORY_IGNORE='(ls|exit|ps auxf)'

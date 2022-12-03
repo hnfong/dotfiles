@@ -414,4 +414,4 @@ autocmd BufWinEnter,WinEnter,BufEnter term://* startinsert
 autocmd TermOpen,TermEnter * startinsert
 command! -nargs=0 T :vsplit | term
 
-
+lua require('init2')
