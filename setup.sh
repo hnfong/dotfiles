@@ -14,6 +14,7 @@ ln -s skel/_vim .vim
 ln -s skel/_screenrc .screenrc
 ln -s skel/_zshenv .zshenv
 ln -s skel/_tmux.conf .tmux.conf
+ln -s skel/_alacritty.yml .alacritty.yml
 touch ~/.hnfong.conf
 
 mkdir -p ~/bin/
