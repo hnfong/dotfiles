@@ -26,5 +26,5 @@ caption string "%-w%{=u bw}%n*%t%{-}%+w %=%{= kw}(%{=u Y}%H%{-})%{-}%{= g} %d %M
 sorendition "= .B"
 
 # set TERM
-# term xterm-256color
+term screen-256color
 

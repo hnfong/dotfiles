@@ -71,22 +71,7 @@ set errorformat+=%-G%.%#
 " set nobomb for all files
 au BufWinEnter setlocal nobomb
 
-" workaround TERM=screen problem where some keys are not recognized (eg F[1-12] keys)
-if ( $TERM == "screen" )
-	set term=$REALTERM
-endif
-
-if ( $TERM == "screen" )
-	set t_ts=k
-	set t_fs=\
-endif
-
 set titlestring=vim:%f
-
-if ( $TERM == "screen" )
-    set t_ts=]0;
-    set t_fs=
-endif
 
 set title
 

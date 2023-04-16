@@ -21,8 +21,10 @@ font:
 
 window:
   dimensions:
-    columns: 220
-    lines: 75
+    # columns: 220
+    # lines: 75
+    columns: 100
+    lines: 35
   opacity: 0.85
 
   # The rounded corners of macOS round out the first line if y padding is too small...
@@ -41,3 +43,6 @@ bell:
 
 key_bindings:
   - { key: N, mods: Command, action: CreateNewWindow }
+  - { key: Escape,  mods: Shift, mode: ~Search, action: ToggleViMode }
+  - { key: F, mods: Command|Control, action: ToggleSimpleFullscreen }
+
