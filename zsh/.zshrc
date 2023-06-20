@@ -37,7 +37,7 @@ fi
 alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
-alias vi='nvim -O'
+alias vi='magic_open'
 alias ff='find . -name'
 alias vigl='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git log -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
 alias vigll='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git lll -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
@@ -51,7 +51,7 @@ HISTSIZE=999999
 HISTORY_IGNORE='(ls|exit|ps auxf)'
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
-export PATH="$HOME/bin:$HOME/Library/Python/3.8/bin:$PATH:/opt/homebrew/bin"
+export PATH="$HOME/bin:$HOME/Library/Python/3.9/bin:$PATH:/opt/homebrew/bin"
 
 if [[ "$TERM" = "screen" ]]; then
     export TERM=xterm-256color

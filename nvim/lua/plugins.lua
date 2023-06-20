@@ -32,6 +32,8 @@ require('packer').startup(function(use)
   use { 'nvim-telescope/telescope.nvim', tag = '0.1.0', requires = { {'nvim-lua/plenary.nvim'} } }
   -- use 'neovim/nvim-lspconfig'  -- under evaluation
 
+  use 'github/copilot.vim'
+
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins

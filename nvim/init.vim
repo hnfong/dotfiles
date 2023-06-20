@@ -5,7 +5,7 @@ nmap [ :q!<CR>
 " nocp must be first
 set nocompatible
 
-" set smartcase
+set smartcase ignorecase
 set autoindent
 set background=dark
 set backspace=2
@@ -80,7 +80,7 @@ set title
 " <F2>,<F3>:	compile and run shortcuts
 " <F4>:			git/svn blame
 " <F5>:			git/svn diff current file
-" <F6>:			toggle line number
+" <F8>:			toggle line number
 " <F7>:			toggle spellcheck
 " <F10>:		toggle highlight text under cursor
 " <F11>:		toggle 'paste' mode
@@ -104,8 +104,7 @@ nmap OQ :w<CR>:make
 nmap <F3> :!time make run
 nmap OR :!time make run
 
-nmap <F6> :set invnu<CR>
-nmap [17~ :set invnu<CR>
+nmap <F6> :let b:copilot_enabled = v:true
 
 nmap <F7> :set invspell<CR>
 nmap [18~ :set invspell<CR>
@@ -398,5 +397,20 @@ tnoremap <C-w> <C-\><C-n><C-w>
 autocmd BufWinEnter,WinEnter,BufEnter term://* startinsert
 autocmd TermOpen,TermEnter * startinsert
 command! -nargs=0 T :vsplit | term
+
+let g:copilot_filetypes = { '*': v:false }
+
+imap <silent><script><expr> <RIGHT> copilot#Accept("")
+let g:copilot_no_tab_map = v:true
+imap <S-LEFT> <Plug>(copilot-previous)
+imap <S-RIGHT> <Plug>(copilot-next)
+imap <M-RIGHT> <Plug>(copilot-suggest)
+
+"************************* ChatGPT transcript *************************
+au BufRead,BufNewFile *.transcript nmap <F3> :!python3 infer1.py -i 0 -f % -o % transcript
+
+iabbrev {star} ☆
+iabbrev {tick} ✓
+iabbrev {cross} ✗
 
 lua require('init2')
