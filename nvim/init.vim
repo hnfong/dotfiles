@@ -371,7 +371,7 @@ filetype plugin on
 map <leader>gf :e <cfile><cr>
 
 "********************** Host Dependent Stuff *********************"
-source ~/.vim/plugin/fugitive.vim
+source ~/.config/nvim/fugitive.vim
 set statusline=%f\ %h%m%r\ %<%y\ [%{&ff}]\ %{fugitive#statusline()}\ [%b,0x%B]%=Pos\ %c%V,\ Line\ %l\ of\ %L\ (%p%%)
 
 
