@@ -37,7 +37,7 @@ fi
 alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
-alias vi='magic_open'
+# alias vi='magic_open' # using function instead
 alias ff='find . -name'
 alias vigl='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git log -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
 alias vigll='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git lll -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
@@ -82,6 +82,14 @@ function j {
         fi
     else
         cd "`expandgo $1`"
+    fi
+}
+
+function vi {
+    if [[ -e "$1" ]]; then
+        nvim -O "$@"
+    else
+        magic_open "$@"
     fi
 }
 
@@ -279,18 +287,6 @@ function _hnfong_set_ps1() {
 SI_CONFIG_FANCY_PROMPT=1
 _hnfong_set_ps1
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/sidney_fong/apps/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/Users/sidney_fong/apps/miniforge3/etc/profile.d/conda.sh" ]; then
-        . "/Users/sidney_fong/apps/miniforge3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/sidney_fong/apps/miniforge3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
+# Disable git completion (slow)
+compdef -d git
 

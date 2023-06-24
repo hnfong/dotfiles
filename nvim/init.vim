@@ -1,27 +1,23 @@
 "**************************** Basic Global Settings ****************************"
-"
-"TEMPORARY
-nmap [ :q!<CR>
 " nocp must be first
 set nocompatible
 
-set smartcase ignorecase
 set autoindent
 set background=dark
 set backspace=2
 set completeopt-=preview
 set expandtab
-set expandtab
 set foldlevel=999999
 set foldmethod=syntax
 set foldminlines=4
 set hls
+set indentkeys=
 set laststatus=2
 set lazyredraw
 set modeline
 set modelines=3
+set mouse= " Disable 'helpful' mouse modes
 set nojoinspaces " don't insert two spaces after special characters like '.'
-set noshowmatch
 set noshowmatch
 set nostartofline " don't jump to line start when pgup/down etc.
 set report=0
@@ -31,20 +27,17 @@ set shiftwidth=4 " indentation stuff
 set showcmd
 set showmode
 set sidescroll=1
+set smartcase ignorecase
 set softtabstop=4
 set splitbelow
 set splitright
 set t_mr=[0;1;37;41m " custom "reverse" terminal escape code
-set tabstop=4
 set tabstop=4
 set whichwrap=<,>
 set wildmenu
 set wildmode=full
 set winminheight=0
 set winminwidth=20
-set winminwidth=20
-set indentkeys=
-set mouse= " Disable 'helpful' mouse modes
 filetype indent off
 syntax on
 
@@ -80,7 +73,8 @@ set title
 " <F2>,<F3>:	compile and run shortcuts
 " <F4>:			git/svn blame
 " <F5>:			git/svn diff current file
-" <F8>:			toggle line number
+" <F6>:			toggle copilot
+" <F8>:			toggle nvimtree(??)
 " <F7>:			toggle spellcheck
 " <F10>:		toggle highlight text under cursor
 " <F11>:		toggle 'paste' mode
@@ -143,7 +137,7 @@ nmap <C-K> <C-W>k<C-W>_
 nmap <LEFT> <C-W>h<C-W>\|
 nmap <RIGHT> <C-W>l<C-W>\|
 " This is alt-= in OSX Terminal
-nmap ≠ <C-W>\|
+" nmap ≠ <C-W>\|
 " nmap <UP> <C-W>\|
 " Somehow this is too.....?
 nmap <ESC>(0\|<ESC>(B <C-W>\|
@@ -187,6 +181,9 @@ imap <C-F> <RIGHT>
 vmap <tab> >gv
 vmap <s-tab> <gv
 
+iabb {tick} ✓
+iabb {star} ☆
+iabb {cross} ✗
 "**************************** SmartIndent ****************************"
 au BufRead,BufNewFile *.php	setlocal smartindent
 au BufRead,BufNewFile *.java	setlocal smartindent
@@ -197,14 +194,6 @@ au BufRead,BufNewFile *.pl	setlocal smartindent
 highlight TrailingSpace ctermbg=red guibg=red
 highlight OverLength ctermfg=white guifg=white ctermbg=red guibg=red
 highlight TabIndents ctermbg=darkmagenta guibg=darkmagenta
-
-" func UnmatchTabIndents()
-    " " For some reason, sometimes this is called more than once per loading...
-    " if w:mtabindents > 0
-        " call matchdelete(w:mtabindents)
-    " endif
-    " let w:mtabindents = -1
-" endfunction
 
 augroup highlights
     autocmd!
@@ -222,8 +211,8 @@ func SiliconPythonInit()
 	setlocal smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
     filetype indent on
 	" Compile/Run
-	map <buffer> <F3> :w<CR>:!time python %
-	map <buffer> OR :w<CR>:!time python %
+	map <buffer> <F3> :w<CR>:!time python3 %
+	map <buffer> OR :w<CR>:!time python3 %
     :inoremap # X#
 
 	" ignore *.pyc
@@ -368,12 +357,12 @@ filetype plugin on
 
 " au Filetype vimwiki nmap gf <Plug>VimwikiFollowLink
 "
+" Seems to be a way to follow the file under the cursor?
 map <leader>gf :e <cfile><cr>
 
 "********************** Host Dependent Stuff *********************"
 source ~/.config/nvim/fugitive.vim
 set statusline=%f\ %h%m%r\ %<%y\ [%{&ff}]\ %{fugitive#statusline()}\ [%b,0x%B]%=Pos\ %c%V,\ Line\ %l\ of\ %L\ (%p%%)
-
 
 
 " NeoVIM specific stuff
@@ -386,7 +375,6 @@ autocmd TermOpen term://* startinsert
 nmap <F12> :vnew<CR>:terminal<CR>
 set belloff=
 
-
 " https://news.ycombinator.com/item?id=33040534
 " Neovim's default terminal mode bindings aren't great.
 " This makes them behave like vim's.
@@ -398,6 +386,7 @@ autocmd BufWinEnter,WinEnter,BufEnter term://* startinsert
 autocmd TermOpen,TermEnter * startinsert
 command! -nargs=0 T :vsplit | term
 
+" " Copilot
 let g:copilot_filetypes = { '*': v:false }
 
 imap <silent><script><expr> <RIGHT> copilot#Accept("")
@@ -405,12 +394,5 @@ let g:copilot_no_tab_map = v:true
 imap <S-LEFT> <Plug>(copilot-previous)
 imap <S-RIGHT> <Plug>(copilot-next)
 imap <M-RIGHT> <Plug>(copilot-suggest)
-
-"************************* ChatGPT transcript *************************
-au BufRead,BufNewFile *.transcript nmap <F3> :!python3 infer1.py -i 0 -f % -o % transcript
-
-iabbrev {star} ☆
-iabbrev {tick} ✓
-iabbrev {cross} ✗
 
 lua require('init2')

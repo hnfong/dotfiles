@@ -18,11 +18,21 @@ ln -s skel/_alacritty.yml .alacritty.yml
 touch ~/.hnfong.conf
 
 mkdir -p ~/bin/
-ln -s ../skel/bin/charcount ~/bin/
+for file in skel/bin/*; do
+    if [ -x "$file" ]; then
+        ln -s ../"$file" ~/bin/
+    fi
+done
 
 # Installing software
 
 if [ ! -d /Applications/iTerm.app/ ]; then
     echo "iTerm"
     open https://www.iterm2.com/
+fi
+
+if [ ! -d "skel/zsh/.zprezto" ]; then
+    pushd ~/skel/zsh
+    git clone --recursive https://github.com/sorin-ionescu/prezto.git "./.zprezto"
+    popd
 fi
