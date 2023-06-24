@@ -4,4 +4,5 @@ if [ -n "$1" ]; then
     printf "$1"/
     cd "$1"
 fi
-ls -tr | grep -v DS_Store | tail -n 1
+/bin/echo -n 'lid: ' >&2
+ls -tr | grep -v DS_Store | tail -n 1 | tee /dev/stderr
