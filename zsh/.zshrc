@@ -37,7 +37,7 @@ fi
 alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
-# alias vi='magic_open' # using function instead
+alias vi='magic_open'
 alias ff='find . -name'
 alias vigl='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git log -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
 alias vigll='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git lll -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
@@ -82,14 +82,6 @@ function j {
         fi
     else
         cd "`expandgo $1`"
-    fi
-}
-
-function vi {
-    if [[ -e "$1" ]]; then
-        nvim -O "$@"
-    else
-        magic_open "$@"
     fi
 }
 
