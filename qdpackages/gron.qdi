@@ -1,0 +1,5 @@
+DESTINATION_SUFFIX=/apps
+
+DOWNLOAD_COMMAND='curl -L -O https://github.com/tomnomnom/gron/releases/download/v0.7.1/gron-darwin-amd64-0.7.1.tgz'
+COMPILE_COMMAND='tar zxvf gron-darwin-amd64-0.7.1.tgz'
+INSTALL_COMMAND='cp -v gron ~/bin/'

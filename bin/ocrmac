@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+import sys
+import getopt
+from ocrmac import ocrmac
+
+optlist, args = getopt.getopt(sys.argv[1:], "l:")
+opts = dict(optlist)
+
+if len(args) != 1:
+    print("Usage: ocrmac [-l <language>] <image>")
+    print("  -l <language>  Language(s) to use for OCR, comma-separated")
+    print("                 (default: en-US)")
+    sys.exit(1)
+
+# https://github.com/straussmaximilian/ocrmac
+annotations = ocrmac.OCR(sys.argv[1],
+        recognition_level='accurate',
+        language_preference=opts.get("-l", "en-US").split(',')
+        ).recognize()
+print(annotations)
+

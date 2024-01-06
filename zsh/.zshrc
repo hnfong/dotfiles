@@ -34,9 +34,9 @@ else
     alias ls='ls -GAF'
 fi
 
-alias rm='rm -i'
-alias mv='mv -i'
-alias cp='cp -i'
+alias rm='rm -iv'
+alias mv='mv -iv'
+alias cp='cp -iv'
 alias vi='magic_open'
 alias ff='find . -name'
 alias vigl='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git log -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# For providing visual cue that some relatively long job has been completed.
+
+if [[ "$1" ]]; then
+MSG=$1
+else
+MSG="TASK DONE"
+fi
+
+osascript -e 'Display notification "'"$MSG"'" with title "Command Completed"'
+
+cat >/dev/null <<__OLDSCRIPT__
+#/bin/bash
+
+( echo -ne '\007' ; sleep 2; echo -ne '\007' ; sleep 2; echo -ne '\007' ; sleep 2; echo -ne '\007' ; ) &
+__OLDSCRIPT__

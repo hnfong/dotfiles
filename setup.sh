@@ -36,3 +36,8 @@ if [ ! -d "skel/zsh/.zprezto" ]; then
     git clone --recursive https://github.com/sorin-ionescu/prezto.git "./.zprezto"
     popd
 fi
+
+## Python stuff
+
+pip3 install --user -U csvkit
+pip3 install --user -U ocrmac

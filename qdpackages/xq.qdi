@@ -1,0 +1,5 @@
+DESTINATION_SUFFIX=/apps
+
+DOWNLOAD_COMMAND='curl -L -O https://github.com/sibprogrammer/xq/releases/download/v1.2.3/xq_1.2.3_darwin_arm64.tar.gz'
+COMPILE_COMMAND='tar zxvf xq_1.2.3_darwin_arm64.tar.gz'
+INSTALL_COMMAND='cp -v xq ~/bin/'

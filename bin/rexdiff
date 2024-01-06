@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+
+"""
+Originally written for me to compare a document with a bunch of links, and I
+have a new list of links, and I need to update the file with latest contents
+without disrupting it.
+"""
+
+import re
+import sys
+
+if len(sys.argv) < 3:
+    print("Usage: rexdiff.py regex file1 [file2]")
+    sys.exit(1)
+
+regex = sys.argv[1]
+file1 = sys.argv[2]
+if len(sys.argv) == 3:
+    file2 = None
+else:
+    file2 = sys.argv[3]
+
+with open(file1, 'r') as f1, open(file2, 'r') if file2 else sys.stdin as f2:
+    # extract all strings that match the regex in both files
+    strings1 = set(re.findall(re.compile(regex), f1.read()))
+    strings2 = set(re.findall(re.compile(regex), f2.read()))
+
+# output all the strings that are not found in the other file
+unique_strings1 = strings1 - strings2
+unique_strings2 = strings2 - strings1
+
+# If we just compare stdin and file1, then presume the intention is to just
+# check things existing in stdin but missing in the file
+if file2 is None:
+    for us in unique_strings2:
+        print(f"{us}")
+else:
+    for us in unique_strings1:
+        print(f"{file1}: {us}")
+
+    for us in unique_strings2:
+        print(f"{file2}: {us}")
