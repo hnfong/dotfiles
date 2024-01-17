@@ -13,14 +13,40 @@ import subprocess
 import sys
 import time
 
-LLAMA_CPP_PATH = os.path.expanduser("~/projects/llama.gguf/")
+LLAMA_CPP_PATH = os.path.expanduser("~/projects/llama.gguf/patched_main")
 MODELS_PATH = os.path.expanduser("~/Downloads/")
+
+DEFAULT_MODEL = "dolphin-2_6-phi-2"
+
+# Patch used to avoid outputting the prompt
+"""
+diff --git a/examples/main/main.cpp b/examples/main/main.cpp
+index 5668b011..0acacd2e 100644
+--- a/examples/main/main.cpp
++++ b/examples/main/main.cpp
+@@ -733,13 +733,15 @@ int main(int argc, char ** argv) {
+         if (input_echo && display) {
+             for (auto id : embd) {
+                 const std::string token_str = llama_token_to_piece(ctx, id);
+-                printf("%s", token_str.c_str());
++                // printf("%s", token_str.c_str());
+
+                 if (embd.size() > 1) {
+                     input_tokens.push_back(id);
+                 } else {
+                     output_tokens.push_back(id);
+                     output_ss << token_str;
++                    printf("%s", token_str.c_str());
++
+                 }
+             }
+             fflush(stdout);
+"""
 
 # Presets
 
 class Preset:
-    def __init__(self, name, user_prompt):
-        self.name = name
+    def __init__(self, user_prompt):
         self.user_prompt = user_prompt
 
     def prompt(self):
@@ -35,8 +61,10 @@ class Preset:
 
 class ExplainPreset(Preset):
     def __init__(self, user_prompt, context):
-        super().__init__("what_is", user_prompt)
+        super().__init__(user_prompt)
         self.context = context
+
+    name = "explain_this"
 
     def prompt(self):
         if self.context:
@@ -44,6 +72,13 @@ class ExplainPreset(Preset):
         else:
             return f"Please explain the following. Be concise in your answer.\n```{self.user_prompt}```\n"
 
+class CodeReviewPreset(Preset):
+    def __init__(self, user_prompt, context):
+        super().__init__(user_prompt)
+    name = "code_review"
+
+    def prompt(self):
+        return f"Please assume this is a code snippet in a github pull request. Please review the following code. Focus on potential problems. Because it is a snippet, do not be concerned with undefined or unknown references as long as they seem to be reasonable. Be concise in your answer.\n```{self.user_prompt}```\n"
 
 class ChatMLTemplateMixin:
     def templated_prompt(self):
@@ -73,20 +108,29 @@ class LlamaTemplateMixin:
         return f"""<s>[INST] <<SYS>>\n{self.system_message()}\n<</SYS>>\n\n{self.prompt()} [/INST]"""
 
 if __name__ == "__main__":
-    opt_list, args = getopt.getopt(sys.argv[1:], "hc:t:f:")
+    PRESETS = {}
+    # loop through all classes in this file and add them to the presets
+    import inspect
+    for name, obj in inspect.getmembers(sys.modules[__name__]):
+        if inspect.isclass(obj):
+            if issubclass(obj, Preset) and obj != Preset:
+                PRESETS[obj.name] = obj
+    opt_list, args = getopt.getopt(sys.argv[1:], "hc:t:f:p:")
     opts = dict(opt_list)
 
     user_prompt = None
     if args:
-        user_prompt = args[0]
+        user_prompt = " ".join(args)  # join all args into one string for easy use
     elif opts.get("-f"):
         user_prompt = open(opts.get("-f")).read()
     else:
         user_prompt = input("What is your question?\n")
 
+    preset = PRESETS.get(opts.get("-p") or "explain_this")
+    assert preset is not None
     template = opts.get("-t") or "chatml"
     context = opts.get("-c") or ""
-    model_name = opts.get("-m") or "dolphin-2_6-phi-2"
+    model_name = opts.get("-m") or DEFAULT_MODEL
     cmd_args = []
     is_mac = "Darwin" in subprocess.run(["uname"], capture_output=True).stdout.decode("utf-8").strip()
     if opts.get("-g") or is_mac:
@@ -101,12 +145,12 @@ if __name__ == "__main__":
     else:
         templateMixIn = InstructionTemplateMixin
 
-    class CurrentPrompt(templateMixIn, ExplainPreset):
+    class CurrentPrompt(templateMixIn, preset):
         pass
 
     prompt = CurrentPrompt(user_prompt, context).templated_prompt()
 
-    cmd = [f"{LLAMA_CPP_PATH}/patched_main"] + cmd_args + ["-m", glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf")[0], "-p", prompt]
+    cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf")[0], "-p", prompt]
 
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
