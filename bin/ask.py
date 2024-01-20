@@ -12,11 +12,15 @@ import re
 import subprocess
 import sys
 import time
+import tempfile
 
 LLAMA_CPP_PATH = os.path.expanduser("~/projects/llama.gguf/patched_main")
 MODELS_PATH = os.path.expanduser("~/Downloads/")
 
-DEFAULT_MODEL = "dolphin-2_6-phi-2"
+# DEFAULT_MODEL = "dolphin-2_6-phi-2"
+DEFAULT_MODEL = "phi-2-orange"
+# DEFAULT_CODE_GENERATION_MODEL = "stable-code-3b" # Sucks
+DEFAULT_CODE_GENERATION_MODEL = "codellama-34b-instruct"
 
 # Patch used to avoid outputting the prompt
 """
@@ -80,6 +84,27 @@ class CodeReviewPreset(Preset):
     def prompt(self):
         return f"Please assume this is a code snippet in a github pull request. Please review the following code. Focus on potential problems. Because it is a snippet, do not be concerned with undefined or unknown references as long as they seem to be reasonable. Be concise in your answer.\n```{self.user_prompt}```\n"
 
+class CodeGenerationPreset(Preset):
+    name = "code_generation"
+    def __init__(self, file_name, offset):
+        super().__init__("")
+        self.file_name = file_name
+        self.offset = offset
+
+        # assert file size is less than 10kb
+        assert os.path.getsize(self.file_name) < 10000
+        self.content_bytes = open(self.file_name, "rb").read()
+
+        while self.content_bytes[self.offset] != ord(b"\n"):
+            print(repr(self.content_bytes[self.offset]))
+            self.offset += 1
+
+    def prefix(self):
+        return self.content_bytes[:self.offset].decode("utf-8")
+
+    def suffix(self):
+        return self.content_bytes[self.offset:].decode("utf-8")
+
 class ChatMLTemplateMixin:
     def templated_prompt(self):
         return f"""
@@ -102,6 +127,13 @@ class InstructionTemplateMixin:
 
 """
 
+class StableCodeCompletionTemplateMixin:
+    def templated_prompt(self):
+        return f"""<fim_prefix>{self.prefix()}<fim_suffix>{self.suffix()}<fim_middle>"""
+
+class CodeLlamaCompletionTemplateMixin:
+    def templated_prompt(self):
+        return f"""▁<PRE> {self.prefix()}▁<SUF> {self.suffix()}▁<MID>"""
 
 class LlamaTemplateMixin:
     def templated_prompt(self):
@@ -115,22 +147,20 @@ if __name__ == "__main__":
         if inspect.isclass(obj):
             if issubclass(obj, Preset) and obj != Preset:
                 PRESETS[obj.name] = obj
-    opt_list, args = getopt.getopt(sys.argv[1:], "hc:t:f:p:")
+    opt_list, args = getopt.getopt(sys.argv[1:], "hc:t:f:p:m:g")
     opts = dict(opt_list)
-
-    user_prompt = None
-    if args:
-        user_prompt = " ".join(args)  # join all args into one string for easy use
-    elif opts.get("-f"):
-        user_prompt = open(opts.get("-f")).read()
-    else:
-        user_prompt = input("What is your question?\n")
 
     preset = PRESETS.get(opts.get("-p") or "explain_this")
     assert preset is not None
+
+
+
+
     template = opts.get("-t") or "chatml"
     context = opts.get("-c") or ""
     model_name = opts.get("-m") or DEFAULT_MODEL
+    if preset is CodeGenerationPreset:
+        model_name = DEFAULT_CODE_GENERATION_MODEL
     cmd_args = []
     is_mac = "Darwin" in subprocess.run(["uname"], capture_output=True).stdout.decode("utf-8").strip()
     if opts.get("-g") or is_mac:
@@ -145,12 +175,37 @@ if __name__ == "__main__":
     else:
         templateMixIn = InstructionTemplateMixin
 
-    class CurrentPrompt(templateMixIn, preset):
-        pass
+    # Note: need to add the prompt after
+    cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf")[0]]
+    if preset is not CodeGenerationPreset:
+        class CurrentPrompt(templateMixIn, preset):
+            pass
 
-    prompt = CurrentPrompt(user_prompt, context).templated_prompt()
+        user_prompt = None
+        if args:
+            user_prompt = " ".join(args)  # join all args into one string for easy use
+        elif opts.get("-f"):
+            user_prompt = open(opts.get("-f")).read()
+        else:
+            user_prompt = input("What is your question?\n")
 
-    cmd = [LLAMA_CPP_PATH,] + cmd_args + ["-m", glob.glob(f"{MODELS_PATH}/*{model_name}*.gguf")[0], "-p", prompt]
+        prompt = CurrentPrompt(user_prompt, context).templated_prompt()
+        cmd += ["-p", prompt]
+    else: # is CodeGenerationPreset
+        assert opts.get("-f") is not None
+        # Force template to be code completion
+        class CodeGenerationPrompt(CodeLlamaCompletionTemplateMixin, preset):
+            pass
+
+        prompt = CodeGenerationPrompt(opts.get("-f"), int(args[0] or 0)).templated_prompt()
+
+        # Create a temporary file for storing the prompt
+        temp_prompt_file = tempfile.NamedTemporaryFile(mode="w", delete=False)
+        temp_prompt_file.write(prompt)
+        temp_prompt_file.close()
+        print(temp_prompt_file.name)
+        cmd += ["-f", temp_prompt_file.name, "-c", "4096"]
+        print(cmd)
 
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
