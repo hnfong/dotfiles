@@ -61,6 +61,9 @@ else
     export IS_RUNNING_SCREEN=
 fi
 
+# Rust initialization
+source "$HOME/.cargo/env"
+
 
 # Show something when Ctrl+C is pressed (mainly to avoid confusion by
 # spectators, since I use this key often and they'd think I pressed enter

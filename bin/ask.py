@@ -187,10 +187,11 @@ if __name__ == "__main__":
         elif opts.get("-f"):
             user_prompt = open(opts.get("-f")).read()
         else:
-            user_prompt = input("What is your question?\n")
+            print("What is your question?")
+            user_prompt = sys.stdin.read()
 
         prompt = CurrentPrompt(user_prompt, context).templated_prompt()
-        cmd += ["-p", prompt]
+        cmd += ["-p", prompt, "-c", "1024"]
     else: # is CodeGenerationPreset
         assert opts.get("-f") is not None
         # Force template to be code completion
