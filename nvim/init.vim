@@ -59,7 +59,7 @@ if has("gui_running")
 endif
 
 " don't treat unrecognized strings as errors (in make)
-set errorformat+=%-G%.%#
+" set errorformat+=%-G%.%#
 
 " set nobomb for all files
 au BufWinEnter setlocal nobomb
@@ -266,12 +266,20 @@ func SiliconObjCInit()
   setlocal keywordprg=~/bin/vimkeywordprg
 endfunction
 
+func SiliconRustInit()
+  setlocal keywordprg=~/bin/vimkeywordprg
+  map <buffer> <F2>	:w<CR>:make build
+  nmap <F2> :w<CR>:make build
+endfunction
+
 au BufRead,BufNewfile *.c	call SiliconCInit()
 au BufRead,BufNewfile *.cc	call SiliconCInit()
 au BufRead,BufNewfile *.cpp	call SiliconCInit()
 au BufRead,BufNewfile *.cxx	call SiliconCInit()
 au BufRead,BufNewfile *.h	call SiliconCInit()
 au BufRead,BufNewfile *.h	setlocal keywordprg=~/bin/vimkeywordprg
+
+au BufRead,BufNewfile *.rs	call SiliconRustInit()
 
 au BufRead,BufNewfile *.m call SiliconObjCInit()
 au BufRead,BufNewfile *.mm call SiliconObjCInit()
@@ -350,6 +358,10 @@ au BufRead,BufNewFile *.v set filetype=vlang
 
 "************************** Other ********************************"
 au BufRead,BufNewFile *.jl setlocal syntax=julia
+
+" Don't extend the comments when entering insert mode with newline (o in
+" command mode)
+autocmd FileType * setlocal formatoptions-=o
 
 
 filetype plugin on

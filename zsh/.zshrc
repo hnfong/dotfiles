@@ -115,7 +115,7 @@ function mk {
             make "$@"
             MK__RET="$?"
             if [[ "$MK__RET" = "0" ]]; then
-                touch .lastmake
+                true # noop
             fi
             break
         fi

@@ -41,3 +41,7 @@ fi
 
 pip3 install --user -U csvkit
 pip3 install --user -U ocrmac
+
+# TODO: add cargo packages
+# cargo install difftastic
+# cargo install git-delta
