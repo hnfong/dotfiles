@@ -2,22 +2,11 @@
 # https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [package]
-name = "rusty"
+name = "dotbins"
 version = "0.1.0"
 authors = ["Sidney Fong <hnfong@local>"]
 edition = "2021"
 
 [dependencies]
 rand = "0.8.5"
-
-[[bin]]
-name = "pick"
-path = "pick_main.rs"
-test = false
-bench = false
-
-[[bin]]
-name = "charcount"
-path = "charcount_main.rs"
-test = false
-bench = false
+zilib = { git = "https://github.com/wordshk/zilib", version = "0.1.9", features = ["downloaded_data"] }
