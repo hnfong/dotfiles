@@ -2,6 +2,8 @@
 
 # set -x
 
+EDITOR=nvim
+
 function front_stripper() {
     local file_path;
     while read file_path; do
@@ -16,25 +18,54 @@ function front_stripper() {
     done
 }
 
-original_args="$@"
-
 function editor() {
-    if [[ -z "$1" ]]; then
-        if [[ -z "$original_args" ]]; then
-            exec nvim -c ':Telescope oldfiles'
+    if [[ -z "$my_line" ]]; then
+        if [[ -z "$@" ]]; then
+            exec "$EDITOR" -c ':Telescope oldfiles'
         else
-            exec nvim -O "$original_args"
+            exec "$EDITOR" -O "$@"
         fi
     else
-        exec nvim $my_line -O "$@"
+        exec "$EDITOR" $my_line -O "$@"
     fi
 }
+
+
+if [[ "$1" = "--test" ]]; then
+    shift
+    IS_MAGIC_OPEN_TEST=1
+    EDITOR=echo
+fi
+
+# Preserve $@ for later use
+original_args=("$@")
+
+if [[ "$IS_MAGIC_OPEN_TEST" = "1" && -z "$1" ]]; then
+    # Run tests
+    cd "$(dirname "$0")"
+    cd ../magic_open_test_environment/
+    echo "Running tests in $(pwd)"
+    # Ensure we have the appropriate files in the test environment
+    touch a b c
+    touch x.txt y.txt z.txt
+    mkdir -p d
+    touch d/e d/f
+
+    # Test cases
+    set -ex
+    ../bin/magic_open --test x.txt | diff - <(echo "-O x.txt")
+    ../bin/magic_open --test x.txt y.txt | diff - <(echo "-O x.txt y.txt")
+    ../bin/magic_open --test x.txt:10 | diff - <(echo "+10 -O x.txt")
+    ../bin/magic_open --test .txt | diff - <(echo "-O x.txt y.txt z.txt")
+    ../bin/magic_open --test x. | diff - <(echo "-O x.txt")
+    ../bin/magic_open --test asdflkajdflakjfdl | diff - <(echo "-O asdflkajdflakjfdl")
+    exit 0
+fi
 
 # Case: no arguments, just open as normal without arguments
 if [[ -z "$1" ]]; then
     editor
 fi
-
 
 # vi -g '<git grep pattern>'
 if [[ "$1" = "-g" ]]; then
@@ -48,24 +79,45 @@ if [[ "$1" = "-r" ]]; then
     editor `git ls-tree -r --name-only HEAD -- . | grep "$1"`
 fi
 
-my_path="$1"
-
-my_line=
-if [[ "$my_path" =~ :[0-9][0-9]*$ ]]; then
-    splitter=(${my_path//:/ })
-    my_path=${splitter[0]}
-    my_line=+${splitter[1]}
-fi
-
-my_file=`echo "$my_path" | front_stripper`
-if [[ -e "$my_file" ]]; then
-    editor "$my_file"
-else
-    # editor `git status --porcelain  . | grep "^ M" | grep "$1" | awk '{print $2}' | front_stripper`
-    ARGS=`git diff --name-only . | grep "$my_path" | front_stripper`
-    if [[ -n "$ARGS" ]]; then
-        editor $ARGS
-    else
-        editor `git ls-tree -r --name-only HEAD -- . | grep "$my_path"`
+PROCESSED_ARGS=()
+for arg in "$@"; do
+    if [[ -z "$my_line" && "$arg" =~ :[0-9][0-9]*$ ]]; then  # We can only focus on one line number, apparently
+        splitter=(${arg//:/ })
+        my_path=${splitter[0]}
+        my_line=+${splitter[1]}
+        arg="$my_path"
     fi
-fi
+
+    if [[ ! -e "$arg" && -n "$arg" ]]; then
+        found=0
+        magic_open_temp_file=$(mktemp)
+
+        # We store this in a temp file because this seems to be the only way to
+        # avoid the while loop from running in a subshell
+        git diff --name-only . | grep -F "$arg" | head -n 20 | front_stripper > "$magic_open_temp_file"
+        while read -r file_path; do
+            PROCESSED_ARGS+=("$file_path")
+            found=1
+        done < "$magic_open_temp_file"
+
+        if [[ "$found" = "0" ]]; then
+            git ls-tree -r --name-only HEAD -- . | grep -F "$arg" | head -n 20 > "$magic_open_temp_file"
+            while read -r file_path; do
+                PROCESSED_ARGS+=("$file_path")
+                found=1
+            done < "$magic_open_temp_file"
+        fi
+
+        if [[ "$found" = "1" ]]; then
+            arg=""
+        fi
+    fi
+
+    if [[ -n "$arg" ]]; then
+        arg=`echo "$arg" | front_stripper`
+
+        PROCESSED_ARGS+=("$arg")
+    fi
+done
+
+editor "${PROCESSED_ARGS[@]}"

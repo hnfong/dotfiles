@@ -398,7 +398,7 @@ autocmd TermOpen,TermEnter * startinsert
 command! -nargs=0 T :vsplit | term
 
 " " Copilot
-let g:copilot_filetypes = { '*': v:false, 'py': v:true, 'python': v:true, 'rs': v:true, 'rust': v:true }
+let g:copilot_filetypes = { '*': v:false, 'py': v:true, 'python': v:true, 'rs': v:true, 'rust': v:true, 'html': v:true }
 
 imap <silent><script><expr> <RIGHT> copilot#Accept("")
 let g:copilot_no_tab_map = v:true

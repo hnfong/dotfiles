@@ -13,9 +13,12 @@ if len(args) != 1:
     sys.exit(1)
 
 # https://github.com/straussmaximilian/ocrmac
-annotations = ocrmac.OCR(sys.argv[1],
+annotations = ocrmac.OCR(args[0],
         recognition_level='accurate',
         language_preference=opts.get("-l", "en-US").split(',')
         ).recognize()
-print(annotations)
+# print(annotations)
+
+for annotation in annotations:
+    print(annotation[0])
 
