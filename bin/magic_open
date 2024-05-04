@@ -1,12 +1,25 @@
 #!/bin/bash
 
-# set -x
+# A script to open files in EDITOR([n]vim) with a little bit of magic.
+#
+# Features:
+# - Open files normally if they exist
+# - Parses line numbers in the format of <file>:<line_number>
+# - Tries to find the file in the current git repo
+# - Tries to find files that match a wildcard pattern if there is no exact match
+# - Automatically open files in split windows if there less than 4 files
+# - Automatically open files in tabs if there are more than 4 files
+#
 
 EDITOR=nvim
 
 function magic_list_files() {
+    # later optimization: we can probably avoid running magic_list_files too
+    # many times (which is expensive) by saving the output in another temp
+    # file.
+
     # check whether it is a git repo
-    pushd .
+    pushd . > /dev/null 2>/dev/null
     while [[ ! -d .git && "$PWD" != "/" ]]; do
         cd ..
     done
@@ -44,7 +57,7 @@ function editor() {
             exec "$EDITOR" -c ':Telescope oldfiles'
         else
             # Check the number of arguments, n
-            if [[ "$#" -gt 5 ]]; then
+            if [[ "$#" -gt 4 ]]; then
                 # If n > 5, open in tabs
                 exec "$EDITOR" -p -c 'nmap <RIGHT> gt|nmap <LEFT> gT' "$@"
             else
@@ -73,20 +86,24 @@ if [[ "$IS_MAGIC_OPEN_TEST" = "1" && -z "$1" ]]; then
     cd ../magic_open_test_environment/
     echo "Running tests in $(pwd)"
     # Ensure we have the appropriate files in the test environment
-    touch a b c
+    touch a b c t
     touch x.txt y.txt z.txt
     mkdir -p d
-    touch d/e d/f
+    touch d/e d/f d/ggtxt
+    touch d/e.txt d/f.txt
 
     # Test cases
     set -ex
     ../bin/magic_open --test x.txt | diff - <(echo "-O x.txt")
     ../bin/magic_open --test x.txt y.txt | diff - <(echo "-O x.txt y.txt")
     ../bin/magic_open --test x.txt:10 | diff - <(echo "+10 -O x.txt")
-    ../bin/magic_open --test .txt | diff - <(echo "-O x.txt y.txt z.txt")
     ../bin/magic_open --test x. | diff - <(echo "-O x.txt")
+    ../bin/magic_open --test .txt | diff - <(echo "-p -c nmap <RIGHT> gt|nmap <LEFT> gT d/e.txt d/f.txt x.txt y.txt z.txt")
+    ../bin/magic_open --test e | diff - <(echo "-O d/e")
+    ../bin/magic_open --test t | diff - <(echo "-O t")
+
     ../bin/magic_open --test asdflkajdflakjfdl | diff - <(echo "-O asdflkajdflakjfdl")
-    ../bin/magic_open --test aa bb cc dd ee ff gg | diff - <(echo "-p -c nmap <RIGHT> gt|nmap <LEFT> gT aa bb cc dd ee ff gg") # The quotes are gone. Thanks, UNIX.
+    ../bin/magic_open --test aa bb cc dd ee ff gg | diff - <(echo "-p -c nmap <RIGHT> gt|nmap <LEFT> gT aa bb cc dd ee ff d/ggtxt") # The quotes are gone. Thanks, UNIX.
     exit 0
 fi
 
@@ -122,11 +139,16 @@ for arg in "$@"; do
 
         # We store this in a temp file because this seems to be the only way to
         # avoid the while loop from running in a subshell
-        magic_list_files | grep -F "$arg" | head -n 20 | front_stripper > "$magic_open_temp_file"
+        magic_list_files | grep -F "$arg" | grep "[/^]$arg\$" | head -n 99 | front_stripper > "$magic_open_temp_file"
+        # Check whether the temp file has any contents
+        if [[ ! -s "$magic_open_temp_file" ]]; then
+            magic_list_files | grep -F "$arg" | head -n 99 | front_stripper > "$magic_open_temp_file"
+        fi
         while read -r file_path; do
             PROCESSED_ARGS+=("$file_path")
             found=1
         done < "$magic_open_temp_file"
+        /bin/rm -f "$magic_open_temp_file"  # Use /bin/rm to avoid any aliases
 
         if [[ "$found" = "1" ]]; then
             arg=""
