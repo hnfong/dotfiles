@@ -4,6 +4,26 @@
 
 EDITOR=nvim
 
+function magic_list_files() {
+    # check whether it is a git repo
+    pushd .
+    while [[ ! -d .git && "$PWD" != "/" ]]; do
+        cd ..
+    done
+    local final_pwd=$PWD
+    popd > /dev/null 2>/dev/null
+    if [[ "$final_pwd" != "/" ]]; then
+        OUT=`git diff --name-only .`
+        if [[ -n "$OUT" ]]; then
+            echo "$OUT"
+        else
+            git ls-tree -r --name-only HEAD -- .
+        fi
+    else
+        find . -type f -maxdepth 2
+    fi
+}
+
 function front_stripper() {
     local file_path;
     while read file_path; do
@@ -23,6 +43,13 @@ function editor() {
         if [[ -z "$@" ]]; then
             exec "$EDITOR" -c ':Telescope oldfiles'
         else
+            # Check the number of arguments, n
+            if [[ "$#" -gt 5 ]]; then
+                # If n > 5, open in tabs
+                exec "$EDITOR" -p -c 'nmap <RIGHT> gt|nmap <LEFT> gT' "$@"
+            else
+                exec "$EDITOR" -O "$@"
+            fi
             exec "$EDITOR" -O "$@"
         fi
     else
@@ -59,6 +86,7 @@ if [[ "$IS_MAGIC_OPEN_TEST" = "1" && -z "$1" ]]; then
     ../bin/magic_open --test .txt | diff - <(echo "-O x.txt y.txt z.txt")
     ../bin/magic_open --test x. | diff - <(echo "-O x.txt")
     ../bin/magic_open --test asdflkajdflakjfdl | diff - <(echo "-O asdflkajdflakjfdl")
+    ../bin/magic_open --test aa bb cc dd ee ff gg | diff - <(echo "-p -c nmap <RIGHT> gt|nmap <LEFT> gT aa bb cc dd ee ff gg") # The quotes are gone. Thanks, UNIX.
     exit 0
 fi
 
@@ -94,19 +122,11 @@ for arg in "$@"; do
 
         # We store this in a temp file because this seems to be the only way to
         # avoid the while loop from running in a subshell
-        git diff --name-only . | grep -F "$arg" | head -n 20 | front_stripper > "$magic_open_temp_file"
+        magic_list_files | grep -F "$arg" | head -n 20 | front_stripper > "$magic_open_temp_file"
         while read -r file_path; do
             PROCESSED_ARGS+=("$file_path")
             found=1
         done < "$magic_open_temp_file"
-
-        if [[ "$found" = "0" ]]; then
-            git ls-tree -r --name-only HEAD -- . | grep -F "$arg" | head -n 20 > "$magic_open_temp_file"
-            while read -r file_path; do
-                PROCESSED_ARGS+=("$file_path")
-                found=1
-            done < "$magic_open_temp_file"
-        fi
 
         if [[ "$found" = "1" ]]; then
             arg=""
