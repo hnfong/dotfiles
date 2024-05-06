@@ -1,0 +1,5 @@
+DESTINATION_SUFFIX=/apps
+
+DOWNLOAD_COMMAND='curl -L -O https://github.com/mgdm/htmlq/releases/download/v0.4.0/htmlq-x86_64-darwin.tar.gz'
+COMPILE_COMMAND='tar zxvf htmlq-x86_64-darwin.tar.gz'
+INSTALL_COMMAND='cp -v htmlq ~/bin/'
