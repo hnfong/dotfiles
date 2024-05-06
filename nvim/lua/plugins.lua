@@ -29,7 +29,7 @@ require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
   -- My plugins here
   use 'nvim-tree/nvim-tree.lua'
-  use { 'nvim-telescope/telescope.nvim', tag = '0.1.0', requires = { {'nvim-lua/plenary.nvim'} } }
+  use { 'nvim-telescope/telescope.nvim', tag = '0.1.6', requires = { {'nvim-lua/plenary.nvim'} } }
   -- use 'neovim/nvim-lspconfig'  -- under evaluation
 
   use 'github/copilot.vim'

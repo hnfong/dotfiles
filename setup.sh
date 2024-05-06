@@ -3,22 +3,27 @@
 # makes the symlinks for you
 
 cd ~/
-if [[ ! -d skel/.git ]]; then
-  echo "Put the skel/ directory in your home directory!" >&2
+if [[ ! -d dotfiles/.git ]]; then
+  echo "Put the dotfiles/ directory in your home directory!" >&2
   exit 1
 fi
-ln -s skel/_vimrc .vimrc
-ln -s skel/_vim .vim
-ln -s skel/_screenrc .screenrc
-ln -s skel/_zshenv .zshenv
-ln -s skel/_tmux.conf .tmux.conf
-ln -s skel/_alacritty.yml .alacritty.yml
+ln -sf dotfiles/_vimrc .vimrc
+ln -sf dotfiles/_vim .vim
+ln -sf dotfiles/_screenrc .screenrc
+ln -sf dotfiles/_zshenv .zshenv
+ln -sf dotfiles/_tmux.conf .tmux.conf
+ln -sf dotfiles/_alacritty.yml .alacritty.yml
 touch ~/.hnfong.conf
 
 mkdir -p ~/bin/
-for file in skel/bin/*; do
+for file in dotfiles/bin/*; do
     if [ -x "$file" ]; then
-        ln -s ../"$file" ~/bin/
+        ln -sf ../"$file" ~/bin/
+    fi
+done
+for file in dotfiles/rusts/bin/*; do
+    if [ -x "$file" ]; then
+        ln -sf ../"$file" ~/bin/
     fi
 done
 
@@ -29,8 +34,8 @@ if [ ! -d /Applications/iTerm.app/ ]; then
     open https://www.iterm2.com/
 fi
 
-if [ ! -d "skel/zsh/.zprezto" ]; then
-    pushd ~/skel/zsh
+if [ ! -d "dotfiles/zsh/.zprezto" ]; then
+    pushd ~/dotfiles/zsh
     git clone --recursive https://github.com/sorin-ionescu/prezto.git "./.zprezto"
     popd
 fi
