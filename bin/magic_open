@@ -33,7 +33,7 @@ function magic_list_files() {
             git ls-tree -r --name-only HEAD -- .
         fi
     else
-        find . -type f -maxdepth 2
+        find . -type f -maxdepth 2 -size -30M
     fi
 }
 
