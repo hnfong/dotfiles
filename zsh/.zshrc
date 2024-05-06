@@ -45,7 +45,7 @@ alias h='helper'
 alias gpr='git pull --rebase'
 alias sw='swift'
 alias brew='HOMEBREW_NO_AUTO_UPDATE=1 brew'
-alias g='rg -N -z --no-heading'
+alias g='rg -a -N -z --no-heading'
 
 HISTSIZE=999999
 HISTORY_IGNORE='(ls|exit|ps auxf)'
@@ -107,6 +107,9 @@ function gg {
 }
 
 function mk {
+    # This function invokes make in the current directory or in the nearest
+    # ancestor directory that contains a Makefile. This is useful when you're
+    # in a subdirectory of a project and you want to run make.
     local PWDBEFOREMK="`pwd`"
     local MK__RET=1
     while [[ "$PWD" != "/" ]]; do
@@ -128,75 +131,6 @@ function mk {
     cd "$PWDBEFOREMK"
     [ "$MK__RET"  = "0" ];
 }
-
-# Tries to find a path
-function fd {
-    # -d to find the directory of the target and cd to it
-    if [[ $1 == '-d' ]]; then
-        local FOUND=`fd "$2"`
-        if [[ -e "$FOUND" ]]; then
-            cd "${FOUND:h}"
-        fi
-        return
-    fi
-
-    # Get the target, either from command line or from pasteboard
-    local TARGET=$1
-    if [[ -z "$TARGET" ]]; then
-        TARGET=`pbpaste | head -n 1 | grep -o '[^ ]/[^ ]/[^ ]*' | head -n 1`
-    fi
-
-    # If it just exists then use it
-    if [[ -e "$TARGET" ]]; then
-        echo $TARGET
-        return
-    fi
-
-    # Otherwise try to strip away parent dirs
-    while [[ "$TARGET" != "" && ! -e "$TARGET" ]]; do
-        local attempt=${TARGET#*/}
-        if [[ "$attempt" = "$TARGET" ]]; then
-            break
-        else
-            TARGET="$attempt"
-        fi
-    done
-    if [[ -e "$TARGET" ]]; then
-        echo "$TARGET"
-        return
-    fi
-
-    # Using the last component, try to find a match with parent dirs
-    if [[ $TARGET != "/"  && -n "$TARGET" ]]; then
-        local cnt=4
-        while [[ ! -e "$TARGET" && cnt -gt 0 ]]; do
-            TARGET="../$TARGET"
-            cnt=$((cnt - 1))
-        done
-        if [[ -e "$TARGET" ]]; then
-            echo "$TARGET"
-            return
-        fi
-    fi
-
-    # Using the original target, try to find a match with parent dirs
-    TARGET="$1"
-    local cnt=4
-    while [[ ! -e "$TARGET" && cnt -gt 0 ]]; do
-        TARGET="../$TARGET"
-        cnt=$((cnt - 1))
-    done
-    if [[ -e "$TARGET" ]]; then
-        echo "$TARGET"
-        return
-    fi
-
-    # Reset the target since we wittled it down above
-    TARGET=$1
-
-    find . -maxdepth 3 -path "*$TARGET"
-}
-
 
 local _last_git_branch=
 
