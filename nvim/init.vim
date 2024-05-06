@@ -10,7 +10,7 @@ set expandtab
 set foldlevel=999999
 set foldmethod=syntax
 set foldminlines=4
-set hls
+set hlsearch
 set indentkeys=
 set laststatus=2
 set lazyredraw
@@ -51,17 +51,13 @@ func Togglefold()
  endif
 endfunc
 
-" nmap \| :set errorformat=%f:%l%.%#<CR>:set makeprg=git\ grep\ -n\ 
 nmap \| :set errorformat=%f:%l%m<CR>:set makeprg=git\ grep\ -n\ 
 
 if has("gui_running")
 	set shell=/bin/sh
 endif
 
-" don't treat unrecognized strings as errors (in make)
-" set errorformat+=%-G%.%#
-
-" set nobomb for all files
+" set nobomb for all files (byte order mark)
 au BufWinEnter setlocal nobomb
 
 set titlestring=vim:%f
@@ -75,6 +71,7 @@ set title
 " <F5>:			git/svn diff current file
 " <F6>:			toggle copilot
 " <F8>:			toggle nvimtree(??)
+" <F9>:         telescope
 " <F7>:			toggle spellcheck
 " <F10>:		toggle highlight text under cursor
 " <F11>:		toggle 'paste' mode
@@ -87,66 +84,42 @@ set title
 " The unintelligble codes seem to be the ansi equivalents
 
 nmap <F1> [I
-nmap OP [I
-
 " nmap <F1><F1> [i
-" nmap OPOP [i
 
 nmap <F2> :w<CR>:make
-nmap OQ :w<CR>:make
-
 nmap <F3> :!time make run
-nmap OR :!time make run
-
-nmap <F6> :let b:copilot_enabled = v:true
-
-nmap <F7> :set invspell<CR>
-nmap [18~ :set invspell<CR>
-
-nmap <F10> :set invhls<CR>:let @/="<C-r><C-w>"<CR>/<BS>
-nmap [21~ :set invhls<CR>:let @/="<C-r><C-w>"<CR>/<BS>
-
 nmap <F4> :Gblame<CR>
-nmap OS :Gblame<CR>
 nmap <F5> :Gdiff<CR>
-nmap [15~ :Gdiff<CR>
-
-set <F13>=[25~
-set <F14>=[26~
-set <F15>=[27~
-
-nmap <F13> :q<CR>
-
-
-
-nnoremap <C-c> <silent> <C-c>
+nmap <F6> :let b:copilot_enabled = v:true
+nmap <F7> :set invspell<CR>
+" <F8> is used by NvimTree
+" <F9> is used by Telescope
 
 " pressing once in normal mode changes to paste and enters insert mode
 " pressing the second time disables paste
 " pressing the third time change back to normal mode
 " this behavior depends on how VIM intercepts pastetoggle.
-nmap <F11> :r!pbpaste<CR>
-nmap [23~ :r!pbpaste<CR>
-set pastetoggle=<F11>
-" imap <F11> <ESC>
+nmap <F10> :r!pbpaste<CR>
+set pastetoggle=<F10>
+
+nnoremap <C-c> <silent> <C-c>
 
 " Windows and Tabs
 nmap <C-T> :tabnew .<CR>
 
+" Left/right button moves cursor to the adjacent split window and maximizes it
 nmap <LEFT> <C-W>h<C-W>\|
 nmap <RIGHT> <C-W>l<C-W>\|
-" This is alt-= in OSX Terminal
-" nmap ≠ <C-W>\|
-" nmap <UP> <C-W>\|
-" Somehow this is too.....?
-nmap <ESC>(0\|<ESC>(B <C-W>\|
+
+" +/- buttons increase/decrease the size of the split window by 10 units
 nmap - 10<C-W><
 nmap + 10<C-W>>
-"map <UP> <C-W>k
-"map <DOWN> <C-W>j
 
+" Ctrl-Left/Right buttons switch between tabs
 nmap <C-LEFT> gT
 nmap <C-RIGHT> gt
+
+
 map <C-F> :call Togglefold()<CR>
 
 " quote the current word
@@ -166,7 +139,10 @@ nmap z. i'..'<ESC>hi
 nmap <space> :cnext<CR>
 nmap <backspace> :cprev<CR>
 
+" Enter button removes the search highlight
 nmap <CR> :nohl<CR>
+
+" <C-N> opens a new vertical split window with the current file
 nmap <C-N> :vnew .<CR>
 
 "**************************** Basic Global (Insert Mode) Mappings ****************************"
@@ -175,14 +151,18 @@ imap <C-K> <ESC>
 imap <C-B> <LEFT>
 imap <C-F> <RIGHT>
 
-
 "**************************** Basic Global (Visual Mode) Mappings ****************************"
+
+" <tab> indents the selected text
 vmap <tab> >gv
+" <s-tab> unindents the selected text
 vmap <s-tab> <gv
 
+" Helpful abbreviations
 iabb {tick} ✓
 iabb {star} ☆
 iabb {cross} ✗
+
 "**************************** SmartIndent ****************************"
 au BufRead,BufNewFile *.php	setlocal smartindent
 au BufRead,BufNewFile *.java	setlocal smartindent
@@ -245,6 +225,7 @@ func SiliconCInit()
   " remap C-] to jump to the definition in new window
   " map <buffer> <C-]> <ESC>:new %<CR>:w<CR><C-W><C-W>[<C-I>
 
+  " don't treat unrecognized strings as errors (in make)
   setlocal errorformat+=%-G%.%#
   setlocal cindent
 endfunction
@@ -257,6 +238,7 @@ func SiliconObjCInit()
   " remap C-] to jump to the definition in new window
   " map <buffer> <C-]> <ESC>:new %<CR>:w<CR><C-W><C-W>[<C-I>
 
+  " don't treat unrecognized strings as errors (in make)
   setlocal errorformat+=%-G%.%#
   setlocal cindent
   setlocal filetype=objc " force objcpp to objc so that the objc plugin loads.
