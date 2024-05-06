@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
-# Documentation:
-# Pick a K lines from N lines of stdin. If K >= N, pick everything. Stdin must
-# be closed by the other party, cannot use as stream. Output can be in
-# arbitrary order, even if K >= N.
+# Pick a K lines from N lines of stdin. If K >= N, pick everything. The program
+# supplying stdin must close it, so this cannot be used from a streaming output
+# that expects the pipe to be closed on this side. Output can be in arbitrary
+# order, even if K >= N.
 
 import sys
 import random

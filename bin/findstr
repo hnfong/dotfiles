@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ "$2" ]; then
-	exec grep -r --exclude="*.svn*" "$@"
-else
-	exec grep -r --color --exclude="*svn*" "$1" .
-fi

@@ -4,6 +4,10 @@
 Originally written for me to compare a document with a bunch of links, and I
 have a new list of links, and I need to update the file with latest contents
 without disrupting it.
+
+For example, I have a file with a list of URLs, and I have a new list of URLs.
+I want to know which URLs are in the new list that are not in the old list, and
+which URLs are in the old list that are not in the new list.
 """
 
 import re

@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# This script will output the latest file in a directory. One use case is to
+# open the latest file in a directory with a command like `open
+# $(latest-in-dir)`. I generally symlink this to ~/bin/lid. One particularly
+# common case is to operate on ~/Downloads, eg. vi `lid ~/Downloads`.
+
 if [ -n "$1" ]; then
     printf "$1"/
     cd "$1"

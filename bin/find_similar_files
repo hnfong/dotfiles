@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+"""
+This python program finds similar files in two directories.
+
+Usage:
+
+find_similar_files.py <directory1> <directory2>
+"""
+
 import hashlib
 import os
 from difflib import SequenceMatcher
@@ -83,6 +91,10 @@ def calculate_file_similarity(file_X, file_Y):
     return (similarity, len(hashes_X), len(hashes_Y))
 
 if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print(__doc__)
+        sys.exit(1)
+
     X = sys.argv[1]
     Y = sys.argv[2]
     similar_files = compare_directories(X, Y)
