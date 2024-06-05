@@ -21,6 +21,7 @@ for file in dotfiles/bin/*; do
         ln -sf ../"$file" ~/bin/
     fi
 done
+ln -sf ../dotfiles/bin/latest-in-dir ~/bin/lid
 for file in dotfiles/rusts/bin/*; do
     if [ -x "$file" ]; then
         ln -sf ../"$file" ~/bin/
@@ -41,10 +42,8 @@ if [ ! -d "dotfiles/zsh/.zprezto" ]; then
 fi
 
 ## Python stuff
-
 pip3 install --user -U csvkit
 pip3 install --user -U ocrmac
 
-# TODO: add cargo packages
-# cargo install difftastic
-# cargo install git-delta
+cargo install ripgrep
+cargo install zoxide

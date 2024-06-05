@@ -219,3 +219,5 @@ _hnfong_set_ps1
 # Disable git completion (slow)
 compdef -d git
 
+eval "$(zoxide init zsh)"
+

@@ -1,6 +1,6 @@
 # hnfong's dotfiles
 
-Just some dotfiles, utilitizes and setup scripts for my personal use.
+Just some dotfiles, utilities and setup scripts for my personal use.
 
 Feel free to adopt them.
 

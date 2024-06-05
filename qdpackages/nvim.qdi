@@ -1,5 +1,5 @@
 DESTINATION_SUFFIX=/apps
 
-DOWNLOAD_COMMAND='curl -L -O https://github.com/neovim/neovim/releases/download/v0.9.5/nvim-macos.tar.gz'
-COMPILE_COMMAND='tar zxvf nvim-macos.tar.gz'
+DOWNLOAD_COMMAND='curl -L -O https://github.com/neovim/neovim/releases/download/v0.10.0/nvim-macos-arm64.tar.gz'
+COMPILE_COMMAND='tar zxvf nvim-macos-arm64.tar.gz'
 INSTALL_COMMAND='rsync -av nvim-*[^z] "$qdinstall_destination" && ln -fs "$qdinstall_destination"/nvim-*/bin/* ~/bin/'

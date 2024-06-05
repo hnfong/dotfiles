@@ -331,6 +331,52 @@ au BufRead,BufNewFile *.tex	setlocal spell spelllang=en_us
 "*************************** Makefile ****************************"
 au FileType make setlocal noexpandtab
 
+"*************************** Markdown ****************************"
+
+function! MarkdownFolds()
+    " Get the current line number
+    let lnum = v:lnum
+    " Loop from the current line upwards until we find a header or reach the start
+    while lnum > 0
+        let line = getline(lnum)
+        " if line =~ '^\s*$' && lnum > 1 && getline(lnum - 1) =~ '^#'
+        "     return 0
+        " endif
+
+        " Don't fold if the line is a separator
+        if line =~ '^---'
+            return 0
+        endif
+
+        if line =~ '^#'
+            let level = matchend(line, '# ')
+            " echomsg 'level ' . level
+            if lnum == v:lnum
+                return level - 1
+            endif
+            return level
+        endif
+
+        " Actually, we just return 999999 for non-header lines instead of
+        " looping. You can comment out this line to revert to the original
+        " behavior
+        return 999999
+
+        let lnum -= 1
+    endwhile
+
+    " If no header is found, do not fold
+    return '0'
+
+endfunction
+au FileType markdown setlocal spell spelllang=en_us
+au FileType markdown setlocal foldexpr=MarkdownFolds()
+au FileType markdown setlocal foldmethod=expr
+au FileType markdown setlocal foldminlines=2
+au FileType markdown let g:foldtoggledefault=3
+au FileType markdown setlocal smartcase ignorecase
+
+
 "************************** Other ********************************"
 au FileType gitrebase set keywordprg=git\ show
 au BufRead,BufNewFile *.gitlog set keywordprg=git\ show
@@ -380,7 +426,7 @@ autocmd TermOpen,TermEnter * startinsert
 command! -nargs=0 T :vsplit | term
 
 " " Copilot
-let g:copilot_filetypes = { '*': v:false, 'py': v:true, 'python': v:true, 'rs': v:true, 'rust': v:true, 'html': v:true }
+let g:copilot_filetypes = { '*': v:false, 'py': v:true, 'python': v:true, 'rs': v:true, 'rust': v:true, 'html': v:true, 'vim': v:true }
 
 imap <silent><script><expr> <RIGHT> copilot#Accept("")
 let g:copilot_no_tab_map = v:true

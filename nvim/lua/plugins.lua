@@ -34,6 +34,7 @@ require('packer').startup(function(use)
 
   use 'github/copilot.vim'
   use 'rust-lang/rust.vim'
+  use 'neovim/nvim-lspconfig'
 
 
   -- Automatically set up your configuration after cloning packer.nvim
