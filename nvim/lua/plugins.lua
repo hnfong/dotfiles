@@ -25,6 +25,7 @@ local refresh_touchfile = function()
 end
 
 local packer_bootstrap = ensure_packer()
+
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
   -- My plugins here
@@ -36,6 +37,18 @@ require('packer').startup(function(use)
   use 'rust-lang/rust.vim'
   use 'neovim/nvim-lspconfig'
 
+  -- XXX: Doesn't work with packer apparently. Might need to migrate the whole config to lazy as per recommended by packer... :-/
+  -- https://github.com/chrishrb/gx.nvim?tab=readme-ov-file
+  -- use {
+    -- "chrishrb/gx.nvim",
+    -- keys = { { "gx", "<cmd>Browse<cr>", mode = { "n", "x" } } },
+    -- cmd = { "Browse" },
+    -- init = function ()
+      -- vim.g.netrw_nogx = 1 -- disable netrw gx
+    -- end,
+    -- config = true, -- default settings
+    -- submodules = false, -- not needed, submodules are required only for tests
+  -- }
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins

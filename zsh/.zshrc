@@ -45,7 +45,10 @@ alias h='helper'
 alias gpr='git pull --rebase'
 alias sw='swift'
 alias brew='HOMEBREW_NO_AUTO_UPDATE=1 brew'
-alias g='rg -a -N -z --no-heading'
+alias g='rg -z -a -N --no-heading --no-ignore -g "!venv"'
+
+# Inspired by https://github.com/Debian/wcurl/blob/main/wcurl https://samueloph.dev/blog/announcing-wcurl-a-curl-wrapper-to-download-files/
+alias wcurl='curl --progress-bar -L --remote-name-all --retry 3 --retry-max-time 10'
 
 HISTSIZE=999999
 HISTORY_IGNORE='(ls|exit|ps auxf)'

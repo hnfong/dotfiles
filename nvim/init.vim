@@ -474,6 +474,10 @@ endfunction
 
 " Define a function to send the current line's byte offset to a shell command
 function! SendLineOffsetToShell()
+    " Save the file first
+    execute 'w'
+
+
     " Get the byte offset of the current line using line2byte
     let line_offset = line2byte(line("."))
 
@@ -483,8 +487,11 @@ function! SendLineOffsetToShell()
         return
     endif
 
-    " execute '!python3 -c "import os, sys; f = open(sys.argv[2], ''rb''); f.seek(int(sys.argv[1])); line = f.readline(); print(line); print(line.decode(''utf-8''))" ' . (line_offset - 1) . ' ' . shellescape(expand('%:p'))
-    execute 'vsplit | term ask.py -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset - 1)
+    " execute 'vsplit | term ask.py -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset - 1)
+    " Run as 'r!' instead of vsplitting a term
+    execute 'r!ask.py -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset - 1)
+
+
 endfunction
 
 " Optional: You can map this function to a keybinding in normal mode
