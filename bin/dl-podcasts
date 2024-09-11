@@ -1,0 +1,33 @@
+#!/bin/bash
+# Use subdirectory for each download so that we don't mix up the newly downloaded file
+
+temp_dir="$(date +%Y%m%d_%H%M%S)"
+echo "Downloading to $temp_dir"
+mkdir -p "$temp_dir"
+cd "$temp_dir"
+
+# Use yt-dlp to download the video
+yt-dlp --write-info-json --write-thumbnail -f bestaudio "$1"
+
+downloaded_filename=$(ls *.webm *.m4a)
+
+# Convert to mp3, speed up by 1.5x, strip the webm extension
+ffmpeg -i "$downloaded_filename" -filter:a "atempo=1.7,volume=4.0" -q:a 7 -vn "$temp_dir"-"$(basename "$downloaded_filename" .webm)".mp3
+
+# Convert the name to a better one
+
+set -x
+
+# FWIW, Llama3 8B does not like using Chinese characters as output. So using another model.
+ask -t 0 -m starling "You will be given a filename. Shorten it so that it shows the protagonist's name and a *very* short summarized title. Do not include numbers, dates, whitespace, new lines, nor special characters, do not include meaningless words. You may use 中文漢字 output if the filename contains Chinese. Make sure you keep the file extension (mp3). Be concise. Just give the short filename and end the conversation after you give the answer.
+
+$(ls *.mp3)
+" > mlfilename.txt
+
+cat mlfilename.txt
+
+mv -v *.mp3 P"$(date +%m%d)"_"$(grep -E -o '[^ 	<>|]*\.mp3' mlfilename.txt | tail -n 1)"
+
+# Move the file to the parent directory
+mv -v *.mp3 ..
+cd ..

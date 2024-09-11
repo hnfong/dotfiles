@@ -31,6 +31,7 @@ set smartcase noignorecase
 set softtabstop=4
 set splitbelow
 set splitright
+set spelllang=en_us
 set t_mr=[0;1;37;41m " custom "reverse" terminal escape code
 set tabstop=4
 set whichwrap=<,>
@@ -369,7 +370,7 @@ function! MarkdownFolds()
     return '0'
 
 endfunction
-au FileType markdown setlocal spell spelllang=en_us
+" au FileType markdown setlocal spell
 au FileType markdown setlocal foldexpr=MarkdownFolds()
 au FileType markdown setlocal foldmethod=expr
 au FileType markdown setlocal foldminlines=2
@@ -426,7 +427,8 @@ autocmd TermOpen,TermEnter * startinsert
 command! -nargs=0 T :vsplit | term
 
 " " Copilot
-let g:copilot_filetypes = { '*': v:false, 'py': v:true, 'python': v:true, 'rs': v:true, 'rust': v:true, 'html': v:true, 'vim': v:true }
+" let g:copilot_filetypes = { '*': v:false, 'py': v:true, 'python': v:true, 'rs': v:true, 'rust': v:true, 'html': v:true, 'vim': v:true }
+let g:copilot_filetypes = { '*': v:false }
 
 imap <silent><script><expr> <RIGHT> copilot#Accept("")
 let g:copilot_no_tab_map = v:true
