@@ -1,4 +1,4 @@
-require 'plugins'
+require 'config.lazy'
 
 --- Start of nvim-tree customization { ---
 
@@ -53,6 +53,7 @@ vim.api.nvim_set_keymap('n', '<F8>', ':NvimTreeToggle<CR>', {})
 --- Begin telescope customization { ---
 vim.keymap.set('n', '<F9>', require('telescope.builtin').git_files, {})
 vim.api.nvim_set_keymap('n', '<F21>', ':Telescope ', {})  -- Current terminal says Shift-F9 is F21...
+vim.api.nvim_set_keymap('n', '<S-F9>', ':Telescope ', {})  -- Current terminal says Shift-F9 is F21...
 --- } End telescope customization ---
 
 -- Configure `ruff-lsp`.
