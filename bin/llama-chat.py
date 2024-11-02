@@ -1,3 +1,10 @@
+#!/bin/bash
+
+FFFF=$(find ~/Downloads/ -name "*$1*" | head -n 1)
+shift
+exec ~/projects/llama.gguf/llama-cli --log-disable -cnv -mli -c 4096 -m "$FFFF" "$@"
+exit 1
+
 #!/usr/bin/env python3
 
 """

@@ -1,6 +1,4 @@
 "**************************** Basic Global Settings ****************************"
-" nocp must be first
-set nocompatible
 
 set autoindent
 set background=dark
@@ -17,6 +15,7 @@ set lazyredraw
 set modeline
 set modelines=3
 set mouse= " Disable 'helpful' mouse modes
+set notermguicolors
 set nojoinspaces " don't insert two spaces after special characters like '.'
 set noshowmatch
 set nostartofline " don't jump to line start when pgup/down etc.
@@ -29,9 +28,9 @@ set showmode
 set sidescroll=1
 set smartcase noignorecase
 set softtabstop=4
+set spelllang=en_us
 set splitbelow
 set splitright
-set spelllang=en_us
 set t_mr=[0;1;37;41m " custom "reverse" terminal escape code
 set tabstop=4
 set whichwrap=<,>
@@ -39,7 +38,8 @@ set wildmenu
 set wildmode=full
 set winminheight=0
 set winminwidth=20
-filetype indent off
+" filetype indent off
+colorscheme vim
 syntax on
 
 let foldtoggledefault=0
@@ -74,7 +74,7 @@ set title
 " <F8>:			toggle nvimtree(??)
 " <F9>:         telescope
 " <F7>:			toggle spellcheck
-" <F10>:		toggle highlight text under cursor
+" <F10>:		paste from macOS clipboard
 " <F11>:		toggle 'paste' mode
 " <Ctrl-J>:		maximize the window below
 " <Ctrl-K>:		maximize the window above
@@ -93,14 +93,14 @@ nmap <F4> :Gblame<CR>
 nmap <F5> :Gdiff<CR>
 nmap <F6> :let b:copilot_enabled = v:true
 nmap <F7> :set invspell<CR>
-" <F8> is used by NvimTree
-" <F9> is used by Telescope
-
+" <F8> is :NvimTreeToggle defined in init2.lua
+" <F9> is for telescope defined in init2.lua
+nmap <F10> :r!pbpaste<CR>
+vmap <F10> :w !pbcopy<CR>
 " pressing once in normal mode changes to paste and enters insert mode
 " pressing the second time disables paste
 " pressing the third time change back to normal mode
 " this behavior depends on how VIM intercepts pastetoggle.
-nmap <F10> :r!pbpaste<CR>
 set pastetoggle=<F10>
 
 nnoremap <C-c> <silent> <C-c>
@@ -119,8 +119,6 @@ nmap + 10<C-W>>
 " Ctrl-Left/Right buttons switch between tabs
 nmap <C-LEFT> gT
 nmap <C-RIGHT> gt
-
-
 map <C-F> :call Togglefold()<CR>
 
 " quote the current word
@@ -163,10 +161,12 @@ vmap <s-tab> <gv
 iabb {tick} ✓
 iabb {star} ☆
 iabb {cross} ✗
+iabb {robot} 🤖
 
 "**************************** SmartIndent ****************************"
 au BufRead,BufNewFile *.php	setlocal smartindent
 au BufRead,BufNewFile *.java	setlocal smartindent
+au BufRead,BufNewFile *.java	setlocal keywordprg=~/bin/vimkeywordprg
 au BufRead,BufNewFile *.java    let foldtoggledefault=1
 au BufRead,BufNewFile *.pl	setlocal smartindent
 
@@ -180,8 +180,6 @@ augroup highlights
     au BufRead,BufNewFile * call matchadd('TrailingSpace', '\s\s*$', -1)
     au BufRead,BufNewFile * call matchadd('OverLength', '\%160v.', -1)
     au BufRead,BufNewFile * let w:mtabindents = matchadd('TabIndents', '^\s*	', -1)
-    " au FileType make call UnmatchTabIndents()
-    " au FileType help call UnmatchTabIndents()
 augroup END
 
 "**************************** Python ****************************"
@@ -321,13 +319,22 @@ au BufRead,BufNewFile *.java    nmap OR :!javac % && time java %<
 
 
 "**************************** Other ****************************"
-au BufRead,BufNewFile *.prolog map <buffer> <F3> :w<CR>:!time prolog %
-au BufRead,BufNewfile *.go	set syntax=d
+
 au BufRead,BufNewFile *.gitlog set keywordprg=git\ show
+au BufRead,BufNewFile *.jl setlocal syntax=julia
+au BufRead,BufNewFile *.prolog map <buffer> <F3> :w<CR>:!time prolog %
+au BufRead,BufNewFile *.v set filetype=vlang
+au BufRead,BufNewfile *.go	set syntax=d
+au FileType gitrebase set keywordprg=git\ show
 au FileType make set noexpandtab
+au FileType yaml setlocal indentexpr=
+au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 "****************************** Tex ******************************"
 au BufRead,BufNewFile *.tex	setlocal spell spelllang=en_us
+au BufRead,BufNewFile *.ly	setlocal syntax=tex
+au BufRead,BufNewFile *.ly	nmap <F2> :!lilypond %
+au BufRead,BufNewFile *.ly	nmap <F3> :!xpdf %<.pdf
 
 "*************************** Makefile ****************************"
 au FileType make setlocal noexpandtab
@@ -378,32 +385,17 @@ au FileType markdown let g:foldtoggledefault=3
 au FileType markdown setlocal smartcase ignorecase
 
 
-"************************** Other ********************************"
-au FileType gitrebase set keywordprg=git\ show
-au BufRead,BufNewFile *.gitlog set keywordprg=git\ show
-au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-au FileType yaml setlocal indentexpr=
-au BufRead,BufNewFile *.v set filetype=vlang
+"****************************** Swift ******************************"
+au BufRead,BufNewFile *.swift set keywordprg=~/bin/vimkeywordprg
 
-"************************** Other ********************************"
-au BufRead,BufNewFile *.jl setlocal syntax=julia
-
-" Don't extend the comments when entering insert mode with newline (o in
-" command mode)
-autocmd FileType * setlocal formatoptions-=o
-
-
-filetype plugin on
-
-" au Filetype vimwiki nmap gf <Plug>VimwikiFollowLink
-"
-" Seems to be a way to follow the file under the cursor?
-map <leader>gf :e <cfile><cr>
 
 "********************** Host Dependent Stuff *********************"
 source ~/.config/nvim/fugitive.vim
 set statusline=%f\ %h%m%r\ %<%y\ [%{&ff}]\ %{fugitive#statusline()}\ [%b,0x%B]%=Pos\ %c%V,\ Line\ %l\ of\ %L\ (%p%%)
 
+" Don't extend the comments when entering insert mode with newline (o in
+" command mode)
+autocmd FileType * setlocal formatoptions-=o
 
 " NeoVIM specific stuff
 "
@@ -426,17 +418,17 @@ autocmd BufWinEnter,WinEnter,BufEnter term://* startinsert
 autocmd TermOpen,TermEnter * startinsert
 command! -nargs=0 T :vsplit | term
 
+lua require('init2')
 " " Copilot
 " let g:copilot_filetypes = { '*': v:false, 'py': v:true, 'python': v:true, 'rs': v:true, 'rust': v:true, 'html': v:true, 'vim': v:true }
 let g:copilot_filetypes = { '*': v:false }
+let g:copilot_no_tab_map = v:true
 
 imap <silent><script><expr> <RIGHT> copilot#Accept("")
-let g:copilot_no_tab_map = v:true
 imap <S-LEFT> <Plug>(copilot-previous)
 imap <S-RIGHT> <Plug>(copilot-next)
 imap <M-RIGHT> <Plug>(copilot-suggest)
 
-lua require('init2')
 
 
 " Generated by GPT-4
