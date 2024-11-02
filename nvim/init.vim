@@ -150,6 +150,9 @@ imap <C-K> <ESC>
 imap <C-B> <LEFT>
 imap <C-F> <RIGHT>
 
+" type Ctrl-L and the last spelling mistake will be fixed and the cursor will hop back to where you were last typing. It's a super-fast way to fix typos -- https://www.reddit.com/r/vim/comments/1ac30kt/must_have_plugins/
+inoremap <C-L> <c-g>u<Esc>:set spell<CR>[s1z=`]a<c-g>u
+
 "**************************** Basic Global (Visual Mode) Mappings ****************************"
 
 " <tab> indents the selected text

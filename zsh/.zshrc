@@ -50,18 +50,19 @@ alias g='rg -z -N --no-heading --no-ignore -g "!venv"'
 # Inspired by https://github.com/Debian/wcurl/blob/main/wcurl https://samueloph.dev/blog/announcing-wcurl-a-curl-wrapper-to-download-files/
 alias wcurl='curl --progress-bar -L --remote-name-all --retry 3 --retry-max-time 10'
 
+alias screen="tmux new-session"
+alias tx="tmux new-session -s devel || tmux attach -t devel"
+
 HISTSIZE=999999
 HISTORY_IGNORE='(ls|exit|ps auxf)'
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+REPORTTIME=5
 
-export PATH="$HOME/bin:$HOME/Library/Python/3.9/bin:$PATH:/opt/homebrew/bin"
+export PATH="$HOME/bin:$HOME/.local/bin:/Users/sidney_fong/Library/Python/$(ls -tr /Users/sidney_fong/Library/Python/ | tail -n 1)/bin:$PATH:/opt/homebrew/bin"
 
-if [[ "$TERM" = "screen" ]]; then
-    export TERM=xterm-256color
-    export IS_RUNNING_SCREEN=1
-else
-    export TERM=$TERM
-    export IS_RUNNING_SCREEN=
+export IS_RUNNING_TMUX=
+if [[ "$TERM" = "tmux-256color" ]]; then
+    export IS_RUNNING_TMUX=1
 fi
 
 # Rust initialization
@@ -126,6 +127,7 @@ function mk {
             break
         fi
         if [[ -f gradlew ]]; then
+            echo "Running ./gradlew %@"
             ./gradlew "$@"
             break
         fi
@@ -174,10 +176,9 @@ function precmd() {
         fi
     fi
     unset _TIME_BEFORE_COMMAND
-
     _compute_git_branch  # saves it to _last_git_branch for speed
-    if [ "$IS_RUNNING_SCREEN" ]; then
-        printf "\ek$(print -rD $PWD)$_last_git_branch\e\\"
+    if [ "$IS_RUNNING_TMUX" ]; then
+        tmux rename-window "$(print -rD $PWD)$_last_git_branch"
     fi
 }
 
@@ -185,8 +186,8 @@ function preexec() {
     # echo "I will notify you when this finishes, if it takes a long time"
     _TIME_BEFORE_COMMAND="`date +%s`"
 
-    if [ "$IS_RUNNING_SCREEN" ]; then
-        printf "\ek%s $(print -rD $PWD)$_git_branch_guess\e\\" "$1"
+    if [ "$IS_RUNNING_TMUX" ]; then
+        tmux rename-window "$1 $(print -rD $PWD)$_last_git_branch"
     fi
 }
 
@@ -215,6 +216,75 @@ function _hnfong_set_ps1() {
         PROMPT=${PROMPT//yellow/red}
     fi
 }
+
+# Tries to find a path
+function fd {
+    # -d to find the directory of the target and cd to it
+    if [[ $1 == '-d' ]]; then
+        local FOUND=`fd "$2"`
+        if [[ -e "$FOUND" ]]; then
+            cd "${FOUND:h}"
+        fi
+        return
+    fi
+
+    # Get the target, either from command line or from pasteboard
+    local TARGET=$1
+    if [[ -z "$TARGET" ]]; then
+        TARGET=`pbpaste | head -n 1 | grep -o '[^ ]*/[^ ]*/[^ ]*' | head -n 1`
+    fi
+
+    # If it just exists then use it
+    if [[ -e "$TARGET" ]]; then
+        echo $TARGET
+        return
+    fi
+
+    # Otherwise try to strip away parent dirs
+    while [[ "$TARGET" != "" && ! -e "$TARGET" ]]; do
+        local attempt=${TARGET#*/}
+        if [[ "$attempt" = "$TARGET" ]]; then
+            break
+        else
+            TARGET="$attempt"
+        fi
+    done
+    if [[ -e "$TARGET" ]]; then
+        echo "$TARGET"
+        return
+    fi
+
+    # Using the last component, try to find a match with parent dirs
+    if [[ $TARGET != "/"  && -n "$TARGET" ]]; then
+        local cnt=4
+        while [[ ! -e "$TARGET" && cnt -gt 0 ]]; do
+            TARGET="../$TARGET"
+            cnt=$((cnt - 1))
+        done
+        if [[ -e "$TARGET" ]]; then
+            echo "$TARGET"
+            return
+        fi
+    fi
+
+    # Using the original target, try to find a match with parent dirs
+    TARGET="$1"
+    local cnt=4
+    while [[ ! -e "$TARGET" && cnt -gt 0 ]]; do
+        TARGET="../$TARGET"
+        cnt=$((cnt - 1))
+    done
+    if [[ -e "$TARGET" ]]; then
+        echo "$TARGET"
+        return
+    fi
+
+    # Reset the target since we wittled it down above
+    TARGET=$1
+
+    find . -maxdepth 3 -path "*$TARGET"
+}
+
 
 SI_CONFIG_FANCY_PROMPT=1
 _hnfong_set_ps1
