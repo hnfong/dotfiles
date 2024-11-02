@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [[ -f "$1.srt" ]]; then
+    echo "Warning: output file $1.srt already exists" >&2
+    exit 0
+fi
+
+if [[ -f "$1.txt" ]]; then
+    echo "Warning: output file $1.txt already exists" >&2
+    exit 0
+fi
+transcribe_file=$1
+shift
+
+ffmpeg -i "$transcribe_file" -ar 16000 -ac 1 -c:a pcm_s16le "$@" "$transcribe_file.wav"
+# whisper --max-context 30 -tr -l ja -osrt -m models/ggml-large-v3.bin -f "$transcribe_file.wav" -of "$transcribe_file"
+whisper.cpp --max-context 10 -l auto -osrt -m models/ggml-large-v3.bin -f "$transcribe_file.wav" -of "$transcribe_file" | tee "$transcribe_file.txt"
+rm -vf "$transcribe_file.wav"
