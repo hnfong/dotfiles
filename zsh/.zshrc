@@ -178,7 +178,7 @@ function precmd() {
     unset _TIME_BEFORE_COMMAND
     _compute_git_branch  # saves it to _last_git_branch for speed
     if [ "$IS_RUNNING_TMUX" ]; then
-        tmux rename-window "$(print -rD $PWD)$_last_git_branch"
+        tmux rename-window "$(basename "$(print -rD $PWD)")$_last_git_branch"
     fi
 }
 
@@ -187,7 +187,7 @@ function preexec() {
     _TIME_BEFORE_COMMAND="`date +%s`"
 
     if [ "$IS_RUNNING_TMUX" ]; then
-        tmux rename-window "$1 $(print -rD $PWD)$_last_git_branch"
+        tmux rename-window "$1 $(basename "$(print -rD $PWD)")$_last_git_branch"
     fi
 }
 
