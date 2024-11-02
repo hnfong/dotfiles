@@ -46,6 +46,7 @@ alias gpr='git pull --rebase'
 alias sw='swift'
 alias brew='HOMEBREW_NO_AUTO_UPDATE=1 brew'
 alias g='rg -z -N --no-heading --no-ignore -g "!venv"'
+alias vimdiff='nvim -d'
 
 # Inspired by https://github.com/Debian/wcurl/blob/main/wcurl https://samueloph.dev/blog/announcing-wcurl-a-curl-wrapper-to-download-files/
 alias wcurl='curl --progress-bar -L --remote-name-all --retry 3 --retry-max-time 10'
@@ -75,6 +76,11 @@ trap 'echo -n \(Ctrl+C\); return 1' SIGINT
 
 # Bind F1 to show recent commands (see fc built-in)
 bindkey -s '^[OP' 'fc -d -l -50^M'
+
+function activate_conda {
+    # This is from the installation instructions
+    eval "$(/Users/sidney_fong/apps/miniforge3/bin/conda shell.zsh hook)"
+}
 
 function j {
     if [ -z "$1" ]; then
@@ -187,7 +193,10 @@ function preexec() {
     _TIME_BEFORE_COMMAND="`date +%s`"
 
     if [ "$IS_RUNNING_TMUX" ]; then
-        tmux rename-window "$1 $(basename "$(print -rD $PWD)")$_last_git_branch"
+        cmd="$2" # the second argument is a single-line, size-limited version of the command (with things like function bodies elided)
+        # only take the first 15 characters
+        cmd=${cmd:0:15}
+        tmux rename-window "$cmd $(basename "$(print -rD $PWD)")$_last_git_branch"
     fi
 }
 
