@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+
+# This program uses the macOS Shortcuts app to perform Optical Character
+# Recognition (OCR) on an image file. It then prints the extracted text to the
+# console.
+
+# https://blog.greg.technology/2024/01/02/how-do-you-ocr-on-a-mac.html
+
+# Note that we don't have to add the clipboard step as described in the blog
+# post, the shortcut already outputs the text to stdout. The clipboard step is
+# optional and only needed if we want to immediately use it in the clipboard,
+# which we don't really want to here as a utility command.
+
+import subprocess
+import sys
+
+file_path = sys.argv[1]
+ocr_out = subprocess.check_output("shortcuts run ocr-extract -i".split() + [file_path,], stderr=subprocess.DEVNULL)
+print(ocr_out.decode("utf-8", errors="replace"))
+

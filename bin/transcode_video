@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# 🤖 This program takes video files as input and re-encodes them using the SVT-AV1 codec.
+# 🤖 The output files are named with "-re.mp4" appended to the original filename.
+# 🤖 The script assumes the user has `ffmpeg` installed. [end of text]
+
+while [[ -n "$1" ]]; do
+    input=$1
+    shift
+    br=2800k
+    set -ex
+    ffmpeg -threads 6 -i "$input" -c:v libsvtav1 -pix_fmt yuv420p10le -b:v "$br" -c:a libopus -b:a 96k "$(basename "$input")"-re.mp4
+    set +ex
+done
