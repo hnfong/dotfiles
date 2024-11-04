@@ -110,9 +110,7 @@ vim.cmd [[
 -- * * * * * * * * * * Termianl Mode Mappings * * * * * * * * * *
 vim.cmd [[
     " https://news.ycombinator.com/item?id=33040534
-    " Neovim's default terminal mode bindings aren't great.
-    " This makes them behave like vim's.
-    tnoremap <Esc><Esc><Esc> <C-\><C-n><C-w>
+    tnoremap <Esc><Esc><Esc> <C-\><C-n>
     tnoremap <C-w> <C-\><C-n><C-w>
 
     " The above makes it easier to switch windows by either <Esc> or <C-W> and a direction key
