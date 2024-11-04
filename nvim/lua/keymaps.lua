@@ -75,10 +75,10 @@ vim.cmd [[
 -- " Left/right button moves cursor to the adjacent split window and maximizes it
 -- The excessive <C-W> is an attempt to re-trigger BufEnter for terminal to make it enter insert mode.
 -- The shift modifiers are to make it more consistent with the terminal mappings, where we cannot just use <LEFT> because it will make the terminal unusable
-vim.api.nvim_set_keymap('n', '<LEFT>', '<C-W>h<C-W>|<C-W><C-W><C-W><C-W>', {})
-vim.api.nvim_set_keymap('n', '<S-LEFT>', '<C-W>h<C-W>|<C-W><C-W><C-W><C-W>', {})
-vim.api.nvim_set_keymap('n', '<RIGHT>', '<C-W>l<C-W>|<C-W><C-W><C-W><C-W>', {})
-vim.api.nvim_set_keymap('n', '<S-RIGHT>', '<C-W>l<C-W>|<C-W><C-W><C-W><C-W>', {})
+vim.api.nvim_set_keymap('n', '<LEFT>', '<C-W>h<C-W>|<C-W><C-W><C-W><C-P>', {})
+vim.api.nvim_set_keymap('n', '<S-LEFT>', '<C-W>h<C-W>|<C-W><C-W><C-W><C-P>', {})
+vim.api.nvim_set_keymap('n', '<RIGHT>', '<C-W>l<C-W>|<C-W><C-W><C-W><C-P>', {})
+vim.api.nvim_set_keymap('n', '<S-RIGHT>', '<C-W>l<C-W>|<C-W><C-W><C-W><C-P>', {})
 
 -- * * * * * * * * * * Visual Mode Mappings * * * * * * * * * *
 vim.cmd [[
