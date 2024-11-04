@@ -70,6 +70,10 @@ vim.cmd [[
 
     " | will run git grep and set the errorformat to match the output
     nmap \| :set errorformat=%f:%l%m<CR>:set makeprg=git\ grep\ -n\ 
+
+    " Move in display lines instead of actual lines for up and down
+    nmap <UP> gk
+    nmap <DOWN> gj
 ]]
 
 -- " Left/right button moves cursor to the adjacent split window and maximizes it

@@ -26,14 +26,9 @@ function magic_list_files() {
     local final_pwd=$PWD
     popd > /dev/null 2>/dev/null
     if [[ "$final_pwd" != "/" ]]; then
-        OUT=`git diff --name-only .`
-        if [[ -n "$OUT" ]]; then
-            echo "$OUT"
-        else
-            git ls-tree -r --name-only HEAD -- .
-        fi
+        git ls-tree -r --name-only HEAD -- . | head -n 500
     else
-        find . -type f -maxdepth 2 -size -30M
+        find . -type f -maxdepth 2 -size -30M | head -n 500
     fi
 }
 

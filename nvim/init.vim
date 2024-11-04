@@ -64,9 +64,6 @@ set titlestring=vim:%f
 set title
 
 
-" load keysmaps.lua
-lua require('keymaps')
-
 
 "**************************** SmartIndent ****************************"
 au BufRead,BufNewFile *.php	setlocal smartindent
@@ -321,6 +318,9 @@ autocmd TermOpen,TermEnter * startinsert
 command! -nargs=0 T :vsplit | term
 
 lua require('init2')
+" load keysmaps.lua
+lua require('keymaps')
+
 " " Copilot
 " let g:copilot_filetypes = { '*': v:false, 'py': v:true, 'python': v:true, 'rs': v:true, 'rust': v:true, 'html': v:true, 'vim': v:true }
 let g:copilot_filetypes = { '*': v:false }
