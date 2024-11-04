@@ -38,7 +38,11 @@ vim.cmd [[
     nmap <S-F8> :Portal jumplist backward<CR>
 
     " Opens telescope
-    nmap <S-F9> :Telescope live_grep<CR>
+    nmap <F9> :Telescope grep_string<CR>
+
+    " For some reason my terminal doesn't register Ctrl-<Fn> so it ends up as <Fn> only. Map both just to be sure
+    vmap <F9> "zy:lua live_grep_z()<CR>
+    vmap <C-F9> "zy:lua live_grep_z()<CR>
 
     " Pastes from macOS clipboard
     nmap <F10> :r!pbpaste<CR>
@@ -51,7 +55,21 @@ vim.cmd [[
     nmap <S-F12> :vnew<CR>:terminal 
 ]]
 
-vim.keymap.set('n', '<F9>', require('telescope.builtin').git_files, {}) -- This is a special case that requires a function call
+-- function to call live_grep with the contents of register z
+function live_grep_z()
+    -- remove everything after the first newline
+    local what = vim.fn.getreg('z'):gsub('\n.*', '')
+    require('telescope.builtin').live_grep({ default_text = what })
+end
+
+function map_keyword_button_to_telescope()
+    -- map "K" to call telescope grep_string
+    vim.api.nvim_set_keymap('n', 'K', ':Telescope grep_string<CR>', {})
+    vim.api.nvim_set_keymap('v', 'K', '"zy:lua live_grep_z()<CR>', {})
+end
+
+
+vim.keymap.set('n', '<S-F9>', require('telescope.builtin').git_files, {}) -- This is a special case that requires a function call
 
 vim.cmd [[
     " +/- buttons increase/decrease the size of the split window by 10 units

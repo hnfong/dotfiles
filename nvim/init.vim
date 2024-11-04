@@ -68,7 +68,7 @@ set title
 "**************************** SmartIndent ****************************"
 au BufRead,BufNewFile *.php	setlocal smartindent
 au BufRead,BufNewFile *.java	setlocal smartindent
-au BufRead,BufNewFile *.java	setlocal keywordprg=~/bin/vimkeywordprg
+au BufRead,BufNewFile *.java	lua map_keyword_button_to_telescope()
 au BufRead,BufNewFile *.java    let foldtoggledefault=1
 au BufRead,BufNewFile *.pl	setlocal smartindent
 
@@ -150,11 +150,11 @@ func SiliconObjCInit()
   " set syntax=objcpp
   " highlight ObjCMethods ctermfg=red
   " match ObjCMethods /\[[A-Za-z0-9][A-Za-z0-9]* [A-Za-z0-9][A-Za-z0-9]*/
-  setlocal keywordprg=~/bin/vimkeywordprg
+  lua map_keyword_button_to_telescope()
 endfunction
 
 func SiliconRustInit()
-  setlocal keywordprg=~/bin/vimkeywordprg
+  lua map_keyword_button_to_telescope()
   map <buffer> <F2>	:w<CR>:make build
   nmap <F2> :w<CR>:make build
 endfunction
@@ -164,7 +164,7 @@ au BufRead,BufNewfile *.cc	call SiliconCInit()
 au BufRead,BufNewfile *.cpp	call SiliconCInit()
 au BufRead,BufNewfile *.cxx	call SiliconCInit()
 au BufRead,BufNewfile *.h	call SiliconCInit()
-au BufRead,BufNewfile *.h	setlocal keywordprg=~/bin/vimkeywordprg
+au BufRead,BufNewfile *.h	lua map_keyword_button_to_telescope()
 
 au BufRead,BufNewfile *.rs	call SiliconRustInit()
 
@@ -188,7 +188,6 @@ au BufRead,BufNewFile *.pas map <buffer> OS :w<CR>:!gpc -o %< %
 "**************************** Perl ****************************"
 au BufRead,BufNewFile *.pl map <buffer> <F3> :w<CR>:!time perl %
 au BufRead,BufNewFile *.pl map <buffer> OR :w<CR>:!time perl %
-au BufRead,BufNewFile *.pl set keywordprg=perldoc\ -f
 au BufRead,BufNewFile *.pm map <buffer> <F3> :w<CR>:!time perl %
 au BufRead,BufNewFile *.pm map <buffer> OR :w<CR>:!time perl %
 
@@ -202,7 +201,7 @@ au BufRead,BufNewfile *.js setlocal makeprg=jslint\ %
 au BufRead,BufNewFile *.js let g:foldtoggledefault=1
 au BufRead,BufNewFile *.js highlight LastCommaInHash ctermbg=red guibg=red
 au BufRead,BufNewFile *.js match LastCommaInHash /,\_s*[}\]]/
-au BufRead,BufNewFile *.js set keywordprg=~/bin/vimkeywordprg
+au BufRead,BufNewFile *.js lua map_keyword_button_to_telescope()
 
 "**************************** HTML/PHP ****************************"
 func SiliconHtmlAbbreviations ()
@@ -292,7 +291,7 @@ au FileType markdown setlocal smartcase ignorecase
 
 
 "****************************** Swift ******************************"
-au BufRead,BufNewFile *.swift set keywordprg=~/bin/vimkeywordprg
+au BufRead,BufNewFile *.swift lua map_keyword_button_to_telescope()
 
 
 "********************** Host Dependent Stuff *********************"
