@@ -314,6 +314,9 @@ set belloff=
 autocmd BufWinEnter,WinEnter,BufEnter term://* startinsert
 autocmd TermOpen,TermEnter * startinsert
 
+" https://vi.stackexchange.com/questions/17816/solved-ish-neovim-dont-close-terminal-buffer-after-process-exit
+autocmd TermClose * call feedkeys("\<C-\>\<C-n>")
+
 " Defines a new 'T' command that opens a new term (obsolete?)
 command! -nargs=0 T :vsplit | term
 

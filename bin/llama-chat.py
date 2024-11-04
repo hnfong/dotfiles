@@ -1,9 +1,13 @@
 #!/bin/bash
 
+if [[ -n "$1" ]]; then
 FFFF=$(find ~/Downloads/ -name "*$1*" | head -n 1)
+else
+FFFF=$(find ~/Downloads/ -name "*gemma-2-27b-it*" | head -n 1)
+fi
 shift
 set -x
-exec ~/projects/llama.gguf/llama-cli --log-disable -cnv -mli -c 4096 -m "$FFFF" "$@"
+exec ~/projects/llama.gguf/llama-cli -lv 3 -cnv -mli -c 0 -m "$FFFF" "$@"
 exit 1
 
 #!/usr/bin/env python3
