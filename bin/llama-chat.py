@@ -2,6 +2,7 @@
 
 FFFF=$(find ~/Downloads/ -name "*$1*" | head -n 1)
 shift
+set -x
 exec ~/projects/llama.gguf/llama-cli --log-disable -cnv -mli -c 4096 -m "$FFFF" "$@"
 exit 1
 

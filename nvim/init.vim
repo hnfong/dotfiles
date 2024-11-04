@@ -9,7 +9,7 @@ set foldlevel=999999
 set foldmethod=syntax
 set foldminlines=4
 set hlsearch
-set indentkeys=
+" set indentkeys=
 set laststatus=2
 set lazyredraw
 set modeline
@@ -52,8 +52,6 @@ func Togglefold()
  endif
 endfunc
 
-nmap \| :set errorformat=%f:%l%m<CR>:set makeprg=git\ grep\ -n\ 
-
 if has("gui_running")
 	set shell=/bin/sh
 endif
@@ -65,106 +63,10 @@ set titlestring=vim:%f
 
 set title
 
-"**************************** Basic Global (Normal Mode) Mappings ****************************"
-" <F1>:			remove the help, substitute with the 'find first line containing keyword'
-" <F2>,<F3>:	compile and run shortcuts
-" <F4>:			git/svn blame
-" <F5>:			git/svn diff current file
-" <F6>:			toggle copilot
-" <F8>:			toggle nvimtree(??)
-" <F9>:         telescope
-" <F7>:			toggle spellcheck
-" <F10>:		paste from macOS clipboard
-" <F11>:		toggle 'paste' mode
-" <Ctrl-J>:		maximize the window below
-" <Ctrl-K>:		maximize the window above
-" <Ctrl-T>:		new tab
-" <Ctrl-LEFT>:	Go to previous tab
-" <Ctrl-RIGHT>:	Go to next tab
 
-" The unintelligble codes seem to be the ansi equivalents
+" load keysmaps.lua
+lua require('keymaps')
 
-nmap <F1> [I
-" nmap <F1><F1> [i
-
-nmap <F2> :w<CR>:make
-nmap <F3> :!time make run
-nmap <F4> :Gblame<CR>
-nmap <F5> :Gdiff<CR>
-nmap <F6> :let b:copilot_enabled = v:true
-nmap <F7> :set invspell<CR>
-" <F8> is :NvimTreeToggle defined in init2.lua
-" <F9> is for telescope defined in init2.lua
-nmap <F10> :r!pbpaste<CR>
-vmap <F10> :w !pbcopy<CR>
-" pressing once in normal mode changes to paste and enters insert mode
-" pressing the second time disables paste
-" pressing the third time change back to normal mode
-" this behavior depends on how VIM intercepts pastetoggle.
-set pastetoggle=<F10>
-
-nnoremap <C-c> <silent> <C-c>
-
-" Windows and Tabs
-nmap <C-T> :tabnew .<CR>
-
-" Left/right button moves cursor to the adjacent split window and maximizes it
-nmap <LEFT> <C-W>h<C-W>\|
-nmap <RIGHT> <C-W>l<C-W>\|
-
-" +/- buttons increase/decrease the size of the split window by 10 units
-nmap - 10<C-W><
-nmap + 10<C-W>>
-
-" Ctrl-Left/Right buttons switch between tabs
-nmap <C-LEFT> gT
-nmap <C-RIGHT> gt
-map <C-F> :call Togglefold()<CR>
-
-" quote the current word
-nmap z( lbi(<ESC>ea)<ESC>
-nmap z" lbi"<ESC>ea"<ESC>
-nmap z' lbi'<ESC>ea'<ESC>
-nmap z[ lbi[<ESC>ea]<ESC>
-nmap z< lbi<<ESC>ea><ESC>
-nmap z{ lbi{<ESC>ea}<ESC>
-
-" insert variable in quotes
-nmap z+ i"++"<ESC>hi
-nmap z- i'++'<ESC>hi
-nmap z. i'..'<ESC>hi
-
-" for browing through ":make" results and ":grep" results, etc.
-nmap <space> :cnext<CR>
-nmap <backspace> :cprev<CR>
-
-" Enter button removes the search highlight
-nmap <CR> :nohl<CR>
-
-" <C-N> opens a new vertical split window with the current file
-nmap <C-N> :vnew .<CR>
-
-"**************************** Basic Global (Insert Mode) Mappings ****************************"
-imap <C-L> <ESC>
-imap <C-K> <ESC>
-imap <C-B> <LEFT>
-imap <C-F> <RIGHT>
-
-" type Ctrl-L and the last spelling mistake will be fixed and the cursor will hop back to where you were last typing. It's a super-fast way to fix typos -- https://www.reddit.com/r/vim/comments/1ac30kt/must_have_plugins/
-inoremap <C-L> <c-g>u<Esc>:set spell<CR>[s1z=`]a<c-g>u
-
-"**************************** Basic Global (Visual Mode) Mappings ****************************"
-
-" <tab> indents the selected text
-vmap <tab> >gv
-" <s-tab> unindents the selected text
-vmap <s-tab> <gv
-
-" Helpful abbreviations
-iabb {tick} ✓
-iabb {star} ☆
-iabb {cross} ✗
-iabb {robot} 🤖
 
 "**************************** SmartIndent ****************************"
 au BufRead,BufNewFile *.php	setlocal smartindent
@@ -203,6 +105,7 @@ func SiliconPythonInit()
 
 	" hopefully make the include= thing work better
 	setlocal path+=..,../..
+
 endfunction
 au BufRead,BufNewFile *.py	call SiliconPythonInit()
 "**************************** Ruby ****************************"
@@ -400,21 +303,10 @@ set statusline=%f\ %h%m%r\ %<%y\ [%{&ff}]\ %{fugitive#statusline()}\ [%b,0x%B]%=
 " command mode)
 autocmd FileType * setlocal formatoptions-=o
 
-" NeoVIM specific stuff
-"
-:tnoremap <Esc> <C-\><C-n>
-
 " https://github.com/neovim/neovim/issues/8816
 autocmd TermOpen term://* startinsert
 
-nmap <F12> :vnew<CR>:terminal<CR>
 set belloff=
-
-" https://news.ycombinator.com/item?id=33040534
-" Neovim's default terminal mode bindings aren't great.
-" This makes them behave like vim's.
-tnoremap <Esc> <C-\><C-n><C-w>
-tnoremap <C-w> <C-\><C-n><C-w>
 
 "Always enter the terminal in insert mode
 autocmd BufWinEnter,WinEnter,BufEnter term://* startinsert
