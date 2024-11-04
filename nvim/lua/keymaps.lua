@@ -107,7 +107,7 @@ vim.cmd [[
     iabbrev {robot} 🤖
 ]]
 
--- * * * * * * * * * * Termianl Mode Mappings * * * * * * * * * *
+-- * * * * * * * * * * Terminal Mode Mappings * * * * * * * * * *
 vim.cmd [[
     " https://news.ycombinator.com/item?id=33040534
     tnoremap <Esc><Esc><Esc> <C-\><C-n>
