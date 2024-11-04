@@ -73,8 +73,12 @@ vim.cmd [[
 ]]
 
 -- " Left/right button moves cursor to the adjacent split window and maximizes it
-vim.api.nvim_set_keymap('n', '<LEFT>', '<C-W>h<C-W>|', {})
-vim.api.nvim_set_keymap('n', '<RIGHT>', '<C-W>l<C-W>|', {})
+-- The excessive <C-W> is an attempt to re-trigger BufEnter for terminal to make it enter insert mode.
+-- The shift modifiers are to make it more consistent with the terminal mappings, where we cannot just use <LEFT> because it will make the terminal unusable
+vim.api.nvim_set_keymap('n', '<LEFT>', '<C-W>h<C-W>|<C-W><C-W><C-W><C-W>', {})
+vim.api.nvim_set_keymap('n', '<S-LEFT>', '<C-W>h<C-W>|<C-W><C-W><C-W><C-W>', {})
+vim.api.nvim_set_keymap('n', '<RIGHT>', '<C-W>l<C-W>|<C-W><C-W><C-W><C-W>', {})
+vim.api.nvim_set_keymap('n', '<S-RIGHT>', '<C-W>l<C-W>|<C-W><C-W><C-W><C-W>', {})
 
 -- * * * * * * * * * * Visual Mode Mappings * * * * * * * * * *
 vim.cmd [[
@@ -110,4 +114,6 @@ vim.cmd [[
     " The above makes it easier to switch windows by either <Esc> or <C-W> and a direction key
     " To just exit terminal mode, just double Esc(?)
     tnoremap <F12> <C-\><C-n>pA
+    tnoremap <F1> <C-\><C-n><C-W>h<C-W>\|
+    tnoremap <S-LEFT> <C-\><C-n><C-W>h<C-W>\|
 ]]

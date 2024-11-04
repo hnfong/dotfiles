@@ -52,6 +52,13 @@ function front_stripper() {
 }
 
 function editor() {
+    if [[ -n "$1" ]]; then
+        cmd=$(basename $1)
+        cmd=${cmd:0:15}
+        if which tmux; then
+            tmux rename-window "$cmd"
+        fi
+    fi
     if [[ -z "$my_line" ]]; then
         if [[ -z "$@" ]]; then
             exec "$EDITOR" -c ':Telescope oldfiles'

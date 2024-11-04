@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+
+"""
+This program takes a file or directory as input and prepares its text content for use with a language model.
+
+It extracts text from supported file types and formats it in a way that is suitable for the language model's input.
+"""
+
+import getopt
+import glob
+import os
+import re
+import subprocess
+import sys
+
+TEXT_LIMIT_FILE = 20 * 1024
+
+PROMPT_PREFACE = """
+You are a creative, helpful and playful assistant. You give concise and thoughtful answers. No yapping.
+
+You will be given a list of files with its textual contents. I need your help in answering questions based on the text. Please read the text carefully and answer the questions.
+""".strip()
+
+def plain_text_extractor(typ, path):
+    def line_filter(line):
+        if line and line[-1] in ('\\', '/'):
+            # End char for multiline chat for llama.cpp -- avoid it
+            line = line + " "
+
+        return line
+
+
+    ret = []
+    # Add a filename
+    ret.append("----\nFile: " + os.path.basename(path) + "\n\n")
+
+    # Need a limit
+    content = open(path).read()
+    if len(content) > TEXT_LIMIT_FILE:
+        content = content[:TEXT_LIMIT_FILE]
+
+    ret.append(f"```{typ}\n")
+    ret.append("\n".join(line_filter(line) for line in content.split("\n")))
+    ret.append("```")
+
+    return "".join(ret)
+
+def determine_extractor(path):
+    PLAIN_TEXT = {
+        "text": ".txt",
+        "lua": ".lua",
+        "markdown": ".md"
+    }
+
+    for typ, fe in PLAIN_TEXT.items():
+        if path.endswith(fe):
+            return lambda : plain_text_extractor(typ, path)
+
+    # LATER: use python-magic to try to determine how to deal with the file
+    # Use subprocess to call file(1) for now
+    # file -b -L <path>
+    p = subprocess.Popen(["file", "-b", "-L", path], stdout=subprocess.PIPE)
+    out, _ = p.communicate()
+    out = out.decode("utf-8").strip().lower()
+    # check whether there is 'text executable' in the output
+    if 'text ' in out or ' text' in out:
+        if 'python' in out:
+            return lambda : plain_text_extractor("python", path)
+        elif 'shell script' in out:
+            return lambda : plain_text_extractor("shell", path)
+        else:
+            return lambda : plain_text_extractor("text", path)
+
+    return None
+
+def extract_text(path):
+    if extractor := determine_extractor(path):
+        return extractor()
+    else:
+        return None
+
+def wc(s):
+    return len(s.split())
+
+def get_files(path):
+    if '-r' in opts:
+        # Use os.walk
+        for root, dirs, files in os.walk(path):
+            for f in files:
+                if f not in opts.get("-i", "").split(";"):
+                    yield os.path.join(root, f)
+    else:
+        for f in glob.glob(path + "/*"):
+            if os.path.basename(f) not in opts.get("-i", "").split(";"):
+                yield f
+
+def extract_dir(path):
+    prompt_context = []
+    for f in list(get_files(path)):
+        if ctx := extract_text(f):
+            sys.stderr.write("Using text from ")
+            sys.stderr.write(f)
+            sys.stderr.write('\n')
+            prompt_context.append(ctx)
+
+    return "\n".join(prompt_context)
+
+def extract(path):
+    if os.path.isdir(path):
+        prompt_context = extract_dir(path)
+    else:
+        prompt_context = extract_text(path)
+
+    if prompt_context:
+        sys.stderr.write(str(wc(prompt_context)))
+        sys.stderr.write("\n")
+        prompt = []
+
+        prompt.append(PROMPT_PREFACE)
+        prompt.append("\n")
+        prompt.append(prompt_context)
+
+        return "".join(prompt)
+
+if __name__ == "__main__":
+    opt_list, args = getopt.getopt(sys.argv[1:], "i:rP", [])
+    opts = dict(opt_list)
+    output = extract(args[0])
+    if '-P' in opts:
+        # Pipe to pbcopy
+        p = subprocess.Popen(["pbcopy"], shell=False, stdin=subprocess.PIPE)
+        p.communicate(output.encode("utf-8"))
+    else:
+        print(output)
+
+

@@ -94,8 +94,8 @@ func SiliconPythonInit()
 	setlocal smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
     filetype indent on
 	" Compile/Run
-	map <buffer> <F3> :w<CR>:!time python3 %
-	map <buffer> OR :w<CR>:!time python3 %
+	map <buffer> <S-F3> :w<CR>:!time python3 %
+	map <buffer> <F3> :w<CR>:vsplit \| terminal python3 %
     :inoremap # X#
 
 	" ignore *.pyc
@@ -108,6 +108,9 @@ func SiliconPythonInit()
 
 endfunction
 au BufRead,BufNewFile *.py	call SiliconPythonInit()
+au FileType python call SiliconPythonInit()
+
+
 "**************************** Ruby ****************************"
 func SiliconRubyInit()
     " Compile/Run
@@ -303,14 +306,18 @@ set statusline=%f\ %h%m%r\ %<%y\ [%{&ff}]\ %{fugitive#statusline()}\ [%b,0x%B]%=
 " command mode)
 autocmd FileType * setlocal formatoptions-=o
 
-" https://github.com/neovim/neovim/issues/8816
-autocmd TermOpen term://* startinsert
 
 set belloff=
 
-"Always enter the terminal in insert mode
+" Always enter the terminal in insert mode
+" See https://github.com/neovim/neovim/issues/8816 and nvim help in :terminal
+" This ensures that all entering events related to terminals will result in
+" startinsert. The two separate lines are needed because otherwise ALL
+" BufEnter events (for non-terminals) will also trigger insert mode
 autocmd BufWinEnter,WinEnter,BufEnter term://* startinsert
 autocmd TermOpen,TermEnter * startinsert
+
+" Defines a new 'T' command that opens a new term (obsolete?)
 command! -nargs=0 T :vsplit | term
 
 lua require('init2')
@@ -386,8 +393,6 @@ endfunction
 " Optional: You can map this function to a keybinding in normal mode
 " For example, to map it to <leader>l:
 nnoremap <leader>l :call SendLineOffsetToShell()<CR>
-
-
 
 xnoremap <C-K> :<C-u>call AskVisualSelection('')<CR>
 xnoremap <C-P> :<C-u>call AskVisualSelection('-p code_review')<CR>
