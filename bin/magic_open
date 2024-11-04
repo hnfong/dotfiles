@@ -50,7 +50,7 @@ function editor() {
     if [[ -n "$1" ]]; then
         cmd=$(basename $1)
         cmd=${cmd:0:15}
-        if which tmux; then
+        if which tmux >/dev/null; then
             tmux rename-window "$cmd"
         fi
     fi
