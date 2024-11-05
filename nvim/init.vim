@@ -38,7 +38,6 @@ set wildmenu
 set wildmode=full
 set winminheight=0
 set winminwidth=20
-" filetype indent off
 colorscheme vim
 syntax on
 
@@ -62,6 +61,7 @@ au BufWinEnter setlocal nobomb
 set titlestring=vim:%f
 
 set title
+autocmd BufEnter,BufNewFile * call system("tmux rename-window nvim:". expand('%:t'))
 
 
 
@@ -310,8 +310,22 @@ set belloff=
 " This ensures that all entering events related to terminals will result in
 " startinsert. The two separate lines are needed because otherwise ALL
 " BufEnter events (for non-terminals) will also trigger insert mode
-autocmd BufWinEnter,WinEnter,BufEnter term://* startinsert
-autocmd TermOpen,TermEnter * startinsert
+" The function ensures that if the Process has exited, we don't force insert
+" mode and somehow trigger nvim to close the window. (We want to remain in
+" normal (command) mode for movement and selection anyway)
+
+function! StartInsertIfTerminalNotFinished()
+    if &buftype ==# 'terminal'
+        let buffer_content = join(getbufline(bufnr(), '$', '$'), '\n')
+        if buffer_content !~# 'Process exited'
+            startinsert
+        endif
+    endif
+endfunction
+
+autocmd BufWinEnter,WinEnter,BufEnter term://* call StartInsertIfTerminalNotFinished()
+autocmd TermOpen,TermEnter * call StartInsertIfTerminalNotFinished()
+
 
 " https://vi.stackexchange.com/questions/17816/solved-ish-neovim-dont-close-terminal-buffer-after-process-exit
 autocmd TermClose * call feedkeys("\<C-\>\<C-n>")
@@ -358,7 +372,7 @@ function AskVisualSelection(additional_args)
     " Run wc on the temp file inside a terminal buffer
     " execute 'term ask.py -f ' . l:tempfile
     " Vertically split the window and run wc on the temp file inside a terminal buffer
-    execute 'vsplit | term ask.py ' . a:additional_args . ' -f ' . shellescape(l:tempfile)
+    execute 'vsplit | term ask.py -c 8192 ' . a:additional_args . ' -f ' . shellescape(l:tempfile)
 
     " Optionally, delete the temp file after a short delay to allow wc to read it
     " This uses the timer_start function to introduce a delay
@@ -395,6 +409,7 @@ endfunction
 " For example, to map it to <leader>l:
 nnoremap <leader>l :call SendLineOffsetToShell()<CR>
 
+nnoremap <C-K> ggVG:<C-u>call AskVisualSelection('-p ask_user')<CR>
 xnoremap <C-K> :<C-u>call AskVisualSelection('-p ask_user')<CR>
 xnoremap <C-P> :<C-u>call AskVisualSelection('-p code_review')<CR>
 nmap <C-CR> :<C-u>call SendLineOffsetToShell()<CR>

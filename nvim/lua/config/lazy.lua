@@ -29,7 +29,6 @@ require("lazy").setup({
     { 'github/copilot.vim' },
 
     { 'junegunn/vim-peekaboo' }, -- Peekaboo will show you the contents of the registers on the sidebar when you hit " or @ in normal mode or <CTRL-R> in insert mode.
-    { 'wellle/context.vim' },  -- A Vim plugin that shows the context of the currently visible buffer contents
     { "cbochs/portal.nvim" }, -- Portal is a plugin that aims to build upon and enhance existing location lists (e.g. jumplist, changelist, quickfix list, etc.)
     { 'chrishrb/gx.nvim', submodules = false, config = true, keys = { { "gx", "<cmd>Browse<cr>", mode = { "n", "x" } } }, cmd = { "Browse" }, init = function ()
       vim.g.netrw_nogx = 1 -- disable netrw gx
@@ -37,6 +36,9 @@ require("lazy").setup({
 
     -- These are probably great but I don't have time to train myself to use them
     -- https://github.com/tpope/vim-surround  - shorter keystrokes for surrounding quotes, parenthesis, etc.
+    --
+    -- Might be slow
+    -- { 'wellle/context.vim' },  -- A Vim plugin that shows the context of the currently visible buffer contents
   },
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.

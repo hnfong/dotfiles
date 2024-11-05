@@ -62,7 +62,7 @@ REPORTTIME=5
 export PATH="$HOME/bin:$HOME/.local/bin:/Users/sidney_fong/Library/Python/$(ls -tr /Users/sidney_fong/Library/Python/ | tail -n 1)/bin:$PATH:/opt/homebrew/bin"
 
 export IS_RUNNING_TMUX=
-if [[ "$TERM" = "tmux-256color" ]]; then
+if [[ "$TERM" = "tmux-256color" || "$TERM" = "screen-256color" ]]; then
     export IS_RUNNING_TMUX=1
 fi
 
