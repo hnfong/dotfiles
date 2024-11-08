@@ -26,7 +26,7 @@ require("lazy").setup({
   spec = {
     { 'nvim-telescope/telescope.nvim', tag = '0.1.8', dependencies = { 'nvim-lua/plenary.nvim' } },
     { 'nvim-tree/nvim-tree.lua' },
-    { 'github/copilot.vim' },
+    -- { 'github/copilot.vim' },
     { 'nvim-treesitter/nvim-treesitter' },
     { 'neovim/nvim-lspconfig',
     },
@@ -57,6 +57,16 @@ LspConfigManualTrigger = function()
     -- lspconfig.basedpyright.setup({})
     lspconfig.clangd.setup({})
     lspconfig.ruff.setup({})
+    lspconfig.ts_ls.setup{
+        on_attach = on_attach,
+        flags = lsp_flags,
+        settings = {
+            completions = {
+                completeFunctionCalls = true
+            }
+        }
+    }
+
 
     lspconfig.rust_analyzer.setup({
         on_attach = on_attach,

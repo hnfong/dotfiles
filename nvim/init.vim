@@ -211,6 +211,9 @@ au BufRead,BufNewFile *.js let g:foldtoggledefault=1
 au BufRead,BufNewFile *.js highlight LastCommaInHash ctermbg=red guibg=red
 au BufRead,BufNewFile *.js match LastCommaInHash /,\_s*[}\]]/
 au BufRead,BufNewFile *.js lua map_keyword_button_to_telescope()
+  " edit retriggers stuff regarding reloading the file...
+au BufRead,BufNewFile *.js nmap <F7> :lua LspConfigManualTrigger()<CR>:edit<CR>
+au BufRead,BufNewFile *.js nmap <S-F7> :!ruff check --fix %
 
 "**************************** HTML/PHP ****************************"
 func SiliconHtmlAbbreviations ()
