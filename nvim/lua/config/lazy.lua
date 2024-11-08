@@ -28,6 +28,38 @@ require("lazy").setup({
     { 'nvim-tree/nvim-tree.lua' },
     { 'github/copilot.vim' },
     { 'nvim-treesitter/nvim-treesitter' },
+    { 'neovim/nvim-lspconfig',
+        config = function()
+            local lspconfig = require("lspconfig")
+            lspconfig.clangd.setup({})
+            -- lspconfig.pyright.setup({}) -- probably overly zealous and doesn't work well with django
+            -- lspconfig.basedpyright.setup({})
+            lspconfig.ruff.setup({})
+
+            lspconfig.rust_analyzer.setup({
+                on_attach = on_attach,
+                settings = {
+                    ["rust-analyzer"] = {
+                        imports = {
+                            granularity = {
+                                group = "module",
+                            },
+                            prefix = "self",
+                        },
+                        cargo = {
+                            buildScripts = {
+                                enable = true,
+                            },
+                        },
+                        procMacro = {
+                            enable = true
+                        },
+                    }
+                }
+            })
+
+        end
+    },
 
     { 'junegunn/vim-peekaboo' }, -- Peekaboo will show you the contents of the registers on the sidebar when you hit " or @ in normal mode or <CTRL-R> in insert mode.
     { "cbochs/portal.nvim" }, -- Portal is a plugin that aims to build upon and enhance existing location lists (e.g. jumplist, changelist, quickfix list, etc.)

@@ -26,6 +26,7 @@ set shiftwidth=4 " indentation stuff
 set showcmd
 set showmode
 set sidescroll=1
+set signcolumn=no
 set smartcase noignorecase
 set softtabstop=4
 set spelllang=en_us
@@ -39,7 +40,6 @@ set wildmode=full
 set winminheight=0
 set winminwidth=20
 colorscheme vim
-syntax on
 
 let foldtoggledefault=0
 
@@ -160,6 +160,8 @@ func SiliconRustInit()
   lua map_keyword_button_to_telescope()
   map <buffer> <F2>	:w<CR>:make build
   nmap <F2> :w<CR>:make build
+  nmap <S-F7> :!ruff check --fix %
+  lua SiliconLuaRustInit()
 endfunction
 
 au BufRead,BufNewfile *.c	call SiliconCInit()
@@ -298,7 +300,6 @@ au BufRead,BufNewFile *.swift lua map_keyword_button_to_telescope()
 
 
 "********************** Host Dependent Stuff *********************"
-source ~/.config/nvim/fugitive.vim
 set statusline=%f\ %h%m%r\ %<%y\ [%{&ff}]\ %{fugitive#statusline()}\ [%b,0x%B]%=Pos\ %c%V,\ Line\ %l\ of\ %L\ (%p%%)
 
 " Don't extend the comments when entering insert mode with newline (o in
@@ -416,3 +417,5 @@ nnoremap <C-K> ggVG:<C-u>call AskVisualSelection('-p ask_user')<CR>
 xnoremap <C-K> :<C-u>call AskVisualSelection('-p ask_user')<CR>
 xnoremap <C-P> :<C-u>call AskVisualSelection('-p code_review')<CR>
 nmap <C-CR> :<C-u>call SendLineOffsetToShell()<CR>
+
+source ~/.config/nvim/fugitive.vim
