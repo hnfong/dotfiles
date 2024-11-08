@@ -27,6 +27,7 @@ require("lazy").setup({
     { 'nvim-telescope/telescope.nvim', tag = '0.1.8', dependencies = { 'nvim-lua/plenary.nvim' } },
     { 'nvim-tree/nvim-tree.lua' },
     { 'github/copilot.vim' },
+    { 'nvim-treesitter/nvim-treesitter' },
 
     { 'junegunn/vim-peekaboo' }, -- Peekaboo will show you the contents of the registers on the sidebar when you hit " or @ in normal mode or <CTRL-R> in insert mode.
     { "cbochs/portal.nvim" }, -- Portal is a plugin that aims to build upon and enhance existing location lists (e.g. jumplist, changelist, quickfix list, etc.)

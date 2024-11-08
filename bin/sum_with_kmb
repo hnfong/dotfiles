@@ -31,7 +31,7 @@ def kmb_cmp(a, b):
 
     return suf_a - suf_b
 
-NUM_WITH_SUFFIX = re.compile(r'([0-9\.]+)([kKmMbBgG]?)')
+NUM_WITH_SUFFIX = re.compile(r'([0-9\,\.]+)([kKmMbBgG]?)')
 
 input_string = sys.stdin.read()
 # print(repr(input_string))
@@ -49,6 +49,8 @@ def kmb_to_value(kmb):
 
 z = 0
 for item, suffix in extracted:
+    # Strip away the commas
+    item = item.replace(",", "")
     z += float(item) * kmb_to_value(suffix)
 
 print(z)

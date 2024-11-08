@@ -73,25 +73,25 @@ vim.keymap.set('n', '<S-F9>', require('telescope.builtin').git_files, {}) -- Thi
 
 vim.cmd [[
     " +/- buttons increase/decrease the size of the split window by 10 units
-    nmap - 10<C-W><
-    nmap + 10<C-W>>
+    nnoremap - 10<C-W><
+    nnoremap + 10<C-W>>
 
     " Ctrl-F toggles folding
-    nmap <C-F> :call Togglefold()<CR>
+    nnoremap <C-F> :call Togglefold()<CR>
 
     " for browsing through ":make" results and ":grep" results, etc.
-    nmap <SPACE> :cnext<CR>
-    nmap <BS> :cprev<CR>
+    nnoremap <SPACE> :cnext<CR>
+    nnoremap <BS> :cprev<CR>
 
     " Enter button removes the search highlight
-    nmap <CR> :nohl<CR>
+    nnoremap <CR> :nohl<CR>
 
     " | will run git grep and set the errorformat to match the output
-    nmap \| :set errorformat=%f:%l%m<CR>:set makeprg=git\ grep\ -n\ 
+    nnoremap \| :set errorformat=%f:%l%m<CR>:set makeprg=git\ grep\ -n\ 
 
     " Move in display lines instead of actual lines for up and down
-    nmap <UP> gk
-    nmap <DOWN> gj
+    nnoremap <UP> gk
+    nnoremap <DOWN> gj
 ]]
 
 -- " Left/right button moves cursor to the adjacent split window and maximizes it
@@ -105,9 +105,9 @@ vim.api.nvim_set_keymap('n', '<S-RIGHT>', '<C-W>l<C-W>|<C-W><C-W><C-W><C-P>', {}
 -- * * * * * * * * * * Visual Mode Mappings * * * * * * * * * *
 vim.cmd [[
     " <tab> indents the selected text
-    vmap <tab> >gv
+    vnoremap <tab> >gv
     " <s-tab> unindents the selected text
-    vmap <s-tab> <gv
+    vnoremap <s-tab> <gv
 ]]
 
 -- <F10> copies the selected text to the macOS clipboard as per above
@@ -123,6 +123,10 @@ vim.cmd [[
     iabbrev {star} ☆
     iabbrev {cross} ✗
     iabbrev {robot} 🤖
+
+    " macOS takes over <Alt> keys for funny purposes, but we can workaround it
+    " <Alt-P> for Paste
+    inoremap π <C-R>"
 ]]
 
 -- * * * * * * * * * * Terminal Mode Mappings * * * * * * * * * *
@@ -137,3 +141,14 @@ vim.cmd [[
     tnoremap <F1> <C-\><C-n><C-W>h<C-W>\|
     tnoremap <S-LEFT> <C-\><C-n><C-W>h<C-W>\|
 ]]
+
+-- Others --
+
+-- From https://github.com/echasnovski/mini.nvim/blob/main/lua/mini/basics.lua {{
+-- Copy/paste with system clipboard
+vim.keymap.set({ 'n', 'x' }, 'gy', '"+y', { desc = 'Copy to system clipboard' })
+vim.keymap.set(  'n',        'gp', '"+p', { desc = 'Paste from system clipboard' })
+-- - Paste in Visual with `P` to not copy selected text (`:h v_P`)
+vim.keymap.set(  'x',        'gp', '"+P', { desc = 'Paste from system clipboard' })
+-- }}
+
