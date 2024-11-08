@@ -29,36 +29,6 @@ require("lazy").setup({
     { 'github/copilot.vim' },
     { 'nvim-treesitter/nvim-treesitter' },
     { 'neovim/nvim-lspconfig',
-        config = function()
-            local lspconfig = require("lspconfig")
-            lspconfig.clangd.setup({})
-            -- lspconfig.pyright.setup({}) -- probably overly zealous and doesn't work well with django
-            -- lspconfig.basedpyright.setup({})
-            lspconfig.ruff.setup({})
-
-            lspconfig.rust_analyzer.setup({
-                on_attach = on_attach,
-                settings = {
-                    ["rust-analyzer"] = {
-                        imports = {
-                            granularity = {
-                                group = "module",
-                            },
-                            prefix = "self",
-                        },
-                        cargo = {
-                            buildScripts = {
-                                enable = true,
-                            },
-                        },
-                        procMacro = {
-                            enable = true
-                        },
-                    }
-                }
-            })
-
-        end
     },
 
     { 'junegunn/vim-peekaboo' }, -- Peekaboo will show you the contents of the registers on the sidebar when you hit " or @ in normal mode or <CTRL-R> in insert mode.
@@ -79,3 +49,34 @@ require("lazy").setup({
   -- automatically check for plugin updates
   checker = { enabled = false },
 })
+
+-- Put here because we want to toggle this with F7 instead.
+LspConfigManualTrigger = function()
+    local lspconfig = require("lspconfig")
+    -- lspconfig.pyright.setup({}) -- probably overly zealous and doesn't work well with django
+    -- lspconfig.basedpyright.setup({})
+    lspconfig.clangd.setup({})
+    lspconfig.ruff.setup({})
+
+    lspconfig.rust_analyzer.setup({
+        on_attach = on_attach,
+        settings = {
+            ["rust-analyzer"] = {
+                imports = {
+                    granularity = {
+                        group = "module",
+                    },
+                    prefix = "self",
+                },
+                cargo = {
+                    buildScripts = {
+                        enable = true,
+                    },
+                },
+                procMacro = {
+                    enable = true
+                },
+            }
+        }
+    })
+end

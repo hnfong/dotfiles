@@ -106,6 +106,9 @@ func SiliconPythonInit()
 	" hopefully make the include= thing work better
 	setlocal path+=..,../..
 
+  " edit retriggers stuff regarding reloading the file...
+  nmap <F7> :lua LspConfigManualTrigger()<CR>:edit<CR>
+  nmap <S-F7> :!ruff check --fix %
 endfunction
 au BufRead,BufNewFile *.py	call SiliconPythonInit()
 au FileType python call SiliconPythonInit()
@@ -160,8 +163,9 @@ func SiliconRustInit()
   lua map_keyword_button_to_telescope()
   map <buffer> <F2>	:w<CR>:make build
   nmap <F2> :w<CR>:make build
-  nmap <S-F7> :!ruff check --fix %
-  lua SiliconLuaRustInit()
+
+  " edit retriggers stuff regarding reloading the file...
+  nmap <F7> :lua LspConfigManualTrigger()<CR>:edit<CR>
 endfunction
 
 au BufRead,BufNewfile *.c	call SiliconCInit()
