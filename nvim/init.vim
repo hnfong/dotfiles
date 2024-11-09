@@ -284,8 +284,9 @@ au BufRead,BufNewFile *.swift lua map_keyword_button_to_telescope()
 set statusline=%f\ %h%m%r\ %<%y\ [%{&ff}]\ %{fugitive#statusline()}\ [%b,0x%B]%=Pos\ %c%V,\ Line\ %l\ of\ %L\ (%p%%)
 
 " Don't extend the comments when entering insert mode with newline (o in
-" command mode)
+" command mode), and don't auto add when pressing enter (r)
 autocmd FileType * setlocal formatoptions-=o
+autocmd FileType * setlocal formatoptions-=r
 
 
 set belloff=
@@ -374,9 +375,8 @@ function! SendLineOffsetToShell()
     " Save the file first
     execute 'w'
 
-
     " Get the byte offset of the current line using line2byte
-    let line_offset = line2byte(line("."))
+    let line_offset = line2byte(line(".")) + col(".") - 1
 
     " Check if the line_offset is -1, which indicates an error (e.g., empty buffer)
     if line_offset == -1
@@ -384,15 +384,17 @@ function! SendLineOffsetToShell()
         return
     endif
 
-    " execute 'vsplit | term ask.py -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset - 1)
     " Run as 'r!' instead of vsplitting a term
-    execute 'r!ask.py -q -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset - 1)
+    " execute 'r!ask.py -q -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset)
+    let abc = system('ask.py -q -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset))
 
+    " Set the register in character mode so that we can paste inside the line
+    call setreg("i", abc, "c")
 endfunction
 
 nnoremap <C-K> ggVG:<C-u>call AskVisualSelection('-p ask_user')<CR>
 xnoremap <C-K> :<C-u>call AskVisualSelection('-p ask_user')<CR>
 xnoremap <C-P> :<C-u>call AskVisualSelection('-p code_review')<CR>
-nmap <leader><CR> :<C-u>call SendLineOffsetToShell()<CR>
+inoremap <S-RIGHT> <ESC>:<C-u>call SendLineOffsetToShell()<CR>"ip
 
 source ~/.config/nvim/fugitive.vim
