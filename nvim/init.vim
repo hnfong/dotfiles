@@ -384,8 +384,8 @@ function! SendLineOffsetToShell()
         return
     endif
 
-    " Run as 'r!' instead of vsplitting a term
-    " execute 'r!ask.py -q -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset)
+    echo "Running inferrence..."
+
     let abc = system('ask.py -q -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset))
 
     " Set the register in character mode so that we can paste inside the line
