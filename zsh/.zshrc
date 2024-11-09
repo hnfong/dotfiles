@@ -66,9 +66,11 @@ if [[ "$TERM" = "tmux-256color" || "$TERM" = "screen-256color" ]]; then
     export IS_RUNNING_TMUX=1
 fi
 
+# Use nvim for EDITOR instead
+export EDITOR="nvim"
+
 # Rust initialization
 source "$HOME/.cargo/env"
-
 
 # Show something when Ctrl+C is pressed (mainly to avoid confusion by
 # spectators, since I use this key often and they'd think I pressed enter

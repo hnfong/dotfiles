@@ -386,17 +386,13 @@ function! SendLineOffsetToShell()
 
     " execute 'vsplit | term ask.py -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset - 1)
     " Run as 'r!' instead of vsplitting a term
-    execute 'r!ask.py -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset - 1)
+    execute 'r!ask.py -q -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset - 1)
 
 endfunction
-
-" Optional: You can map this function to a keybinding in normal mode
-" For example, to map it to <leader>l:
-nnoremap <leader>l :call SendLineOffsetToShell()<CR>
 
 nnoremap <C-K> ggVG:<C-u>call AskVisualSelection('-p ask_user')<CR>
 xnoremap <C-K> :<C-u>call AskVisualSelection('-p ask_user')<CR>
 xnoremap <C-P> :<C-u>call AskVisualSelection('-p code_review')<CR>
-nmap <C-CR> :<C-u>call SendLineOffsetToShell()<CR>
+nmap <leader><CR> :<C-u>call SendLineOffsetToShell()<CR>
 
 source ~/.config/nvim/fugitive.vim
