@@ -5,6 +5,7 @@ set background=dark
 set backspace=2
 set completeopt-=preview
 set expandtab
+set foldopen-=search " Originally the intention is to not search inside folded content, this does not do that, instead just avoids opening the fold if we find the content in folds. Still, it's more preferable.
 set foldlevel=999999
 set foldmethod=syntax
 set foldminlines=4
@@ -32,7 +33,6 @@ set softtabstop=4
 set spelllang=en_us
 set splitbelow
 set splitright
-set t_mr=[0;1;37;41m " custom "reverse" terminal escape code
 set tabstop=4
 set whichwrap=<,>
 set wildmenu
@@ -41,39 +41,31 @@ set winminheight=0
 set winminwidth=20
 colorscheme vim
 
-let foldtoggledefault=0
+let foldlevelbase = 0
 
-func Togglefold()
- if &foldlevel != g:foldtoggledefault
-  let &foldlevel=g:foldtoggledefault
- else
-  set foldlevel=999999
- endif
+func! Togglefold()
+  if &foldlevel > 2
+    if &foldlevel >= 999999
+      let &foldlevel = g:foldlevelbase
+    else
+      let &foldlevel = 999999
+      echo 'Foldlevel 999999'
+    endif
+  else
+    let &foldlevel += 1
+  endif
 endfunc
-
-if has("gui_running")
-	set shell=/bin/sh
-endif
 
 " set nobomb for all files (byte order mark)
 au BufWinEnter setlocal nobomb
 
-set titlestring=vim:%f
-
+set titlestring=nvim:%f
 set title
 autocmd BufEnter,BufNewFile * call system("tmux rename-window nvim:". expand('%:t'))
-
 
 " https://askubuntu.com/questions/223018/vim-is-not-remembering-last-position
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
-
-"**************************** SmartIndent ****************************"
-au BufRead,BufNewFile *.php	setlocal smartindent
-au BufRead,BufNewFile *.java	setlocal smartindent
-au BufRead,BufNewFile *.java	lua map_keyword_button_to_telescope()
-au BufRead,BufNewFile *.java    let foldtoggledefault=1
-au BufRead,BufNewFile *.pl	setlocal smartindent
 
 "**************************** Highlight weird stuff ****************************"
 highlight TrailingSpace ctermbg=red guibg=red
@@ -201,13 +193,10 @@ au BufRead,BufNewFile *.pm map <buffer> <F3> :w<CR>:!time perl %
 au BufRead,BufNewFile *.pm map <buffer> OR :w<CR>:!time perl %
 
 "**************************** Javascript **************************** "
-au BufRead,BufNewFile *.js	ab fx() function()
-au BufRead,BufNewFile *.js	syn sync minlines=400  " attempt to fix javascript syntax problems (http://www.vim.org/tips/tip.php?tip_id=454)
 au BufRead,BufNewFile *.js setlocal foldmethod=indent
 au BufRead,BufNewfile *.js setlocal softtabstop=4 tabstop=4 shiftwidth=4 expandtab
 au BufRead,BufNewFile *.js setlocal smartindent
 au BufRead,BufNewfile *.js setlocal makeprg=jslint\ %
-au BufRead,BufNewFile *.js let g:foldtoggledefault=1
 au BufRead,BufNewFile *.js highlight LastCommaInHash ctermbg=red guibg=red
 au BufRead,BufNewFile *.js match LastCommaInHash /,\_s*[}\]]/
 au BufRead,BufNewFile *.js lua map_keyword_button_to_telescope()
@@ -215,24 +204,10 @@ au BufRead,BufNewFile *.js lua map_keyword_button_to_telescope()
 au BufRead,BufNewFile *.js nmap <F7> :lua LspConfigManualTrigger()<CR>:edit<CR>
 au BufRead,BufNewFile *.js nmap <S-F7> :!ruff check --fix %
 
-"**************************** HTML/PHP ****************************"
-func SiliconHtmlAbbreviations ()
-  abb htmlstrict <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-  
-  abb html40 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-  abb xhtmlstrict <?xml version="1.0"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-  abb xhtml <?xml version="1.0"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-  syn sync minlines=400  " attempt to fix javascript syntax problems (http://www.vim.org/tips/tip.php?tip_id=454)
-endfunction
-
-au BufRead,BufNewFile *.html	call SiliconHtmlAbbreviations()
-au BufRead,BufNewFile *.php		call SiliconHtmlAbbreviations()
-au BufRead,BufNewFile *.jsp		call SiliconHtmlAbbreviations()
-au BufRead,BufNewFile *.tt		call SiliconHtmlAbbreviations()
-
 "**************************** Java *****************************"
 au BufRead,BufNewFile *.java    nmap <F3> :!javac % && time java %<
 au BufRead,BufNewFile *.java    nmap OR :!javac % && time java %<
+au BufRead,BufNewFile *.java	lua map_keyword_button_to_telescope()
 
 
 "**************************** Other ****************************"
@@ -241,7 +216,6 @@ au BufRead,BufNewFile *.gitlog set keywordprg=git\ show
 au BufRead,BufNewFile *.jl setlocal syntax=julia
 au BufRead,BufNewFile *.prolog map <buffer> <F3> :w<CR>:!time prolog %
 au BufRead,BufNewFile *.v set filetype=vlang
-au BufRead,BufNewfile *.go	set syntax=d
 au FileType gitrebase set keywordprg=git\ show
 au FileType make set noexpandtab
 au FileType yaml setlocal indentexpr=
@@ -298,7 +272,7 @@ endfunction
 au FileType markdown setlocal foldexpr=MarkdownFolds()
 au FileType markdown setlocal foldmethod=expr
 au FileType markdown setlocal foldminlines=2
-au FileType markdown let g:foldtoggledefault=3
+au FileType markdown let g:foldlevelbase=2
 au FileType markdown setlocal smartcase ignorecase
 
 
