@@ -53,6 +53,7 @@ func! Togglefold()
     endif
   else
     let &foldlevel += 1
+    echo 'Foldlevel ' . &foldlevel
   endif
 endfunc
 
@@ -64,7 +65,7 @@ set title
 autocmd BufEnter,BufNewFile * call system("tmux rename-window nvim:". expand('%:t'))
 
 " https://askubuntu.com/questions/223018/vim-is-not-remembering-last-position
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+au BufReadPost * if expand('%:t') != 'COMMIT_EDITMSG' && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 
 "**************************** Highlight weird stuff ****************************"
@@ -194,7 +195,7 @@ au BufRead,BufNewFile *.pm map <buffer> OR :w<CR>:!time perl %
 
 "**************************** Javascript **************************** "
 au BufRead,BufNewFile *.js setlocal foldmethod=indent
-au BufRead,BufNewfile *.js setlocal softtabstop=4 tabstop=4 shiftwidth=4 expandtab
+au BufRead,BufNewfile *.js setlocal softtabstop=2 tabstop=2 shiftwidth=2 expandtab
 au BufRead,BufNewFile *.js setlocal smartindent
 au BufRead,BufNewfile *.js setlocal makeprg=jslint\ %
 au BufRead,BufNewFile *.js highlight LastCommaInHash ctermbg=red guibg=red
@@ -217,6 +218,7 @@ au BufRead,BufNewFile *.jl setlocal syntax=julia
 au BufRead,BufNewFile *.prolog map <buffer> <F3> :w<CR>:!time prolog %
 au BufRead,BufNewFile *.v set filetype=vlang
 au FileType gitrebase set keywordprg=git\ show
+au FileType gitcommit nmap <F6> :r!git diff --cached \| ask -q -p gitcommit
 au FileType make set noexpandtab
 au FileType yaml setlocal indentexpr=
 au FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
@@ -386,7 +388,7 @@ function! SendLineOffsetToShell()
 
     echo "Running inferrence..."
 
-    let abc = system('ask.py -q -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset))
+    let abc = system('ask.py -t 0.1 -q -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset))
 
     " Set the register in character mode so that we can paste inside the line
     call setreg("i", abc, "c")
