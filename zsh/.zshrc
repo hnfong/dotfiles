@@ -68,6 +68,7 @@ fi
 
 # Use nvim for EDITOR instead
 export EDITOR="nvim"
+export GIT_EDITOR="nvim"
 
 # Rust initialization
 source "$HOME/.cargo/env"
