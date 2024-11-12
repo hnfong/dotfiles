@@ -12,6 +12,8 @@
 	<false/>
 	<key>Default Bookmark Guid</key>
 	<string>845F80E3-D2DD-44EA-9828-541EEF4CC069</string>
+	<key>EnableAPIServer</key>
+	<true/>
 	<key>EscapeShellCharsWithBackslash</key>
 	<false/>
 	<key>HapticFeedbackForEsc</key>
