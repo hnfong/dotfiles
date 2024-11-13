@@ -45,5 +45,26 @@ fi
 pip3 install --user -U csvkit
 pip3 install --user -U ocrmac
 
-cargo install ripgrep
-cargo install zoxide
+## Install rust/cargo
+if [ ! -d ~/.cargo ]; then
+    # Ask user for confirmation first
+    echo "Planning to run command: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+    echo "This will install rust/cargo. Do you want to proceed? (y/n)"
+    read -r CONFIRM
+
+    if [ "$CONFIRM" != "y" ]; then
+        echo "Aborting installation."
+        exit 1
+    fi
+
+    set -ex
+    set -o pipefail
+
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+    # Refresh $PATH after installation
+    source "$HOME/.cargo/env"
+
+    cargo install ripgrep
+    cargo install zoxide
+fi
