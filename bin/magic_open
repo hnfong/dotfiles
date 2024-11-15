@@ -65,7 +65,6 @@ function editor() {
             else
                 exec "$EDITOR" -O "$@"
             fi
-            exec "$EDITOR" -O "$@"
         fi
     else
         exec "$EDITOR" $my_line -O "$@"
