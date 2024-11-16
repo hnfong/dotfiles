@@ -276,6 +276,8 @@ au FileType markdown setlocal foldmethod=expr
 au FileType markdown setlocal foldminlines=2
 au FileType markdown let g:foldlevelbase=2
 au FileType markdown setlocal smartcase ignorecase
+au FileType markdown nnoremap <F3> :MarkdownPreview
+au FileType markdown nnoremap <S-F3> :MarkdownPreviewStop
 
 
 "****************************** Swift ******************************"

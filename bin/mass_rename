@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# This program is designed to search for files in the current directory and its
+# subdirectories, replacing occurrences of a specified string ( `FROM`) with
+# another string (`TO`). It generates a list of commands to move the original
+# files to a backup location while renaming them to the new string. Note that
+# 'FROM' is a regex, so you must escape special characters like '.' with '\.'
+#
+# Review the list of commands and confirm by typing `y` when prompted. If
+# you confirm, the script will execute the `mv` commands to rename the files.
+#
+# Usage:
+#    mass_rename old_string new_string
+
+FROM=$1
+TO=$2
+
+find . -type f | perl -ne '$was = $_; s/'"$FROM"/"$TO"'/g; if ($was ne $_) { print $was; print $_; }' | tr '\n' '\0' | xargs -n 2 -0 echo mv -v
+
+read -p "OK ? " isOK
+
+if [[ "$isOK" = y ]]; then
+    find . -type f | perl -ne '$was = $_; s/'"$FROM"/"$TO"'/g; if ($was ne $_) { print $was; print $_; }' | tr '\n' '\0' | xargs -n 2 -0 mv -v
+fi

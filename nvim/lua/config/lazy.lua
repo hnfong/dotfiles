@@ -37,6 +37,20 @@ require("lazy").setup({
       vim.g.netrw_nogx = 1 -- disable netrw gx
     end },
 
+
+    {
+        -- https://github.com/iamcco/markdown-preview.nvim/issues/690#issuecomment-2371742039
+        -- install markdown-preview.nvim without yarn or npm
+        'iamcco/markdown-preview.nvim',
+        event = "VeryLazy",
+        cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+        ft = { 'markdown' },
+        -- Uncomment this for build.
+        -- build = function()
+            -- vim.fn['mkdp#util#install']()
+        -- end,
+    },
+
     -- These are probably great but I don't have time to train myself to use them
     -- https://github.com/tpope/vim-surround  - shorter keystrokes for surrounding quotes, parenthesis, etc.
     --
