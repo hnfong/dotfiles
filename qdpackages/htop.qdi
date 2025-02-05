@@ -1,0 +1,5 @@
+DESTINATION_SUFFIX=/apps/zstd
+
+DOWNLOAD_COMMAND='curl -L -O https://github.com/htop-dev/htop/releases/download/3.3.0/htop-3.3.0.tar.xz'
+COMPILE_COMMAND='tar zxvf htop-3.3.0.tar.xz && cd htop-3.3.0 && ./configure --prefix=$HOME/apps && make'
+INSTALL_COMMAND='cd htop-3.3.0 && make install && cd ~/bin && ln -svf ../apps/bin/htop .'

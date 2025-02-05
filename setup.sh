@@ -68,3 +68,6 @@ if [ ! -d ~/.cargo ]; then
     cargo install ripgrep
     cargo install zoxide
 fi
+
+cd ~/dotfiles
+bin/qdinstall qdpackages/htop.qdi
