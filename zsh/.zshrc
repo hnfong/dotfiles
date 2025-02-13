@@ -14,6 +14,12 @@ if [[ -z "$PS1" ]]; then
     return 0
 fi
 
+if [[ -z "$SI_TOP_LEVEL" ]]; then
+    export SI_TOP_LEVEL=0
+else
+    export SI_TOP_LEVEL=$((SI_TOP_LEVEL + 1))
+fi
+
 # Customize to your needs...
 #
 setopt CHECK_JOBS
@@ -59,7 +65,9 @@ HISTORY_IGNORE='(ls|exit|ps auxf)'
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 REPORTTIME=5
 
+if [[ "$SI_TOP_LEVEL" = "0" ]]; then
 export PATH="$HOME/bin:$HOME/.local/bin:/Users/sidney_fong/Library/Python/$(ls -tr /Users/sidney_fong/Library/Python/ | tail -n 1)/bin:$PATH:/opt/homebrew/bin"
+fi
 
 export IS_RUNNING_TMUX=
 if [[ "$TERM" = "tmux-256color" || "$TERM" = "screen-256color" ]]; then
@@ -227,6 +235,10 @@ function _hnfong_set_ps1() {
         PROMPT=${PROMPT//green/red}
         PROMPT=${PROMPT//yellow/red}
     fi
+
+    if [[ "$CONDA_PREFIX" ]]; then
+        PROMPT="{$(basename "$CONDA_PREFIX")} $PROMPT"
+    fi
 }
 
 # Tries to find a path
@@ -299,6 +311,7 @@ function fd {
 
 
 SI_CONFIG_FANCY_PROMPT=1
+
 _hnfong_set_ps1
 
 # Disable git completion (slow)
@@ -306,3 +319,29 @@ compdef -d git
 
 eval "$(zoxide init zsh)"
 
+
+function conda_start() {
+
+# Wrap the conda init code to keep it in check
+
+
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/sidney_fong/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/sidney_fong/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/sidney_fong/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/sidney_fong/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+conda env list
+
+echo "usage: conda activate [environment]"
+}
