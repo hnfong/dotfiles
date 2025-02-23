@@ -44,6 +44,7 @@ fi
 ## Python stuff
 pip3 install --user -U csvkit
 pip3 install --user -U ocrmac
+pip3 install --user -U uv
 
 ## Install rust/cargo
 if [ ! -d ~/.cargo ]; then
