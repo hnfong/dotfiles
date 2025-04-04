@@ -44,7 +44,7 @@ alias rm='rm -iv'
 alias mv='mv -iv'
 alias cp='cp -iv'
 alias vi='magic_open'
-alias ff='find . -name'
+alias ff='fd -HI'
 alias vigl='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git log -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
 alias vigll='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git lll -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
 alias h='helper'
@@ -242,10 +242,10 @@ function _hnfong_set_ps1() {
 }
 
 # Tries to find a path
-function fd {
+function xxxfd {
     # -d to find the directory of the target and cd to it
     if [[ $1 == '-d' ]]; then
-        local FOUND=`fd "$2"`
+        local FOUND=`xxxfd "$2"`
         if [[ -e "$FOUND" ]]; then
             cd "${FOUND:h}"
         fi

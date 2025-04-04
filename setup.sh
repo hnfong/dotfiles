@@ -68,6 +68,7 @@ if [ ! -d ~/.cargo ]; then
 
     cargo install ripgrep
     cargo install zoxide
+    cargo install fd-find
 fi
 
 cd ~/dotfiles

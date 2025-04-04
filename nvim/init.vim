@@ -279,6 +279,8 @@ au FileType markdown setlocal smartcase ignorecase
 au FileType markdown nnoremap <F3> :MarkdownPreview
 au FileType markdown nnoremap <S-F3> :MarkdownPreviewStop
 
+au FileType html set indentkeys=
+
 
 "****************************** Swift ******************************"
 au BufRead,BufNewFile *.swift lua map_keyword_button_to_telescope()
