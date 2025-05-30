@@ -71,6 +71,6 @@ for item, suffix in extracted:
     z += float(item) * kmb_to_value(suffix)
 
 print(z)
-print(z // BASE, "K")
-print(z // BASE // BASE, "M")
-print(z // BASE // BASE // BASE, "G")
+print("%.1f k" % (z / BASE))
+print("%.1f M" % (z / BASE / BASE))
+print("%.1f G" % (z / BASE / BASE / BASE))
