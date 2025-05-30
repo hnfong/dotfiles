@@ -1,15 +1,33 @@
 #!/bin/bash
 
 # A script to open files in EDITOR([n]vim) with a little bit of magic.
-#
-# Features:
-# - Open files normally if they exist
-# - Parses line numbers in the format of <file>:<line_number>
-# - Tries to find the file in the current git repo
-# - Tries to find files that match a wildcard pattern if there is no exact match
-# - Automatically open files in split windows if there less than 4 files
-# - Automatically open files in tabs if there are more than 4 files
-#
+
+function usage() {
+    echo <<_X_
+Usage:
+magic_open [OPTIONS] [FILE[:LINE]]
+
+Options:
+  -g <pattern>   Search for files using git grep
+  -r <pattern>   Search for files using git ls-tree
+
+Examples:
+  magic_open x.txt              # Open x.txt
+  magic_open x.txt:10           # Open x.txt line 10
+  magic_open -g "search term"   # Open files containing "search term"
+  magic_open -r "txt"           # Open .txt files in repo
+
+Opens files in nvim, with support for line numbers and git repo searching.
+
+- Opens files in **nvim** with support for **line numbers**.
+- If no arguments are provided, opens a file picker in nvim.
+- If a **file path** is provided, opens the specified file.
+- If a **file:line** is provided, opens the specified file and jumps to the given line.
+- Automatically resolves ambiguous paths by searching the file system or git repository.
+- Supports **tabbed editing** for multiple files.
+- Uses **Telescope** for file selection when no arguments are given.
+_X_
+}
 
 EDITOR=nvim
 

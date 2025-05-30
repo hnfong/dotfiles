@@ -1,10 +1,28 @@
 #!/usr/bin/python3
 
 """
-This python program reads a string from stdin, extracts all numbers with suffixes
-(k, K, m, M, g, G) and sorts them in ascending order. It then calculates the sum
-of all the numbers and prints the sum and the sum in K, M, G.
+This program reads a string from standard input, extracts all numbers followed
+by optional suffixes (k, K, m, M, g, G), converts them to their base value
+(kilo=1024,M=1024*1024,etc.), calculates their sum, and prints the total sum as
+well as the sum in kilobytes (K), megabytes (M), and gigabytes (G).
 
+The program handles numbers with commas as thousand separators and supports
+both lowercase and uppercase suffixes.
+
+Example input:
+
+```
+1.5G, 2K, 3M, and 4.2G
+500,000K and 600M
+```
+
+Example output:
+```
+7264621772.8
+7094357.0 K
+6928.0 M
+6.0 G
+```
 """
 
 import re
@@ -31,12 +49,11 @@ def kmb_cmp(a, b):
 
     return suf_a - suf_b
 
-NUM_WITH_SUFFIX = re.compile(r'([0-9\,\.]+)([kKmMbBgG]?)')
+NUM_WITH_SUFFIX = re.compile(r'([0-9][0-9\,\.]*)([kKmMbBgG]?)')
 
 input_string = sys.stdin.read()
 # print(repr(input_string))
 extracted = NUM_WITH_SUFFIX.findall(input_string)
-# print(sorted(extracted, key=functools.cmp_to_key(kmb_cmp)))
 
 BASE = 1024
 

@@ -80,7 +80,7 @@ vim.cmd [[
     nnoremap <C-F> :call Togglefold()<CR>
 
     " for browsing through ":make" results and ":grep" results, etc.
-    nnoremap <leader><SPACE> :cnext<CR>
+    nnoremap <SPACE> :cnext<CR>
     nnoremap <BS> :cprev<CR>
 
     " Enter button removes the search highlight
