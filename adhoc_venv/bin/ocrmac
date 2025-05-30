@@ -1,7 +1,13 @@
 #!/bin/bash
-'''exec' uv run --script --project "$(dirname -- "$(realpath -- "$0")")" "$0" "$@"
+'''true'
+set -e
+CMD=$(basename "$0")
+pushd "$(dirname "$(readlink -f "$0")")"/.. >/dev/null
+source .venv/bin/activate
+popd >/dev/null
+exec uv run --script "$0" "$@"
 ' '''
-# https://github.com/astral-sh/uv/issues/12193#issuecomment-2726977692
+# Advanced version of https://github.com/astral-sh/uv/issues/12193#issuecomment-2726977692
 
 import sys
 import getopt
