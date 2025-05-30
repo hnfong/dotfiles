@@ -1,10 +1,11 @@
 #!/bin/bash
 set -e
-cd "$(dirname "$(readlink -f "$0")")"/..
+pushd "$(dirname "$(readlink -f "$0")")"/.. >/dev/null
 source .venv/bin/activate
 additional_args=()
 if [[ "$@" != *'-m'* ]]; then
     # https://github.com/tonybaloney/llm-github-models
     additional_args=("-m" "github/gpt-4.1-mini")
 fi
-PYTHONWARNINGS=ignore GITHUB_MODELS_KEY=`cat ~/.github_token` llm "${additional_args[@]}" "$@"
+popd >/dev/null
+PYTHONWARNINGS=ignore GITHUB_MODELS_KEY=`cat ~/.github_token` exec llm "${additional_args[@]}" "$@"

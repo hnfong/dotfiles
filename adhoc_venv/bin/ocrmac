@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 '''exec' uv run --script --project "$(dirname -- "$(realpath -- "$0")")" "$0" "$@"
 ' '''
 # https://github.com/astral-sh/uv/issues/12193#issuecomment-2726977692
