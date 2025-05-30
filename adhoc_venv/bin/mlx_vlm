@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+CMD=$(basename "$0")
+pushd "$(dirname "$(readlink -f "$0")")"/.. >/dev/null
+source .venv/bin/activate
+popd >/dev/null
+img=$1
+shift
+
+if [[ -n "$1" ]]; then
+    exec mlx_vlm.generate --model mlx-community/Qwen2-VL-7B-Instruct-4bit --max-tokens 500 --temp 0.1 --image "$img" --prompt "$@"
+else
+    exec mlx_vlm.generate --model mlx-community/Qwen2-VL-7B-Instruct-4bit --max-tokens 500 --temp 0.1 --image "$img"
+fi
