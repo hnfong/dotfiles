@@ -13,5 +13,5 @@ dependencies = [
     "mlx-vlm>=0.1.26",
     "ocrmac>=1.0.0",
     "ruff>=0.11.12",
-    "torchvision>=0.22.0",
+    "torchvision>=0.22.0", # Somehow needed for mlx-vlm but isn't a dependency...
 ]
