@@ -1,0 +1,17 @@
+[project]
+name = "adhoc-venv"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12.9"
+dependencies = [
+    "huggingface-hub[cli]>=0.32.3",
+    "llm-github-models>=0.15",
+    "llm-tools-exa>=0.4.0",
+    "mflux>=0.7.1",
+    "mlx-lm>=0.24.1",
+    "mlx-vlm>=0.1.26",
+    "ocrmac>=1.0.0",
+    "ruff>=0.11.12",
+    "torchvision>=0.22.0",
+]
