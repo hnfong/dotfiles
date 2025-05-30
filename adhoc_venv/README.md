@@ -7,6 +7,8 @@ Container for ad-hoc virtualenvs (which hopefully don't conflict and lets me avo
 - llm (Simon Willison’s)
 - mflux-generate
 - ocrmac
+- huggingface-cli `huggingface_hub[cli]`
+- ruff
 
 # Reminder notes:
 
