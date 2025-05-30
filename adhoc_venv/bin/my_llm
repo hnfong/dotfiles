@@ -24,7 +24,10 @@ else
         if [[ "$is_m_state" = "1" ]]; then
             is_m_state=0
             # Extract all the models from this script (by assuming a markdown table format prefix), then try to match the model name.
-            arg=github/$((grep '^| ' "$0" | grep -oiE '[^ ]*'"$arg"'[^ ]*'; grep '^| '"$arg " "$0" | awk '{print $2}') | tail -n 1)
+            model=$((grep '^| ' "$0" | grep -oiE '[^ ]*'"$arg"'[^ ]*'; grep '^| '"$arg " "$0" | awk '{print $2}') | tail -n 1)
+            if [[ "$model" != "" ]]; then
+                arg=github/"$model"
+            fi
         elif [[ "$arg" = "-m" ]]; then
             is_m_state=1
         fi
@@ -32,7 +35,11 @@ else
     done
 fi
 popd >/dev/null
-PYTHONWARNINGS=ignore GITHUB_MODELS_KEY=`cat ~/.github_token` exec llm "${additional_args[@]}" "${args[@]}"
+export GITHUB_MODELS_KEY=`cat ~/.github_token`
+if [[ -t 0 && -t 1 ]]; then
+    set -x
+fi
+PYTHONWARNINGS=ignore exec llm "${additional_args[@]}" "${args[@]}"
 
 # From https://raw.githubusercontent.com/tonybaloney/llm-github-models/refs/heads/main/README.md
 echo <<_X_
