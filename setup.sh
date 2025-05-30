@@ -42,9 +42,11 @@ if [ ! -d "dotfiles/zsh/.zprezto" ]; then
 fi
 
 ## Python stuff
-pip3 install --user -U csvkit
-pip3 install --user -U ocrmac
+## XXX: Keep this list short. For others, just do it in ./adhoc_venv/setup.sh
 pip3 install --user -U uv
+pushd adhoc_venv/
+make setup
+popd
 
 ## Install rust/cargo
 if [ ! -d ~/.cargo ]; then

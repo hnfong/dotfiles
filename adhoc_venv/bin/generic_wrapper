@@ -1,0 +1,7 @@
+#!/bin/bash
+# Usage: symlink this (within the project) to match the name of the actual command installed by the python package. eg. ln -s generic_wrapper mflux-generate
+set -e
+CMD=$(basename "$0")
+cd "$(dirname "$(readlink -f "$0")")"/..
+source .venv/bin/activate
+PYTHONWARNINGS=ignore "$CMD" "$@"
