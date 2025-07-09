@@ -364,7 +364,7 @@ function AskVisualSelection(additional_args)
     " Run wc on the temp file inside a terminal buffer
     " execute 'term ask.py -f ' . l:tempfile
     " Vertically split the window and run wc on the temp file inside a terminal buffer
-    execute 'vsplit  | vertical resize +50 | term ask.py -v -t 0.3 -c 8192 ' . a:additional_args . ' -f ' . shellescape(l:tempfile)
+    execute 'vsplit  | vertical resize +50 | term ask.py -v -t 0.3 -d 2048 -c 24000 ' . a:additional_args . ' -f ' . shellescape(l:tempfile)
 
     " Optionally, delete the temp file after a short delay to allow wc to read it
     " This uses the timer_start function to introduce a delay

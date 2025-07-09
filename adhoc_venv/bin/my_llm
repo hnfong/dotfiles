@@ -1,4 +1,12 @@
 #!/bin/bash
+
+# Example usage:
+#
+# my_llm 'ffmpeg command to increase the volume' # defaults to gpt-4.1-mini
+# my_llm -m "DeepSeek-V3" "What is the capital of France?"
+#
+# exa_llm "What's the latest debian stable release?" # Uses exa to query the web and returns an answer
+
 set -e
 pushd "$(dirname "$(readlink -f "$0")")"/.. >/dev/null
 source .venv/bin/activate
