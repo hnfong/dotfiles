@@ -44,15 +44,20 @@ vim.cmd [[
     vmap <F9> "zy:lua live_grep_z()<CR>
     vmap <C-F9> "zy:lua live_grep_z()<CR>
 
+    " Telescope for F10
+    nmap <F10> :Telescope oldfiles<CR>
+
     " Pastes from macOS clipboard
-    nmap <F10> :r!pbpaste<CR>
+    nmap <F11> "+p
+    nmap <S-F11> "+P
+    nmap <F23> "+P
 
     " Copies selected text to clipboard
-    vmap <F10> :w !pbcopy<CR>
+    vmap <F11> "+y
 
     " Opens a new vertical split window with a terminal
     nmap <F12> :vnew<CR>:terminal<CR>
-    nmap <S-F12> :vnew<CR>:terminal 
+    nmap <S-F12> :vnew<CR>:terminal
 ]]
 
 -- function to call live_grep with the contents of register z
