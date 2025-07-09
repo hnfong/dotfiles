@@ -1,7 +1,9 @@
 #!/bin/bash
 # Use subdirectory for each download so that we don't mix up the newly downloaded file
 
-temp_dir="$(date +%Y%m%d_%H%M%S)"
+if [[ ! -d "$temp_dir" ]]; then
+    temp_dir="$(date +%Y%m%d_%H%M%S)"
+fi
 echo "Downloading to $temp_dir"
 mkdir -p "$temp_dir"
 cd "$temp_dir"
@@ -9,7 +11,7 @@ cd "$temp_dir"
 # Use yt-dlp to download the video
 yt-dlp --write-info-json --write-thumbnail -f bestaudio "$1"
 
-downloaded_filename=$(ls *.webm *.m4a)
+downloaded_filename=$(ls *.webm *.m4a *.mp4)
 
 # Convert to mp3, speed up by 1.5x, strip the webm extension
 ffmpeg -i "$downloaded_filename" -filter:a "atempo=1.7,volume=4.0" -q:a 7 -vn "$temp_dir"-"$(basename "$downloaded_filename" .webm)".mp3

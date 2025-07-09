@@ -64,6 +64,38 @@ function front_stripper() {
     done
 }
 
+# Obsolete.
+function posix_globber() {
+    local arg=$1
+    local magic_open_temp_file=$2
+
+    # We store this in a temp file because this seems to be the only way to
+    # avoid the while loop from running in a subshell
+    magic_list_files | grep -F "$arg" | grep "[/^]$arg\$" | head -n 100 | front_stripper > "$magic_open_temp_file"
+    # Check whether the temp file has any contents
+    if [[ ! -s "$magic_open_temp_file" ]]; then
+        magic_list_files | grep -F "$arg" | head -n 99 | front_stripper > "$magic_open_temp_file"
+    fi
+}
+
+function rust_globber() {
+    local arg=$1
+    local magic_open_temp_file=$2
+    local base=$(basename "$arg")
+    fd --glob --hidden --max-depth=3 --max-results=100 '*'"$base"'*' | front_stripper > "$magic_open_temp_file"
+    # Check whether the temp file has any contents
+    if [[ ! -s "$magic_open_temp_file" ]]; then
+        fd --glob --hidden --no-ignore --max-depth=3 --max-results=100 '*'"$base"'*' | front_stripper > "$magic_open_temp_file"
+    fi
+
+    # If there is an exact match, only use that
+    if rg -q "[/^]$arg\$" "$magic_open_temp_file"; then
+        local new_temp_file=$(mktemp)
+        rg "[/^]$arg\$" "$magic_open_temp_file" > "$new_temp_file"
+        /bin/mv "$new_temp_file" "$magic_open_temp_file"
+    fi
+}
+
 function editor() {
     if [[ -n "$1" ]]; then
         cmd=$(basename $1)
@@ -102,6 +134,7 @@ original_args=("$@")
 if [[ "$IS_MAGIC_OPEN_TEST" = "1" && -z "$1" ]]; then
     # Run tests
     cd "$(dirname "$0")"
+    mkdir -p ../magic_open_test_environment/
     cd ../magic_open_test_environment/
     echo "Running tests in $(pwd)"
     # Ensure we have the appropriate files in the test environment
@@ -155,17 +188,10 @@ for arg in "$@"; do
         arg="$my_path"
     fi
 
-    if [[ ! -e "$arg" && -n "$arg" ]]; then
+    if [[ ! -e "$arg" && -n "$arg" && "$arg" != /* && "$arg" != ./* ]]; then
         found=0
         magic_open_temp_file=$(mktemp)
-
-        # We store this in a temp file because this seems to be the only way to
-        # avoid the while loop from running in a subshell
-        magic_list_files | grep -F "$arg" | grep "[/^]$arg\$" | head -n 99 | front_stripper > "$magic_open_temp_file"
-        # Check whether the temp file has any contents
-        if [[ ! -s "$magic_open_temp_file" ]]; then
-            magic_list_files | grep -F "$arg" | head -n 99 | front_stripper > "$magic_open_temp_file"
-        fi
+        rust_globber "$arg" "$magic_open_temp_file" # Save found files to $magic_open_temp_file
         while read -r file_path; do
             PROCESSED_ARGS+=("$file_path")
             found=1
