@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+
+"""
+This program constructs a prompt based on a query and input lines, then uses an
+LLM (via `ask.py`) to process the prompt, for filtering or searching content in
+the input lines.
+
+Usage:
+
+    llm_grep [-m model] QUERY [FILE]
+
+"""
+
+
+import sys
+import subprocess
+import getopt
+import tempfile
+
+DEFAULT_MODEL_NAME = "Qwen3-8B" # For ask.py
+
+TEMPLATE = """
+I want you to perform a semantic "grep" given the input and a query/description.
+
+For every line in the input, output the line (together with line number) only
+if the line has something that matches the given query/description, otherwise
+ignore the line. Only trigger when the input obviously matches the query, i.e.
+not tangentially related.
+
+- !! Query/Description of what we want: `${QUERY}` !!
+
+# START OF INPUT
+
+${LINES}
+
+# END OF INPUT
+
+For every line in the input, output the line (together with line number) only
+if the line has something that matches the given query/description, otherwise
+ignore the line. Only trigger when the input obviously matches the query, i.e.
+not tangentially related.
+
+- !! Query/Description of what we want: `${QUERY}` !!
+
+If no lines match just give empty response. Don't explain. Just output as if
+you're a command line program called "semantic_grep".
+
+Important: after each line of output, also emit a "---" to separate it from
+your next output.
+"""
+
+def create_prompt(query, in_file):
+    prompt = TEMPLATE.replace("${QUERY}", query)
+
+    lines_buf = []
+    for line_num, line in enumerate(in_file):
+        line_num += 1 # one based
+        lines_buf.append(f"{line_num}:{line.rstrip()}")
+
+    return prompt.replace("${LINES}", "\n".join(lines_buf))
+
+def usage():
+    sys.stderr.write(__doc__.strip())
+    sys.stderr.write("\n")
+
+def main():
+    try:
+        opt_list, args = getopt.getopt(sys.argv[1:], "m:h", [])
+    except getopt.GetoptError as err:
+        usage()
+        sys.exit(1)
+
+    if len(args) < 1:
+        usage()
+        sys.exit(1)
+
+    opts = dict(opt_list)
+
+    model = opts.get("-m", DEFAULT_MODEL_NAME)
+    query = args[0]
+
+    if len(args) > 1:
+        input_file = open(args[1], "rt")
+    else:
+        input_file = sys.stdin
+
+    prompt = create_prompt(query, input_file)
+
+    with tempfile.NamedTemporaryFile(mode='w') as temp_file:
+        temp_filename = temp_file.name
+
+        temp_file.write(prompt)
+        temp_file.flush()
+
+        # Call the LLM using ask.py
+        cmd = ["ask.py", "-m", model, "-c", "99999", "-d", "2048", "-f", temp_filename]
+        print(cmd)
+        subprocess.run(cmd, check=True)
+
+if __name__ == "__main__":
+    main()
