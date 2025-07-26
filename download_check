@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+
+"""
+Usage: ./download_check FILENAME
+
+Checks the file specified in FILENAME against the records we have.
+"""
+
+SIGNATURES = """
+6fc69c01688c9458a57eb9a1664c9aba372ccda420a02bf4429fe610e7e7d591  pkg-config-0.29.2.tar.gz
+b58c80d79b04d3243ff49c1c3fc6b5f83138eb3784689563bcdd060595318616  gnupg-2.4.8.tar.bz2
+d2931cdad266e633510f9970e1a2f346055e351bb19f9b78912475b8074c36f6  libassuan-3.0.2.tar.bz2
+24e91c9123a46c54e8371f3a3a2502f1198f2893fbfbf59af95bc1c21499b00e  libgcrypt-1.11.1.tar.bz2
+95b178148863f07d45df0cea67e880a79b9ef71f5d230baddc0071128516ef78  libgpg-error-1.55.tar.bz2
+cf72510b8ebb4eb6693eef765749d83677a03c79291a311040a5bfd79baab763  libksba-1.6.7.tar.bz2
+8bd24b4f23a3065d6e5b26e98aba9ce783ea4fd781069c1b35d149694e90ca3e  npth-1.8.tar.bz2
+"""
+
+import hashlib
+import os
+import sys
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: ./download_check FILENAME")
+        sys.exit(1)
+
+    filename = sys.argv[1]
+    expected_hashes = {}
+
+    for line in SIGNATURES.strip().split('\n'):
+        hash_str, file_name = line.split(maxsplit=1)
+        expected_hashes[file_name] = hash_str
+
+    base_filename = os.path.basename(filename)
+
+    if base_filename not in expected_hashes:
+        print(f"File {filename} not found in expected hashes.")
+        sys.exit(1)
+
+    with open(filename, 'rb') as f:
+        file_hash = hashlib.sha256()
+        while chunk := f.read(8192):
+            file_hash.update(chunk)
+        file_hash = file_hash.hexdigest()
+
+    if file_hash == expected_hashes[base_filename]:
+        print(f"Hash check OK for {base_filename}.")
+    else:
+        print(f"Error: Hash mismatch for {filename}.")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
