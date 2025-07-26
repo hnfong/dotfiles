@@ -2,7 +2,6 @@
 set -ex
 
 # Save the path to ./download_check script
-
 script_path=$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$0")
 download_check_path=$(dirname "$script_path")/download_check
 
@@ -29,6 +28,7 @@ popd ..
 
 # Download and install dependencies
 
+# Need this for pkg-config path, otherwise need to specify the PKG_CONFIG env var.
 export PATH="$PATH:$prefix/bin"
 
 for dep_url in \

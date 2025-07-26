@@ -7,6 +7,14 @@ Checks the file specified in FILENAME against the records we have.
 """
 
 SIGNATURES = """
+# tmux
+6fc69c01688c9458a57eb9a1664c9aba372ccda420a02bf4429fe610e7e7d591  pkg-config-0.29.2.tar.gz
+136d91bc269a9a5785e5f9e980bc76ab57428f604ce3e5a5a90cebc767971cc6  ncurses-6.5.tar.gz
+92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb  libevent-2.1.12-stable.tar.gz
+16216bd0877170dfcc64157085ba9013610b12b082548c7c9542cc0103198951  tmux-3.5a.tar.gz
+bd215d04313b5bc42c1abedbcb0a6574667e31acee1085543a232204e36384c4  utf8proc-2.9.0.tar.gz
+
+# gpg
 6fc69c01688c9458a57eb9a1664c9aba372ccda420a02bf4429fe610e7e7d591  pkg-config-0.29.2.tar.gz
 b58c80d79b04d3243ff49c1c3fc6b5f83138eb3784689563bcdd060595318616  gnupg-2.4.8.tar.bz2
 d2931cdad266e633510f9970e1a2f346055e351bb19f9b78912475b8074c36f6  libassuan-3.0.2.tar.bz2
@@ -29,8 +37,10 @@ def main():
     expected_hashes = {}
 
     for line in SIGNATURES.strip().split('\n'):
-        hash_str, file_name = line.split(maxsplit=1)
-        expected_hashes[file_name] = hash_str
+        line = line.strip()
+        if line and not line.startswith("#"):
+            hash_str, file_name = line.split(maxsplit=1)
+            expected_hashes[file_name] = hash_str
 
     base_filename = os.path.basename(filename)
 
