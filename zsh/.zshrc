@@ -56,7 +56,7 @@ alias vimdiff='nvim -d'
 alias ds3='my_llm -m github/DeepSeek-V3'
 
 # Inspired by https://github.com/Debian/wcurl/blob/main/wcurl https://samueloph.dev/blog/announcing-wcurl-a-curl-wrapper-to-download-files/
-alias wcurl='curl --progress-bar -L --remote-name-all --retry 3 --retry-max-time 10'
+alias wcurl='curl -O --progress-bar -L --remote-name-all --retry 3 --retry-max-time 10'
 
 alias screen="tmux new-session"
 alias tx="tmux new-session -s devel || tmux attach -t devel"
