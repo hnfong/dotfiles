@@ -17,7 +17,7 @@ import subprocess
 import getopt
 import tempfile
 
-DEFAULT_MODEL_NAME = "Qwen3-8B" # For ask.py
+DEFAULT_MODEL_NAME = "Qwen3-30B-A3B-Instruct" # For ask.py
 
 TEMPLATE = """
 I want you to perform a semantic "grep" given the input and a query/description.
