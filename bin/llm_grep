@@ -17,7 +17,7 @@ import subprocess
 import getopt
 import tempfile
 
-DEFAULT_MODEL_NAME = "Qwen3-30B-A3B-Instruct" # For ask.py
+DEFAULT_MODEL_NAME = "gemma-3-12b" # For ask.py
 
 TEMPLATE = """
 # Task description
