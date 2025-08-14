@@ -20,8 +20,7 @@ ffmpeg -i "$downloaded_filename" -filter:a "atempo=1.7,volume=4.0" -q:a 7 -vn "$
 
 set -x
 
-# FWIW, Llama3 8B does not like using Chinese characters as output. So using another model.
-ask -t 0 -m starling "You will be given a filename. Shorten it so that it shows the protagonist's name and a *very* short summarized title. Do not include numbers, dates, whitespace, new lines, nor special characters, do not include meaningless words. You may use 中文漢字 output if the filename contains Chinese. Make sure you keep the file extension (mp3). Be concise. Just give the short filename and end the conversation after you give the answer.
+ask -t 0 -m Qwen3-4B-Instruct "You will be given a filename. Shorten it so that it shows the protagonist's name and a *very* short summarized title. Do not include numbers, dates, whitespace, new lines, nor special characters, do not include meaningless words. Keep using the original language in the filename (eg. if it is in Chinese, output Chinese, if it is in English, output English, etc.). Make sure you keep the file extension (mp3). Most importantly be concise. Just give the short filename and end the conversation after you give the answer.
 
 $(ls *.mp3)
 " > mlfilename.txt

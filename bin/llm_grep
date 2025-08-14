@@ -20,14 +20,22 @@ import tempfile
 DEFAULT_MODEL_NAME = "Qwen3-30B-A3B-Instruct" # For ask.py
 
 TEMPLATE = """
+# Task description
 I want you to perform a semantic "grep" given the input and a query/description.
 
-For every line in the input, output the line (together with line number) only
-if the line has something that matches the given query/description, otherwise
-ignore the line. Only trigger when the input obviously matches the query, i.e.
-not tangentially related.
+The input is a text file (or a segment of it) with line numbers (the line
+numbers may not start with 1 if it is a segment). You are required to give an
+appropriate output given the description below.
 
-- !! Query/Description of what we want: `${QUERY}` !!
+For every line in the input, output the original line (together with line
+number) if and only if the line has something that matches the given query
+(below), otherwise ignore the line. Only trigger when the line obviously
+matches the query, i.e. not tangentially related. Consider each line
+separately, do not take into account surrounding lines.
+
+# Query description
+
+User's query: " ${QUERY} "
 
 # START OF INPUT
 
@@ -35,33 +43,44 @@ ${LINES}
 
 # END OF INPUT
 
-For every line in the input, output the line (together with line number) only
-if the line has something that matches the given query/description, otherwise
-ignore the line. Only trigger when the input obviously matches the query, i.e.
-not tangentially related.
+For every line in the input, output the original line (together with line
+number) if and only if the line has something that matches the given query
+(below), otherwise ignore the line. Only trigger when the line obviously
+matches the query, i.e. not tangentially related. Consider each line
+separately, do not take into account surrounding lines.
 
-- !! Query/Description of what we want: `${QUERY}` !!
+** Reminder, this is what we want: `${QUERY}` **
 
 If no lines match just give empty response. Don't explain. Just output as if
 you're a command line program called "semantic_grep".
 
-Important: after each line of output, also emit a "---" to separate it from
-your next output.
+Important: after each line of output, also emit a line of "---" to separate it
+from your next output.
 """
-
-def create_prompt(query, in_file):
-    prompt = TEMPLATE.replace("${QUERY}", query)
-
-    lines_buf = []
-    for line_num, line in enumerate(in_file):
-        line_num += 1 # one based
-        lines_buf.append(f"{line_num}:{line.rstrip()}")
-
-    return prompt.replace("${LINES}", "\n".join(lines_buf))
 
 def usage():
     sys.stderr.write(__doc__.strip())
     sys.stderr.write("\n")
+
+def iterator_n_lines(f, n):
+    ret = []
+    for _ in range(n):
+        line = f.readline()
+        if len(line):
+            ret.append(line)
+        else:
+            break
+    return ret
+
+def create_prompt(query, inputs, starting_line = 1):
+    prompt = TEMPLATE.replace("${QUERY}", query)
+
+    lines_buf = []
+    for line_num, line in enumerate(inputs):
+        line_num += starting_line
+        lines_buf.append(f"{line_num}:{line.rstrip()}")
+
+    return prompt.replace("${LINES}", "\n".join(lines_buf))
 
 def main():
     try:
@@ -84,18 +103,23 @@ def main():
     else:
         input_file = sys.stdin
 
-    prompt = create_prompt(query, input_file)
+    chunk_size = 100
+    starting_line = 1 - chunk_size
+    while (chunk := iterator_n_lines(input_file, chunk_size)):
+        starting_line += chunk_size
+        prompt = create_prompt(query, chunk, starting_line=starting_line)
 
-    with tempfile.NamedTemporaryFile(mode='w') as temp_file:
-        temp_filename = temp_file.name
+        with tempfile.NamedTemporaryFile(mode='w') as temp_file:
+            temp_filename = temp_file.name
 
-        temp_file.write(prompt)
-        temp_file.flush()
+            temp_file.write(prompt)
+            temp_file.flush()
 
-        # Call the LLM using ask.py
-        cmd = ["ask.py", "-m", model, "-c", "99999", "-d", "2048", "-f", temp_filename]
-        print(cmd)
-        subprocess.run(cmd, check=True)
+            # Call the LLM using ask.py
+            cmd = ["ask.py", "-m", model, "-c", "9999", "-d", "4096", "-f", temp_filename]  # 262144 is for Qwen3-30B-A3B-Instruct
+            # print(prompt)
+            print(cmd)
+            subprocess.run(cmd, check=True)
 
 if __name__ == "__main__":
     main()
