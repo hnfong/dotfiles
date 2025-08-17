@@ -15,6 +15,10 @@ ln -sf dotfiles/_tmux.conf .tmux.conf
 ln -sf dotfiles/_alacritty.yml .alacritty.yml
 touch ~/.hnfong.conf
 
+pushd "~/Library/Application Support/nushell/"
+ln -sf ~/dotfiles/config.nu .
+popd
+
 mkdir -p ~/bin/
 for file in dotfiles/bin/*; do
     if [ -x "$file" ]; then

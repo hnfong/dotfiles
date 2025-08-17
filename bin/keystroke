@@ -1,0 +1,17 @@
+#!/bin/sh
+# Simulates hitting a key on OS X
+# http://apple.stackexchange.com/a/63899/72339
+
+# Extra note: https://discussions.apple.com/thread/255165673?sortBy=rank
+
+# What seemed to work for me was going into System Settings > Privacy &
+# Security > Accessibility > toggling permissions OFF for Automator, Script
+# Editor, Shortcuts. I then quit the System Settings, then opened it again and
+# re-enabled all three. That allowed the Apple Script to run again.
+
+# Extra-extra note: You may have to actually open the Automator app and run
+# `tell application "System Events" to keystroke 'x'` to get things running. If
+# you just run this in the command line it may not work. But if the UI app
+# starts working, then the command line thing will work.
+
+echo "tell application \"System Events\" to keystroke \"$1\"" | osascript
