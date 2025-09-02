@@ -104,6 +104,8 @@ function editor() {
             tmux rename-window "$cmd"
         fi
     fi
+    # Give it a bash-compatible shell, otherwise might default to nu-shell in some of my environments
+    export SHELL=zsh
     if [[ -z "$my_line" ]]; then
         if [[ -z "$@" ]]; then
             exec "$EDITOR" -c ':Telescope oldfiles'

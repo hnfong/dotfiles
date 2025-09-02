@@ -8,6 +8,8 @@
 	<integer>0</integer>
 	<key>AlternateMouseScroll</key>
 	<true/>
+	<key>Command</key>
+	<string>/Users/sidney_fong/bin/nu</string>
 	<key>CopySelection</key>
 	<false/>
 	<key>Default Bookmark Guid</key>
@@ -819,7 +821,7 @@
 			<key>Columns</key>
 			<integer>250</integer>
 			<key>Command</key>
-			<string></string>
+			<string>/Users/sidney_fong/bin/nu</string>
 			<key>Cursor Boost</key>
 			<integer>0</integer>
 			<key>Cursor Color</key>
@@ -856,7 +858,7 @@
 			<key>Cursor Type</key>
 			<integer>2</integer>
 			<key>Custom Command</key>
-			<string>No</string>
+			<string>Custom Shell</string>
 			<key>Custom Directory</key>
 			<string>No</string>
 			<key>Default Bookmark</key>
