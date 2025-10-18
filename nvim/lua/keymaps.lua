@@ -57,7 +57,9 @@ vim.cmd [[
 
     " Opens a new vertical split window with a terminal
     nmap <F12> :vnew<CR>:terminal<CR>
-    nmap <S-F12> :vnew<CR>:terminal
+
+    " The trailing space is intentional, to prepare the user to type the command
+    nmap <S-F12> :vnew<CR>:terminal 
 ]]
 
 -- function to call live_grep with the contents of register z
@@ -69,8 +71,8 @@ end
 
 function map_keyword_button_to_telescope()
     -- map "K" to call telescope grep_string
-    vim.api.nvim_set_keymap('n', 'K', ':Telescope grep_string<CR>', {})
-    vim.api.nvim_set_keymap('v', 'K', '"zy:lua live_grep_z()<CR>', {})
+    vim.api.nvim_buf_set_keymap(0, 'n', 'K', ':Telescope grep_string<CR>', {})
+    vim.api.nvim_buf_set_keymap(0, 'v', 'K', '"zy:lua live_grep_z()<CR>', {})
 end
 
 
