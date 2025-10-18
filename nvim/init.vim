@@ -100,7 +100,6 @@ func SiliconPythonInit()
 	setlocal path+=..,../..
 
   " edit retriggers stuff regarding reloading the file...
-  nmap <F7> :lua LspConfigManualTrigger()<CR>:edit<CR>
   nmap <S-F7> :!ruff check --fix %
 endfunction
 au BufRead,BufNewFile *.py	call SiliconPythonInit()
@@ -158,7 +157,6 @@ func SiliconRustInit()
   nmap <F2> :w<CR>:make build
 
   " edit retriggers stuff regarding reloading the file...
-  nmap <F7> :lua LspConfigManualTrigger()<CR>:edit<CR>
 endfunction
 
 au BufRead,BufNewfile *.c	call SiliconCInit()
@@ -202,7 +200,6 @@ au BufRead,BufNewFile *.js highlight LastCommaInHash ctermbg=red guibg=red
 au BufRead,BufNewFile *.js match LastCommaInHash /,\_s*[}\]]/
 au BufRead,BufNewFile *.js lua map_keyword_button_to_telescope()
   " edit retriggers stuff regarding reloading the file...
-au BufRead,BufNewFile *.js nmap <F7> :lua LspConfigManualTrigger()<CR>:edit<CR>
 au BufRead,BufNewFile *.js nmap <S-F7> :!ruff check --fix %
 
 "**************************** Java *****************************"
