@@ -12,8 +12,10 @@ ln -sf dotfiles/_vim .vim
 ln -sf dotfiles/_screenrc .screenrc
 ln -sf dotfiles/_zshenv .zshenv
 ln -sf dotfiles/_tmux.conf .tmux.conf
-ln -sf dotfiles/_alacritty.yml .alacritty.yml
 touch ~/.hnfong.conf
+
+mkdir -p ~/.config
+ln -s ~/dotfiles/nvim ~/.config
 
 mkdir -p ~/.config/ghostty
 ln -sf ~/dotfiles/_ghostty_config ~/.config/ghostty/config
