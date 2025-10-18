@@ -26,9 +26,104 @@ require("lazy").setup({
   spec = {
     { 'nvim-telescope/telescope.nvim', tag = '0.1.8', dependencies = { 'nvim-lua/plenary.nvim' } },
     { 'nvim-tree/nvim-tree.lua' },
-    { 'github/copilot.vim' },
+    -- { 'github/copilot.vim' },
     { 'nvim-treesitter/nvim-treesitter' },
-    { 'neovim/nvim-lspconfig',
+    {
+        "neovim/nvim-lspconfig",
+        config = function()
+
+            -- Much of this is currently referencing https://www.swift.org/documentation/articles/zero-to-swift-nvim.html#language-server-support
+            local lspconfig = require('lspconfig')
+            lspconfig.sourcekit.setup {
+                capabilities = {
+                    workspace = {
+                        didChangeWatchedFiles = {
+                            dynamicRegistration = true,
+                        },
+                    },
+                },
+            }
+
+
+            -- Python LSP (Pyright)
+            lspconfig.pyright.setup {
+                capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities()),
+                settings = {
+                    python = {
+                        analysis = {
+                            autoSearchPaths = true,
+                            useLibraryCodeForTypes = true,
+                            diagnosticMode = "openFilesOnly",
+                            typeCheckingMode = "basic",  -- "off", "basic", or "strict"
+                        },
+                    },
+                },
+            }
+
+            vim.api.nvim_create_autocmd('LspAttach', {
+                desc = 'LSP Actions',
+                callback = function(args)
+                    vim.keymap.set('n', '<F1>', vim.lsp.buf.hover, {noremap = true, silent = true})
+                    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {noremap = true, silent = true})
+
+                    vim.keymap.set('n', '<F2>', function()
+                        vim.diagnostic.goto_next()
+                        vim.diagnostic.open_float(nil, { focus = false })
+                    end, { desc = "Next diagnostic and show message" })
+
+
+
+                    -- https://www.reddit.com/r/neovim/comments/zjqquc/how_do_i_turn_off_semantic_tokens/
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    client.server_capabilities.semanticTokensProvider = nil
+                end,
+            })
+
+        end,
+    },
+
+
+    -- Much of this is currently referencing https://www.swift.org/documentation/articles/zero-to-swift-nvim.html#language-server-support
+    {
+        "hrsh7th/nvim-cmp",
+        version = false,
+        event = "InsertEnter",
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-path",
+            "hrsh7th/cmp-buffer",
+        },
+        config = function()
+            local cmp = require('cmp')
+            local opts = {
+                -- Where to get completion results from
+                sources = cmp.config.sources {
+                    { name = "nvim_lsp" },
+                    { name = "buffer"},
+                    { name = "path" },
+                },
+                -- Make 'enter' key select the completion
+
+                mapping = cmp.mapping.preset.insert({
+                    ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                    ["<tab>"] = cmp.mapping(function(original)
+                        if cmp.visible() then
+                            cmp.select_next_item() -- run completion selection if completing
+                        else
+                            original()      -- run the original behavior if not completing
+                        end
+                    end, {"i", "s"}),
+                    ["<S-tab>"] = cmp.mapping(function(original)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        else
+                            original()
+                        end
+                    end, {"i", "s"}),
+                }),
+            }
+            cmp.setup(opts)
+        end,
     },
 
     { 'junegunn/vim-peekaboo' }, -- Peekaboo will show you the contents of the registers on the sidebar when you hit " or @ in normal mode or <CTRL-R> in insert mode.

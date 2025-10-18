@@ -20,6 +20,7 @@
 use std/util "path add"
 path add "~/.cargo/bin/"
 path add "~/bin/"
+path add "~/Library/Python/3.9/bin"
 $env.EDITOR = "magic_open"
 
 alias lg = /bin/ls -GAF
@@ -32,6 +33,16 @@ alias vi = magic_open
 alias ff = fd --hidden --no-ignore --threads=1 --glob -E venv
 alias  g = rg -z -N --no-heading --no-ignore -g "!venv"
 alias opn = /usr/bin/open
+
+def my_mk [...args] {
+    while not ('Makefile' | path exists) and ($env.PWD != '/') {
+        cd ..
+    }
+    make ...$args
+}
+alias mk = my_mk
+
+
 
 # Should be at the end of config.nu
 # See https://github.com/ajeetdsouza/zoxide
