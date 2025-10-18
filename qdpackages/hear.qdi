@@ -1,0 +1,5 @@
+DESTINATION_SUFFIX=/apps
+
+DOWNLOAD_COMMAND='curl -L -O https://github.com/sveinbjornt/hear/releases/download/0.6/hear-0.6.zip'
+COMPILE_COMMAND='unzip hear-0.6.zip'
+INSTALL_COMMAND='cp -v hear-0.6/hear ~/bin/'

@@ -1,0 +1,5 @@
+DESTINATION_SUFFIX=/apps/fq
+
+DOWNLOAD_COMMAND='curl -L -O https://github.com/wader/fq/releases/download/v0.15.1/fq_0.15.1_macos_arm64.zip'
+COMPILE_COMMAND='unzip fq*.zip'
+INSTALL_COMMAND='cp fq ~/bin && chmod 755 ~/bin/fq'
