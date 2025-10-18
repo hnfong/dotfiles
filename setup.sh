@@ -15,6 +15,9 @@ ln -sf dotfiles/_tmux.conf .tmux.conf
 ln -sf dotfiles/_alacritty.yml .alacritty.yml
 touch ~/.hnfong.conf
 
+mkdir -p ~/.config/ghostty
+ln -sf ~/dotfiles/_ghostty_config ~/.config/ghostty/config
+
 pushd "~/Library/Application Support/nushell/"
 ln -sf ~/dotfiles/config.nu .
 popd
@@ -34,9 +37,9 @@ done
 
 # Installing software
 
-if [ ! -d /Applications/iTerm.app/ ]; then
-    echo "iTerm"
-    open https://www.iterm2.com/
+if [ ! -d /Applications/Ghostty.app/ ]; then
+    echo "Ghostty"
+    open 'https://ghostty.org/download'
 fi
 
 if [ ! -d "dotfiles/zsh/.zprezto" ]; then
@@ -47,10 +50,12 @@ fi
 
 ## Python stuff
 ## XXX: Keep this list short. For others, just do it in ./adhoc_venv/setup.sh
-pip3 install --user -U uv
-pushd adhoc_venv/
-make setup
-popd
+if ! which uv; then
+    pip3 install --user -U uv
+    pushd adhoc_venv/
+    make setup
+    popd
+fi
 
 ## Install rust/cargo
 if [ ! -d ~/.cargo ]; then
@@ -78,4 +83,6 @@ if [ ! -d ~/.cargo ]; then
 fi
 
 cd ~/dotfiles
-bin/qdinstall qdpackages/htop.qdi
+if ! which htop; then
+    bin/qdinstall qdpackages/htop.qdi
+fi

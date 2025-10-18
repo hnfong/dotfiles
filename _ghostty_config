@@ -1,0 +1,42 @@
+window-height = 80
+window-width = 240
+
+font-family = "Menlo"
+# font-family = "Source Code Pro"
+font-size = 19
+adjust-cell-width = -1
+adjust-cell-height = -7
+
+# theme = "/Applications/Ghostty.app/Contents/Resources/ghostty/themes/Builtin Pastel Dark"
+
+# This is ported from my iTerm config
+background = black
+foreground = c7c7c7
+palette = 0=#000000
+palette = 1=#ff3414
+palette = 2=#00bb00
+palette = 3=#bbbb00
+palette = 4=#647fff
+palette = 5=#ff38fc
+palette = 6=#00bbbb
+palette = 7=#bbbbbb
+palette = 8=#555555
+palette = 9=#ff5555
+palette = 10=#55ff55
+palette = 11=#ffff55
+palette = 12=#878eff
+palette = 13=#ff55ff
+palette = 14=#55ffff
+palette = 15=#ffffff
+
+cursor-color = #ffa560
+cursor-text = #ffffff
+selection-background = #f2f2f2
+selection-foreground = #363983
+
+bold-color = #ffffff
+
+# background-opacity = 0.9
+
+scrollback-limit = 10000000
+term = xterm-256color
