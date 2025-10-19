@@ -22,12 +22,9 @@ vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
 LspConfigs = function()
-    local lspconfig = require("lspconfig")
-    -- lspconfig.basedpyright.setup({})
 
     -- Much of this is currently referencing https://www.swift.org/documentation/articles/zero-to-swift-nvim.html#language-server-support
-    local lspconfig = require('lspconfig')
-    lspconfig.sourcekit.setup {
+    vim.lsp.config('sourcekit', {
         capabilities = {
             workspace = {
                 didChangeWatchedFiles = {
@@ -35,10 +32,11 @@ LspConfigs = function()
                 },
             },
         },
-    }
+    })
+    vim.lsp.enable('sourcekit')
 
     -- Python LSP (Pyright)
-    lspconfig.pyright.setup {
+    vim.lsp.config('pyright', {
         capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities()),
         settings = {
             python = {
@@ -50,7 +48,48 @@ LspConfigs = function()
                 },
             },
         },
-    }
+    })
+    vim.lsp.enable('pyright')
+
+    vim.lsp.config("clangd", {})
+    vim.lsp.enable("clangd")
+
+    vim.lsp.config("ruff", {})
+    vim.lsp.enable("ruff")
+
+    vim.lsp.config("ts_ls", {
+        on_attach = on_attach,
+        flags = lsp_flags,
+        settings = {
+            completions = {
+                completeFunctionCalls = true
+            }
+        }
+    })
+    vim.lsp.enable("ts_ls")
+
+    vim.lsp.config("rust_analyzer", {
+        on_attach = on_attach,
+        settings = {
+            ["rust-analyzer"] = {
+                imports = {
+                    granularity = {
+                        group = "module",
+                    },
+                    prefix = "self",
+                },
+                cargo = {
+                    buildScripts = {
+                        enable = true,
+                    },
+                },
+                procMacro = {
+                    enable = true
+                },
+            }
+        }
+    })
+    vim.lsp.enable("rust_analyzer")
 
     vim.api.nvim_create_autocmd('LspAttach', {
         desc = 'LSP Actions',
@@ -72,46 +111,13 @@ LspConfigs = function()
                 vim.diagnostic.open_float(nil, { focus = false })
             end, { desc = "Next diagnostic and show message" })
 
+            -- Basically avoid the "syntax-rehighlighting" -- I have no idea why they just shove this feature down our throats...
             -- https://www.reddit.com/r/neovim/comments/zjqquc/how_do_i_turn_off_semantic_tokens/
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             client.server_capabilities.semanticTokensProvider = nil
         end,
     })
 
-    lspconfig.clangd.setup({})
-    -- lspconfig.ruff.setup({})
-    lspconfig.ts_ls.setup{
-        on_attach = on_attach,
-        flags = lsp_flags,
-        settings = {
-            completions = {
-                completeFunctionCalls = true
-            }
-        }
-    }
-
-
-    lspconfig.rust_analyzer.setup({
-        on_attach = on_attach,
-        settings = {
-            ["rust-analyzer"] = {
-                imports = {
-                    granularity = {
-                        group = "module",
-                    },
-                    prefix = "self",
-                },
-                cargo = {
-                    buildScripts = {
-                        enable = true,
-                    },
-                },
-                procMacro = {
-                    enable = true
-                },
-            }
-        }
-    })
 end
 
 -- Setup lazy.nvim
