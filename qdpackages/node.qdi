@@ -1,0 +1,5 @@
+DESTINATION_SUFFIX=/apps
+
+DOWNLOAD_COMMAND='curl -L -O https://nodejs.org/dist/v22.20.0/node-v22.20.0-darwin-arm64.tar.gz'
+COMPILE_COMMAND='tar zxvf node-*-arm64.tar.gz'
+INSTALL_COMMAND='rsync -av node-*[^z] "$qdinstall_destination"'

@@ -52,11 +52,6 @@ LspConfigs = function()
     })
     vim.lsp.enable('pyright')
 
-    vim.lsp.config("clangd", {})
-    vim.lsp.enable("clangd")
-
-    vim.lsp.config("ruff", {})
-    vim.lsp.enable("ruff")
 
     vim.lsp.config("ts_ls", {
         on_attach = on_attach,
@@ -91,6 +86,10 @@ LspConfigs = function()
         }
     })
     vim.lsp.enable("rust_analyzer")
+
+    vim.lsp.enable("clangd")
+    vim.lsp.enable("ruff")
+    vim.lsp.enable('htmx')
 
     vim.api.nvim_create_autocmd('LspAttach', {
         desc = 'LSP Actions',

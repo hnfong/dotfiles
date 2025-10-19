@@ -88,3 +88,11 @@ cd ~/dotfiles
 if ! which htop; then
     bin/qdinstall qdpackages/htop.qdi
 fi
+
+if ! ls ~/apps/node-*; then
+    bin/qdinstall qdpackages/node.qdi
+fi
+
+NEW_NPM_DIR=`ls -rt ~/apps | grep node- | tail -n 1`
+~/apps/"$NEW_NPM_DIR"/bin/npm config set prefix "$HOME/apps/$NEW_NPM_DIR"
+~/apps/"$NEW_NPM_DIR"/bin/npm install -g bash-language-server htmx-lsp pyright typescript-language-server

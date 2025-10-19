@@ -70,7 +70,7 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 REPORTTIME=5
 
 if [[ "$SI_TOP_LEVEL" = "0" ]]; then
-export PATH="$HOME/bin:$HOME/.local/bin:/Users/sidney_fong/Library/Python/$(ls -tr /Users/sidney_fong/Library/Python/ | tail -n 1)/bin:$PATH:/opt/homebrew/bin"
+export PATH="$HOME/bin:$HOME/.local/bin:/Users/sidney_fong/apps/$(ls -tr /Users/sidney_fong/apps/ | grep node- | tail -n 1)/bin:/Users/sidney_fong/Library/Python/$(ls -tr /Users/sidney_fong/Library/Python/ | tail -n 1)/bin:$PATH:/opt/homebrew/bin"
 fi
 
 export IS_RUNNING_TMUX=
