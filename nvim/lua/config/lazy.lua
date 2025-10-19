@@ -211,6 +211,16 @@ require("lazy").setup({
       vim.g.netrw_nogx = 1 -- disable netrw gx
     end },
 
+    {
+        "OXY2DEV/markview.nvim",
+        lazy = false,
+
+        -- For blink.cmp's completion
+        -- source
+        -- dependencies = {
+        --     "saghen/blink.cmp"
+        -- },
+    },
 
     {
         -- https://github.com/iamcco/markdown-preview.nvim/issues/690#issuecomment-2371742039

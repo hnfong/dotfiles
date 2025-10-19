@@ -273,6 +273,9 @@ au FileType markdown setlocal foldmethod=expr
 au FileType markdown setlocal foldminlines=2
 au FileType markdown let g:foldlevelbase=2
 au FileType markdown setlocal smartcase ignorecase
+
+" Note: these are two different plugins.
+au FileType markdown nnoremap <F2> :Markview Toggle<CR>
 au FileType markdown nnoremap <F3> :MarkdownPreview
 au FileType markdown nnoremap <S-F3> :MarkdownPreviewStop
 
