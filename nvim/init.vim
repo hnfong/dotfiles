@@ -404,3 +404,5 @@ xnoremap <C-P> :<C-u>call AskVisualSelection('-p code_review')<CR>
 inoremap <S-RIGHT> <ESC>:<C-u>call SendLineOffsetToShell()<CR>"ip
 
 source ~/.config/nvim/fugitive.vim
+
+hi NormalFloat ctermbg=235

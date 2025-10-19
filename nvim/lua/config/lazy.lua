@@ -41,10 +41,11 @@ LspConfigs = function()
         settings = {
             python = {
                 analysis = {
-                    autoSearchPaths = true,
-                    useLibraryCodeForTypes = true,
-                    diagnosticMode = "openFilesOnly",
-                    typeCheckingMode = "basic",  -- "off", "basic", or "strict"
+                    -- autoSearchPaths = true,
+                    -- useLibraryCodeForTypes = true,
+                    -- diagnosticMode = "openFilesOnly",
+                    -- typeCheckingMode = "basic",  -- "off", "basic", or "strict"
+                    ignore = { '*' }, -- Ignore all files for analysis to exclusively use Ruff for linting
                 },
             },
         },
@@ -111,6 +112,11 @@ LspConfigs = function()
                 vim.diagnostic.open_float(nil, { focus = false })
             end, { desc = "Next diagnostic and show message" })
 
+            vim.keymap.set('n', '<CR>', function()
+                vim.diagnostic.open_float(nil, { focus = false })
+                vim.cmd('nohl')
+            end, { desc = "Show diagnostic message" })
+
             -- Basically avoid the "syntax-rehighlighting" -- I have no idea why they just shove this feature down our throats...
             -- https://www.reddit.com/r/neovim/comments/zjqquc/how_do_i_turn_off_semantic_tokens/
             local client = vim.lsp.get_client_by_id(args.data.client_id)
@@ -130,7 +136,7 @@ require("lazy").setup({
     {
         "neovim/nvim-lspconfig",
         config = function()
-            vim.diagnostic.enable(false)
+            -- vim.diagnostic.enable(false)
             LspConfigs()
         end,
     },
@@ -185,6 +191,11 @@ require("lazy").setup({
                         if cmp.visible() then
                             cmp.select_next_item()
                         end
+                    end, { "i" }),
+
+                    -- This overwrites copilot, but let's accept it for now.
+                    ["<RIGHT>"] = cmp.mapping(function()
+                        cmp.complete()
                     end, { "i" }),
 
                     -- Revert to default
