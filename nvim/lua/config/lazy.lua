@@ -50,7 +50,7 @@ LspConfigs = function()
             },
         },
     })
-    vim.lsp.enable('pyright')
+    -- vim.lsp.enable('pyright')
 
 
     vim.lsp.config("ts_ls", {
@@ -88,9 +88,10 @@ LspConfigs = function()
     vim.lsp.enable("rust_analyzer")
 
     vim.lsp.enable("clangd")
-    vim.lsp.enable("ruff")
+    -- vim.lsp.enable("ruff")
     vim.lsp.enable('htmx')
     vim.lsp.enable('bashls')
+    vim.lsp.enable('ty')
 
     -- Maybe look at these as well --
     -- https://github.com/blopker/codebook An unholy spell checker for code.
@@ -120,10 +121,10 @@ LspConfigs = function()
             end, {noremap = true, silent = true})
             vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {noremap = true, silent = true})
 
-            -- vim.keymap.set('n', '<F2>', function()
-                -- vim.diagnostic.goto_next()
-                -- vim.diagnostic.open_float(nil, { focus = false })
-            -- end, { desc = "Next diagnostic and show message" })
+            vim.keymap.set('n', '<End>', function()
+                vim.diagnostic.goto_next()
+                vim.diagnostic.open_float(nil, { focus = false })
+            end, { desc = "Next diagnostic and show message" })
 
             vim.keymap.set('n', '<CR>', function()
                 vim.diagnostic.open_float(nil, { focus = false })

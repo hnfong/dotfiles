@@ -11,6 +11,8 @@ set foldmethod=syntax
 set foldminlines=4
 set hlsearch
 " set indentkeys=
+" Fixes the A=<file> completion by removing the equal sign.
+set isfname-==
 set laststatus=2
 set lazyredraw
 set modeline
