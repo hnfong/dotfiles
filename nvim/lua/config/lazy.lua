@@ -90,6 +90,20 @@ LspConfigs = function()
     vim.lsp.enable("clangd")
     vim.lsp.enable("ruff")
     vim.lsp.enable('htmx')
+    vim.lsp.enable('bashls')
+
+    -- Maybe look at these as well --
+    -- https://github.com/blopker/codebook An unholy spell checker for code.
+    -- https://www.npmjs.com/package/@github/copilot-language-server
+    -- https://github.com/georgewfraser/java-language-server
+    -- https://projects.eclipse.org/projects/eclipse.jdt.ls
+    -- https://github.com/SilasMarvin/lsp-ai - LSP-AI is an open source language server that serves as a backend for AI-powered functionality in your favorite code
+    -- https://github.com/ltex-plus/ltex-ls-plus - LaTeX
+    -- https://github.com/luals/lua-language-server - Main difficulty is the language server needs some installation (homebrew...)
+    -- perl...
+    -- ruby https://shopify.github.io/ruby-lsp/
+    -- https://github.com/hangyav/textLSP - AI based also
+    -- https://github.com/astral-sh/ty -------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 Rust based python checker and language server
 
     vim.api.nvim_create_autocmd('LspAttach', {
         desc = 'LSP Actions',
@@ -106,10 +120,10 @@ LspConfigs = function()
             end, {noremap = true, silent = true})
             vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {noremap = true, silent = true})
 
-            vim.keymap.set('n', '<F2>', function()
-                vim.diagnostic.goto_next()
-                vim.diagnostic.open_float(nil, { focus = false })
-            end, { desc = "Next diagnostic and show message" })
+            -- vim.keymap.set('n', '<F2>', function()
+                -- vim.diagnostic.goto_next()
+                -- vim.diagnostic.open_float(nil, { focus = false })
+            -- end, { desc = "Next diagnostic and show message" })
 
             vim.keymap.set('n', '<CR>', function()
                 vim.diagnostic.open_float(nil, { focus = false })
