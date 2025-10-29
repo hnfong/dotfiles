@@ -231,6 +231,10 @@ au BufRead,BufNewFile *.ly	nmap <F3> :!xpdf %<.pdf
 "*************************** Makefile ****************************"
 au FileType make setlocal noexpandtab
 
+"*************************** Mermaid *****************************"
+au FileType mermaid nnoremap <F2> :!mmdc -i % -o %.svg
+au FileType mermaid nnoremap <F3> :!open %.svg
+
 "*************************** Markdown ****************************"
 
 function! MarkdownFolds()
