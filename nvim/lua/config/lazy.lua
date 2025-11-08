@@ -243,17 +243,6 @@ require("lazy").setup({
     end },
 
     {
-        "OXY2DEV/markview.nvim",
-        lazy = false,
-
-        -- For blink.cmp's completion
-        -- source
-        -- dependencies = {
-        --     "saghen/blink.cmp"
-        -- },
-    },
-
-    {
         -- https://github.com/iamcco/markdown-preview.nvim/issues/690#issuecomment-2371742039
         -- install markdown-preview.nvim without yarn or npm
         'iamcco/markdown-preview.nvim',

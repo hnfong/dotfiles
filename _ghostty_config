@@ -5,7 +5,7 @@ font-family = "Menlo"
 # font-family = "Source Code Pro"
 font-size = 19
 adjust-cell-width = -1
-adjust-cell-height = -7
+adjust-cell-height = -6
 
 # theme = "/Applications/Ghostty.app/Contents/Resources/ghostty/themes/Builtin Pastel Dark"
 
