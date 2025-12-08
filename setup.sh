@@ -25,6 +25,10 @@ ln -sf ~/dotfiles/config.nu .
 popd
 
 mkdir -p ~/bin/
+for zfile in dotfiles/bin/*.bz2; do
+    bzcat -k "$zfile" > ~/bin/"$(basename $zfile .bz2)"
+    chmod 755 ~/bin/"$(basename $zfile .bz2)"
+done
 for file in dotfiles/bin/*; do
     if [ -x "$file" ]; then
         ln -sf ../"$file" ~/bin/
