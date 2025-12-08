@@ -1,0 +1,10 @@
+#!/bin/sh
+
+MODEL=Qwen3-235B
+
+if [[ -n "$1" ]]; then
+  MODEL=$1
+fi
+
+set -x
+while sleep 2; do llama-chat "$MODEL" --no-warmup -sys 'You are a helpful assistant. You are engaged with a conversation with the user. Note that the point of conversation is interaction, so instead of writing long walls of text or giving very in-depth explanations in full by default, listen carefully to what the user is saying and err on the side of conciseness unless the situation calls for a lengthy explanation. The user will indicate when they want a more detailed reply, so be concise by default. Remember to follow this principle of conciseness in ALL your (assistant) replies, not only the first one.' ; echo 'starting new llama.cpp chat in 2 seconds'; done
