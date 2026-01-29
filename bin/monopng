@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env pypy3
 """
 Compress screenshots to 1-bit dithered PNGs.
 Usage: python compress_screenshot.py input.png output.png
@@ -216,6 +216,7 @@ def main():
         nrange(0.5, 0.5),
         nrange(0.6, 0.6),
         nrange(0.7, 0.7),
+        nrange(0.75, 0.93),
     )
 
     for cutoff in cutoffs:
