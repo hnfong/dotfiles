@@ -284,6 +284,9 @@ au FileType markdown nnoremap <F3> :MarkdownPreview
 au FileType markdown nnoremap <S-F3> :MarkdownPreviewStop
 
 au FileType html set indentkeys=
+au FileType html set indentexpr=
+au FileType htmldjango set indentkeys=
+au FileType htmldjango set indentexpr=
 
 
 "****************************** Swift ******************************"

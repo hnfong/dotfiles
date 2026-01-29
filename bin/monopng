@@ -1,0 +1,220 @@
+#!/usr/bin/env python3
+"""
+Compress screenshots to 1-bit dithered PNGs.
+Usage: python compress_screenshot.py input.png output.png
+"""
+
+# 🤖 Mostly written by Deepseek
+
+import sys
+import math
+import png
+
+class nrange:
+    def __init__(self, start, stop):
+        self.start = start
+        self.stop = stop
+
+    def desc(self):
+        if self.start != self.stop:
+            return f"{self.start}-{self.stop}"
+        else:
+            return f"{self.start}"
+
+
+def load_image(filename):
+    """Load PNG image and return as list of pixel rows in RGB format."""
+    reader = png.Reader(filename=filename)
+    width, height, rows, info = reader.read()
+
+    # Convert to list of rows for easier manipulation
+    rows = list(rows)
+
+    # Handle different color formats
+    if info['greyscale']:
+        # Convert grayscale to RGB
+        rgb_rows = []
+        for row in rows:
+            rgb_row = []
+            for gray in row:
+                rgb_row.extend([gray, gray, gray])
+            rgb_rows.append(rgb_row)
+        rows = rgb_rows
+    elif not info['alpha'] and info['planes'] == 3:
+        # Already RGB format
+        pass
+    elif info['alpha'] and info['planes'] == 4:
+        # Remove alpha channel (assume white background)
+        rgb_rows = []
+        for row in rows:
+            rgb_row = []
+            for i in range(0, len(row), 4):
+                r, g, b, a = row[i:i+4]
+                # Simple alpha blend with white background
+                alpha = a / 255.0
+                rgb_row.extend([
+                    int(r * alpha + 255 * (1 - alpha)),
+                    int(g * alpha + 255 * (1 - alpha)),
+                    int(b * alpha + 255 * (1 - alpha))
+                ])
+            rgb_rows.append(rgb_row)
+        rows = rgb_rows
+    else:
+        raise ValueError(f"Unsupported image format: {info}")
+
+    return rows, width, height
+
+def to_greyscale(rgb_rows, width, height, cutoff, contrast=4.0):
+    """
+    Apply contrast curve to convert colors toward black/white.
+    Higher contrast values = sharper transition.
+    """
+    adjusted_rows = []
+
+    for y in range(height):
+        new_row = []
+        for x in range(width):
+            r = rgb_rows[y][x*3]
+            g = rgb_rows[y][x*3 + 1]
+            b = rgb_rows[y][x*3 + 2]
+
+            # Convert to grayscale using luminance formula
+            gray = 0.299 * r + 0.587 * g + 0.114 * b
+
+            # Apply contrast curve (sigmoid-like function)
+            # Normalize to 0-1, apply curve, then back to 0-255
+            normalized = gray / 255.0
+
+            if contrast is not None:
+                # Sharp sigmoid: pushes values away from 0.5
+                adjusted = 1 / (1 + math.exp(-contrast * (normalized - 0.5)))
+            else:
+                adjusted = normalized
+
+            if cutoff is not None:
+                if adjusted < cutoff.start:
+                    adjusted = 0
+                elif adjusted >= cutoff.stop:
+                    adjusted = 1
+                else:
+                    # Expand gray range if it is in the gray band
+                    adjusted = (adjusted - cutoff.start) / (cutoff.stop - cutoff.start)
+
+            # Convert back to 0-255 range
+            adjusted_gray = int(adjusted * 255)
+
+            new_row.append(adjusted_gray)
+
+        adjusted_rows.append(new_row)
+
+    return adjusted_rows
+
+def floyd_steinberg_dither(grayscale_rows, width, height):
+    """
+    Apply Floyd-Steinberg dithering to convert grayscale to 1-bit.
+    Returns list of rows with 0 (black) or 1 (white) values.
+    """
+    # Create mutable copy with error diffusion
+    rows = [row[:] for row in grayscale_rows]
+    output = []
+
+    for y in range(height):
+        output_row = []
+        for x in range(width):
+            old_pixel = rows[y][x]
+            new_pixel = 0 if old_pixel < 128 else 255
+            output_row.append(0 if new_pixel == 0 else 1)  # 0=black, 1=white
+
+            quant_error = old_pixel - new_pixel
+
+            # Distribute error to neighboring pixels
+            if x + 1 < width:
+                rows[y][x + 1] = min(255, max(0, rows[y][x + 1] + quant_error * 7 // 16))
+            if y + 1 < height:
+                if x > 0:
+                    rows[y + 1][x - 1] = min(255, max(0, rows[y + 1][x - 1] + quant_error * 3 // 16))
+                rows[y + 1][x] = min(255, max(0, rows[y + 1][x] + quant_error * 5 // 16))
+                if x + 1 < width:
+                    rows[y + 1][x + 1] = min(255, max(0, rows[y + 1][x + 1] + quant_error * 1 // 16))
+
+        output.append(output_row)
+
+    return output
+
+def convert_with_cutoff(output_file, rgb_rows, width, height, cutoff):
+    no_ext, ext = output_file.rsplit(".", 1)
+    assert ext.lower() == "png"
+    output_file = f"{no_ext}-{cutoff.desc()}.{ext}"
+    output_file_grey = f"{no_ext}-{cutoff.desc()}-grey.{ext}"
+
+    # Apply contrast curve (sharpens black/white transition)
+    print("Applying contrast curve...")
+    gray_rows = to_greyscale(rgb_rows, width, height, cutoff, contrast=None)
+
+    # Apply dithering
+    print("Applying dithering...")
+    bit_rows = floyd_steinberg_dither(gray_rows, width, height)
+
+    # Write 1-bit PNG
+    print(f"Writing {output_file}...")
+    print(width, height, len(bit_rows), len(bit_rows[0]))
+    with open(output_file, 'wb') as f:
+        writer = png.Writer(
+            width=width,
+            height=height,
+            bitdepth=1,
+            greyscale=True,
+            compression=9  # Max compression
+        )
+        writer.write(f, bit_rows)
+
+    if cutoff.start != cutoff.stop:
+
+        # Write 8-bit greyscale PNG
+        print(f"Writing {output_file_grey}...")
+        print(width, height, len(bit_rows), len(bit_rows[0]))
+        with open(output_file_grey, 'wb') as f:
+            writer = png.Writer(
+                width=width,
+                height=height,
+                bitdepth=8,
+                greyscale=True,
+                compression=9  # Max compression
+            )
+            writer.write(f, gray_rows)
+
+    print("Done!")
+
+def main():
+    if len(sys.argv) not in (2,3):
+        print("Usage: python compress_screenshot.py <input.png> [<output.png>]")
+        sys.exit(1)
+
+    input_file = sys.argv[1]
+    if len(sys.argv) == 3:
+        output_file = sys.argv[2]
+    else:
+        output_file = input_file
+
+    # Load and convert image
+    print(f"Loading {input_file}...")
+    rgb_rows, width, height = load_image(input_file)
+
+    cutoffs = (
+        nrange(0.1, 0.9),
+        nrange(0.2, 0.8),
+        nrange(0.4, 0.6),
+        nrange(0.5, 0.7),
+        nrange(0.6, 0.8),
+        nrange(0.4, 0.4),
+        nrange(0.5, 0.5),
+        nrange(0.6, 0.6),
+        nrange(0.7, 0.7),
+    )
+
+    for cutoff in cutoffs:
+        convert_with_cutoff(output_file, rgb_rows, width, height, cutoff)
+
+
+if __name__ == "__main__":
+    main()

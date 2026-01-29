@@ -130,6 +130,7 @@ vim.cmd [[
     iabbrev {star} ☆
     iabbrev {cross} ✗
     iabbrev {robot} 🤖
+    iabbrev {human} 🧑🏻‍💻
 
     " macOS takes over <Alt> keys for funny purposes, but we can workaround it
     " <Alt-P> for Paste
