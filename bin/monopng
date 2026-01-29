@@ -6,9 +6,10 @@ Usage: python compress_screenshot.py input.png output.png
 
 # 🤖 Mostly written by Deepseek
 
-import sys
 import math
+import os
 import png
+import sys
 
 class nrange:
     def __init__(self, start, stop):
@@ -144,8 +145,13 @@ def floyd_steinberg_dither(grayscale_rows, width, height):
 def convert_with_cutoff(output_file, rgb_rows, width, height, cutoff):
     no_ext, ext = output_file.rsplit(".", 1)
     assert ext.lower() == "png"
-    output_file = f"{no_ext}-{cutoff.desc()}.{ext}"
-    output_file_grey = f"{no_ext}-{cutoff.desc()}-grey.{ext}"
+
+    basename = os.path.basename(no_ext)
+
+    os.makedirs(no_ext, exist_ok=True)
+
+    output_file = f"{no_ext}{os.path.sep}{basename}-{cutoff.desc()}.{ext}"
+    output_file_grey = f"{no_ext}{os.path.sep}{basename}-{cutoff.desc()}-grey.{ext}"
 
     # Apply contrast curve (sharpens black/white transition)
     print("Applying contrast curve...")
