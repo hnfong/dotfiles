@@ -9,6 +9,7 @@ Usage: python compress_screenshot.py input.png output.png
 import math
 import os
 import png
+import subprocess
 import sys
 
 class nrange:
@@ -191,6 +192,43 @@ def convert_with_cutoff(output_file, rgb_rows, width, height, cutoff):
 
     print("Done!")
 
+
+def halve_resolution(rgb_rows, width, height):
+    """
+    Halve image resolution using averaging.
+    Returns (new_rgb_rows, new_width, new_height)
+    """
+    new_width = width // 2
+    new_height = height // 2
+
+    if new_width == 0 or new_height == 0:
+        return rgb_rows, width, height
+
+    new_rows = []
+
+    for y in range(0, height - 1, 2):
+        new_row = []
+        for x in range(0, width - 1, 2):
+            # Average 2x2 block of pixels
+            r_sum = g_sum = b_sum = 0
+
+            for dy in range(2):
+                for dx in range(2):
+                    idx = (x + dx) * 3
+                    r_sum += rgb_rows[y + dy][idx]
+                    g_sum += rgb_rows[y + dy][idx + 1]
+                    b_sum += rgb_rows[y + dy][idx + 2]
+
+            new_row.extend([
+                r_sum // 4,
+                g_sum // 4,
+                b_sum // 4
+            ])
+
+        new_rows.append(new_row)
+
+    return new_rows, new_width, new_height
+
 def main():
     if len(sys.argv) not in (2,3):
         print("Usage: python compress_screenshot.py <input.png> [<output.png>]")
@@ -205,9 +243,11 @@ def main():
     # Load and convert image
     print(f"Loading {input_file}...")
     rgb_rows, width, height = load_image(input_file)
+    rgb_rows, width, height = halve_resolution(rgb_rows, width, height)
 
     cutoffs = (
         nrange(0.1, 0.9),
+        nrange(0.15, 0.85),
         nrange(0.2, 0.8),
         nrange(0.4, 0.6),
         nrange(0.5, 0.7),
@@ -221,6 +261,8 @@ def main():
 
     for cutoff in cutoffs:
         convert_with_cutoff(output_file, rgb_rows, width, height, cutoff)
+
+    subprocess.run(["open", output_file.rsplit(".", 1)[0]])
 
 
 if __name__ == "__main__":
