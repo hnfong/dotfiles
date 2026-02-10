@@ -155,6 +155,15 @@ require("lazy").setup({
         end,
     },
 
+    {
+        "leonardcser/cursortab.nvim",
+        -- version = "*",  -- Use latest tagged version for more stability
+        build = "cd server && go build",
+        config = function()
+            require("cursortab").setup()
+        end,
+    },
+
 
     -- Much of this is currently referencing https://www.swift.org/documentation/articles/zero-to-swift-nvim.html#language-server-support
     {
@@ -267,3 +276,81 @@ require("lazy").setup({
   -- automatically check for plugin updates
   checker = { enabled = false },
 })
+
+local _cursorTabEnabled = false
+
+ToggleCursorTab = function()
+  if _cursorTabEnabled then
+    require("cursortab").setup({
+      enabled = false,
+    })
+  else
+    print "Enabling. Llama.cpp command: ~/projects/llama.gguf/llama-server -m ~/Downloads/sweep-next-edit-1.5b.q8_0.v2.gguf --port 7000"
+    require("cursortab").setup({
+      enabled = true,
+      log_level = "debug",  -- "trace", "debug", "info", "warn", "error"
+      state_dir = vim.fn.stdpath("state") .. "/cursortab",  -- Directory for runtime files (log, socket, pid)
+
+      keymaps = {
+        accept = "<Tab>",           -- Keymap to accept completion, or false to disable
+        partial_accept = "<S-Tab>", -- Keymap to partially accept, or false to disable
+        trigger = "<S-RIGHT>",      -- Keymap to manually trigger completion, or false to disable
+      },
+
+      ui = {
+        colors = {
+          deletion = "#4f2f2f",      -- Background color for deletions
+          addition = "#394f2f",      -- Background color for additions
+          modification = "#282e38",  -- Background color for modifications
+          completion = "#80899c",    -- Foreground color for completions
+        },
+        jump = {
+          symbol = "",              -- Symbol shown for jump points
+          text = " TAB ",            -- Text displayed after jump symbol
+          show_distance = true,      -- Show line distance for off-screen jumps
+          bg_color = "#373b45",      -- Jump text background color
+          fg_color = "#bac1d1",      -- Jump text foreground color
+        },
+      },
+
+      behavior = {
+        idle_completion_delay = 50,  -- Delay in ms after idle to trigger completion (-1 to disable)
+        text_change_debounce = 50,   -- Debounce in ms after text change to trigger completion (-1 to disable)
+        max_visible_lines = 12,      -- Max visible lines per completion (0 to disable)
+        cursor_prediction = {
+          enabled = true,            -- Show jump indicators after completions
+          auto_advance = true,       -- When no changes, show cursor jump to last line
+          proximity_threshold = 2,   -- Min lines apart to show cursor jump (0 to disable)
+        },
+      },
+
+      provider = {
+        type = "sweep",                      -- Provider: "inline", "fim", "sweep", "sweepapi", "zeta", "copilot", or "mercuryapi"
+        url = "http://127.0.0.1:7000",        -- URL of the provider server
+        api_key_env = "",                     -- Env var name for API key (e.g., "OPENAI_API_KEY")
+        model = "",                           -- Model name
+        temperature = 0.0,                    -- Sampling temperature
+        max_tokens = 512,                     -- Max tokens to generate
+        top_k = 50,                           -- Top-k sampling
+        completion_timeout = 5000,            -- Timeout in ms for completion requests
+        max_diff_history_tokens = 512,        -- Max tokens for diff history (0 = no limit)
+        completion_path = "/v1/completions",  -- API endpoint path
+        fim_tokens = {                        -- FIM tokens (for FIM provider)
+          prefix = "<|fim_prefix|>",
+          suffix = "<|fim_suffix|>",
+          middle = "<|fim_middle|>",
+        },
+        privacy_mode = true,                  -- Don't send telemetry to provider
+      },
+
+      blink = {
+        enabled = false,    -- Enable blink source
+        ghost_text = true,  -- Show native ghost text alongside blink menu
+      },
+
+      debug = {
+        immediate_shutdown = false,  -- Shutdown daemon immediately when no clients
+      },
+    })
+  end
+end

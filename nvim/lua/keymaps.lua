@@ -27,8 +27,11 @@ vim.cmd [[
     " git diff
     nmap <F5> :Gdiff<CR>
 
+    " Setup Cursortab by calling lua SetupCursorTab()
+    nmap <F6> :lua ToggleCursorTab()
+
     " Toggles copilot
-    nmap <F6> :let b:copilot_enabled = v:true
+    nmap <S-F6> :let b:copilot_enabled = v:true
 
     " Toggles spellcheck
     nmap <F7> :set invspell<CR>
