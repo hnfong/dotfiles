@@ -89,7 +89,7 @@ LspConfigs = function()
 
     vim.lsp.enable("clangd")
     -- vim.lsp.enable("ruff")
-    vim.lsp.enable('htmx')
+    -- vim.lsp.enable('htmx')
     vim.lsp.enable('bashls')
     vim.lsp.enable('ty')
 

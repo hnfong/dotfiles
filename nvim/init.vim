@@ -399,7 +399,7 @@ function! SendLineOffsetToShell()
 
     echo "Running inferrence..."
 
-    let abc = system('ask.py -t 0.1 -q -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' ' . (line_offset))
+    let abc = system('ask.py -t 0.1 -q -c 8192 -p code_generation -f ' . shellescape(expand('%:p')) . ' -C ' . (line_offset))
 
     " Set the register in character mode so that we can paste inside the line
     call setreg("i", abc, "c")
