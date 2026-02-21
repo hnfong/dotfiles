@@ -1,11 +1,15 @@
 #!/usr/bin/env pypy3
 """
 Compress screenshots to 1-bit dithered PNGs.
-Usage: python compress_screenshot.py input.png output.png
+
+Usage: python compress_screenshot.py [-r shrink_ratio] <input.png> [<output.png>]
+
+-r shrink_ratio (default 2)
 """
 
 # 🤖 Mostly written by Deepseek
 
+import getopt
 import math
 import os
 import png
@@ -229,21 +233,44 @@ def halve_resolution(rgb_rows, width, height):
 
     return new_rows, new_width, new_height
 
+def help():
+    print(__doc__)
+
+
 def main():
-    if len(sys.argv) not in (2,3):
-        print("Usage: python compress_screenshot.py <input.png> [<output.png>]")
+    try:
+        opt_list, args = getopt.getopt(sys.argv[1:], "or:h")
+    except getopt.GetoptError as err:
+        help()
         sys.exit(1)
 
-    input_file = sys.argv[1]
-    if len(sys.argv) == 3:
-        output_file = sys.argv[2]
-    else:
+    opts = dict(opt_list)
+
+    if "-h" in opts:
+        help()
+        sys.exit(0)
+
+    if len(args) == 1:
+        input_file = args[0]
         output_file = input_file
+    elif len(args) == 2:
+        input_file = args[0]
+        output_file = args[1]
+    else:
+        help()
+        sys.exit(1)
 
     # Load and convert image
     print(f"Loading {input_file}...")
     rgb_rows, width, height = load_image(input_file)
-    rgb_rows, width, height = halve_resolution(rgb_rows, width, height)
+
+    shrink_ratio = int(opts.get("-r") or "2")
+    if shrink_ratio == 2:
+        rgb_rows, width, height = halve_resolution(rgb_rows, width, height)
+    elif shrink_ratio == 1:
+        pass
+    else:
+        raise Exception("Currently shrink_ratio only supports 1 or 2")
 
     cutoffs = (
         nrange(0.1, 0.9),
