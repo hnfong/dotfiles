@@ -129,7 +129,7 @@ vim.cmd [[
     inoremap <C-L> <c-g>u<Esc>:set spell<CR>[s1z=`]a<c-g>u
 
     " Helpful abbreviations
-    iabbrev {tick} ✓
+    iabbrev {tick} ✅
     iabbrev {star} ☆
     iabbrev {cross} ✗
     iabbrev {robot} 🤖

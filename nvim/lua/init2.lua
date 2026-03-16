@@ -46,3 +46,21 @@ require("nvim-tree").setup({
 })
 
 --- } End of nvim-tree customization ---
+
+
+-- https://www.reddit.com/r/neovim/comments/xv7b9j/prevent_exited_terminal_from_closing_buffer_in/
+vim.api.nvim_create_autocmd('TermClose', {
+  callback = function(ctx)
+    vim.cmd('stopinsert')
+    vim.api.nvim_create_autocmd('TermEnter', {
+      callback = function()
+        vim.cmd('stopinsert')
+      end,
+      buffer = ctx.buf,
+    })
+  end,
+  nested = true,
+})
+
+
+
