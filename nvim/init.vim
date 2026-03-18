@@ -283,6 +283,9 @@ au FileType markdown setlocal smartcase ignorecase
 au FileType markdown nnoremap <F3> :MarkdownPreview
 au FileType markdown nnoremap <S-F3> :MarkdownPreviewStop
 
+" Treat lines starting with % as comments and continue % when wrapping/formatting
+au FileType markdown setlocal comments=:% formatoptions+=c
+
 au FileType html set indentkeys=
 au FileType html set indentexpr=
 au FileType htmldjango set indentkeys=
