@@ -55,6 +55,10 @@ alias g='rg -z -N --no-heading --no-ignore -g "!venv"'
 alias vimdiff='nvim -d'
 alias ds3='my_llm -m github/DeepSeek-V3'
 
+# Convert JSON lines to CSV
+alias jl2csv="jq -r '[.[]] | @csv'"
+alias jl2tsv="jq -r '[.[]] | @tsv'"
+
 # Compatibility with nushell
 alias lg='ls -GAF'
 
