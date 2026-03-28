@@ -20,10 +20,6 @@ ln -s ~/dotfiles/nvim ~/.config
 mkdir -p ~/.config/ghostty
 ln -sf ~/dotfiles/_ghostty_config ~/.config/ghostty/config
 
-pushd "~/Library/Application Support/nushell/"
-ln -sf ~/dotfiles/config.nu .
-popd
-
 mkdir -p ~/bin/
 for zfile in dotfiles/bin/*.bz2; do
     bzcat -k "$zfile" > ~/bin/"$(basename $zfile .bz2)"
