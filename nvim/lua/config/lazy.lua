@@ -155,14 +155,14 @@ require("lazy").setup({
         end,
     },
 
-    {
-        "leonardcser/cursortab.nvim",
-        -- version = "*",  -- Use latest tagged version for more stability
-        build = "cd server && go build",
-        config = function()
-            require("cursortab").setup()
-        end,
-    },
+    -- {
+        -- "leonardcser/cursortab.nvim",
+        -- -- version = "*",  -- Use latest tagged version for more stability
+        -- build = "cd server && go build",
+        -- config = function()
+            -- require("cursortab").setup()
+        -- end,
+    -- },
 
 
     -- Much of this is currently referencing https://www.swift.org/documentation/articles/zero-to-swift-nvim.html#language-server-support

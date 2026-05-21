@@ -3,6 +3,8 @@
 # Disable F11 for Show Desktop (Mission Control)
 defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 36 "<dict><key>enabled</key><false/></dict>"
 
+# Disable auto open upon download (does not only affect Safari downloads!)
+defaults write com.apple.Safari AutoOpenSafeDownloads -int 0
 
 # 3 finger drag
 defaults write com.apple.AppleMultitouchTrackpad Clicking -int 1
