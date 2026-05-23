@@ -15,8 +15,8 @@ import getopt
 from pathlib import Path
 
 # DEFAULT_MODEL = "gemini-3.1-pro-preview"  # https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview
-# DEFAULT_MODEL = "gemini-3.1-flash-lite-preview" # https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-preview
-DEFAULT_MODEL = "gemini-3-flash-preview" # https://ai.google.dev/gemini-api/docs/models/gemini-3-flash-preview
+DEFAULT_MODEL = "gemini-3.1-flash-lite-preview" # https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-preview
+# DEFAULT_MODEL = "gemini-3-flash-preview" # https://ai.google.dev/gemini-api/docs/models/gemini-3-flash-preview
 
 _model_names = [
     "gemini-3.1-pro-preview",
