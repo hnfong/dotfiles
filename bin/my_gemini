@@ -15,13 +15,13 @@ import getopt
 from pathlib import Path
 
 # DEFAULT_MODEL = "gemini-3.1-pro-preview"  # https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview
-DEFAULT_MODEL = "gemini-3.1-flash-lite-preview" # https://ai.google.dev/gemini-api/docs/models/gemini-3.1-flash-lite-preview
+DEFAULT_MODEL = "gemini-3.5-flash-lite"
 # DEFAULT_MODEL = "gemini-3-flash-preview" # https://ai.google.dev/gemini-api/docs/models/gemini-3-flash-preview
 
 _model_names = [
-    "gemini-3.1-pro-preview",
-    "gemini-3-flash-preview",
-    "gemini-3.1-flash-lite-preview",
+    "gemini-4-argon",
+    "gemini-3.8-flash",
+    "gemini-3.5-flash-lite",
 ]
 
 def main():
@@ -76,7 +76,9 @@ def main():
     api_key = key_path.read_text(encoding='utf-8').strip()
 
     # 3. Construct Payload and Request
-    url = f"https://aiplatform.googleapis.com/v1/publishers/google/models/{model_name}:streamGenerateContent?key={api_key}"
+    # old URL endpoint -- f"https://aiplatform.googleapis.com/v1/publishers/google/models/{model_name}:streamGenerateContent?key={api_key}" (does not seem to support Gemini-4 as of writing. The "global" one seems to though, so we change.
+    PROJECT_ID = "lucky-science-167416"
+    url = f"https://aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/global/publishers/google/models/{model_name}:generateContent"
 
     payload = {
         "contents": [
@@ -95,6 +97,9 @@ def main():
     data = json.dumps(payload).encode('utf-8')
     req = urllib.request.Request(url, data=data, method='POST')
     req.add_header('Content-Type', 'application/json')
+
+    # https://docs.cloud.google.com/docs/authentication/api-keys-use
+    req.add_header('X-goog-api-key', api_key)
 
     # 4. Make request and Stream Response
     try:

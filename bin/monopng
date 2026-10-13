@@ -29,6 +29,32 @@ class nrange:
 
 
 def load_image(filename):
+    """Load image (PNG or JPG). If JPG, convert to PNG via sips, then load."""
+    import os
+    import subprocess
+    import tempfile
+    if filename.lower().rsplit(".", 1)[-1] in ("jpg", "jpeg", "heic"):
+        # Create a temporary PNG file
+        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+            tmp_png = tmp.name
+
+        try:
+            # Use sips to convert JPG to PNG
+            subprocess.run(
+                ['sips', '-s', 'format', 'png', filename, '-o', tmp_png],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            return _load_image(tmp_png)
+        finally:
+            # Clean up temp file
+            if os.path.exists(tmp_png):
+                os.remove(tmp_png)
+    else:
+        return _load_image(filename)
+
+def _load_image(filename):
     """Load PNG image and return as list of pixel rows in RGB format."""
     reader = png.Reader(filename=filename)
     width, height, rows, info = reader.read()
@@ -149,14 +175,14 @@ def floyd_steinberg_dither(grayscale_rows, width, height):
 
 def convert_with_cutoff(output_file, rgb_rows, width, height, cutoff):
     no_ext, ext = output_file.rsplit(".", 1)
-    assert ext.lower() == "png"
+    assert ext.lower() in ("png", "jpg", "jpeg", "heic")
 
     basename = os.path.basename(no_ext)
 
     os.makedirs(no_ext, exist_ok=True)
 
-    output_file = f"{no_ext}{os.path.sep}{basename}-{cutoff.desc()}.{ext}"
-    output_file_grey = f"{no_ext}{os.path.sep}{basename}-{cutoff.desc()}-grey.{ext}"
+    output_file = f"{no_ext}{os.path.sep}{basename}-{cutoff.desc()}.png"
+    output_file_grey = f"{no_ext}{os.path.sep}{basename}-{cutoff.desc()}-grey.png"
 
     # Apply contrast curve (sharpens black/white transition)
     print("Applying contrast curve...")

@@ -44,7 +44,7 @@ alias rm='rm -iv'
 alias mv='mv -iv'
 alias cp='cp -iv'
 alias vi='magic_open'
-alias ff='fd --hidden --no-ignore --threads=1 --glob -E venv'
+alias ff='fd --hidden --no-ignore --threads=1 --glob -E venv' # See also 'fx' as function below
 alias vigl='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git log -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
 alias vigll='VIGLTMP="`mktemp /tmp/vigl-XXXXX`.gitlog"; git lll -n 100 > "$VIGLTMP" && vi "$VIGLTMP"'
 alias h='helper'
@@ -135,6 +135,12 @@ function gg {
     fi
 }
 
+function fx() {
+    local firstarg=$1
+    shift
+    fd --hidden --no-ignore --threads=1 --glob -E venv "*$firstarg*" "$@"
+}
+
 function mk {
     # This function invokes make in the current directory or in the nearest
     # ancestor directory that contains a Makefile. This is useful when you're
@@ -161,6 +167,61 @@ function mk {
     cd "$PWDBEFOREMK"
     [ "$MK__RET"  = "0" ];
 }
+
+# vsleep - Verbose sleep with progress indication
+#
+# Sleeps for N seconds while displaying progress. Print frequency adapts
+# based on total sleep duration:
+#   - Every 1 second  for sleeps < 60s
+#   - Every 10 seconds for sleeps < 5min (300s)
+#   - Every 60 seconds for sleeps >= 5min
+#
+# Usage: vsleep <seconds>
+# Example: vsleep 120
+vsleep() {
+    local total_seconds=$1
+    local elapsed=0
+
+    # Validate input
+    if [[ -z "$total_seconds" ]] || ! [[ "$total_seconds" =~ ^[0-9]+$ ]]; then
+        echo "Usage: vsleep <seconds>"
+        return 1
+    fi
+
+    # Determine print interval based on total duration
+    local interval
+    if (( total_seconds <= 60 )); then
+        interval=1
+    elif (( total_seconds <= 300 )); then
+        interval=10
+    else
+        interval=60
+    fi
+
+    echo "Sleeping for $total_seconds seconds (printing every ${interval}s)"
+
+    # Main sleep loop with progress updates
+    while (( elapsed < total_seconds )); do
+        local remaining=$(( total_seconds - elapsed ))
+
+        # Print progress on same line using carriage return
+        printf "\r[%3d%%] %d seconds elapsed, %d seconds remaining" \
+               $(( elapsed * 100 / total_seconds )) \
+               $elapsed \
+               $remaining
+
+        # Sleep for interval or remaining time (whichever is smaller)
+        local sleep_time=$(( interval < remaining ? interval : remaining ))
+        sleep $sleep_time
+
+        elapsed=$(( elapsed + sleep_time ))
+    done
+
+    # Final newline and completion message
+    echo
+    echo "Done! Slept for $total_seconds seconds"
+}
+
 
 local _last_git_branch=
 
